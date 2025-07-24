@@ -101,6 +101,8 @@ class AppTheme {
       type: BottomNavigationBarType.fixed,
       elevation: 8,
     ),
+
+    
   );
 
   // Dark Theme

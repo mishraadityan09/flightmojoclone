@@ -1,4 +1,5 @@
 import 'package:flightmojo/core/theme/app_theme.dart';
+import 'package:flightmojo/feature/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   String _returnDate = 'Tomorrow';
   int _passengers = 1;
   bool _isRoundTrip = false;
+  final GlobalKey bottomPassengersSheet = GlobalKey();
 
   // Move destinations to class level to avoid recreating in build
   final List<Map<String, String>> destinations = [
@@ -60,9 +62,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-           
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                       'Book flights at the best prices',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
-                        color: Colors.white.withValues(alpha:0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 GestureDetector(
                                   onTap: () => setState(() {
-                                    _isRoundTrip=false;
+                                    _isRoundTrip = false;
                                   }),
                                   child: Container(
                                     decoration: !_isRoundTrip
@@ -152,9 +152,11 @@ class _HomePageState extends State<HomePage> {
                                                 .white, // or Theme.of(context).cardColor
                                             borderRadius: BorderRadius.circular(
                                               12,
-                                              
                                             ),
-                                            border: Border.all(color: Colors.grey,width: 1)
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                              width: 1,
+                                            ),
                                           ),
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 12,
@@ -165,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                                       style: GoogleFonts.poppins(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
-                                        color:  !_isRoundTrip
+                                        color: !_isRoundTrip
                                             ? Colors.white
                                             : Colors.black,
                                       ),
@@ -174,8 +176,8 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 SizedBox(width: 12),
                                 GestureDetector(
-                                   onTap: () => setState(() {
-                                    _isRoundTrip=true;
+                                  onTap: () => setState(() {
+                                    _isRoundTrip = true;
                                   }),
                                   child: Container(
                                     decoration: _isRoundTrip
@@ -186,7 +188,10 @@ class _HomePageState extends State<HomePage> {
                                             borderRadius: BorderRadius.circular(
                                               12,
                                             ),
-                                              border: Border.all(color: Colors.grey,width: 1)
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                              width: 1,
+                                            ),
                                           ),
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 12,
@@ -412,28 +417,32 @@ class _HomePageState extends State<HomePage> {
           onTap: () async {
             // Handle date selection
             final DateTime? picked = await showDatePicker(
-  context: context,
-  initialDate: DateTime.now(),
-  firstDate: DateTime.now(),
-  lastDate: DateTime.now().add(const Duration(days: 365)),
-  builder: (context, child) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        colorScheme: ColorScheme.light(
-          primary: Theme.of(context).primaryColor, // header background
-          onPrimary: Colors.white, // header text color
-          onSurface: Colors.black, // body text color
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).primaryColor, // button text
-          ),
-        ),
-      ),
-      child: child!,
-    );
-  },
-);
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now(),
+              lastDate: DateTime.now().add(const Duration(days: 365)),
+              builder: (context, child) {
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.light(
+                      primary: Theme.of(
+                        context,
+                      ).primaryColor, // header background
+                      onPrimary: Colors.white, // header text color
+                      onSurface: Colors.black, // body text color
+                    ),
+                    textButtonTheme: TextButtonThemeData(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(
+                          context,
+                        ).primaryColor, // button text
+                      ),
+                    ),
+                  ),
+                  child: child!,
+                );
+              },
+            );
 
             if (picked != null) {
               setState(() {
@@ -494,7 +503,15 @@ class _HomePageState extends State<HomePage> {
         GestureDetector(
           onTap: () {
             // Handle passenger selection
-            _showPassengerDialog(context);
+            showModalBottomSheet(
+              showDragHandle: true,
+              useRootNavigator: true,
+              isScrollControlled: true,
+              context: context,
+              builder: (context) {
+                return PassengersBottomSheet();
+              });
+            // _showPassengerDialog(context);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -529,7 +546,7 @@ class _HomePageState extends State<HomePage> {
 
   void _showPassengerDialog(BuildContext context) {
     int tempPassengers = _passengers;
-    showDialog(
+    showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
@@ -557,7 +574,7 @@ class _HomePageState extends State<HomePage> {
                                     // Navigator.pop(context);
                                   }
                                 : null,
-                            icon: const Icon(Icons.remove,color: Colors.grey,),
+                            icon: const Icon(Icons.remove, color: Colors.grey),
                           ),
                           Text('$tempPassengers', style: GoogleFonts.poppins()),
                           IconButton(
@@ -569,7 +586,7 @@ class _HomePageState extends State<HomePage> {
                                     // Navigator.pop(context);
                                   }
                                 : null,
-                            icon: const Icon(Icons.add,color: Colors.grey,),
+                            icon: const Icon(Icons.add, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -624,7 +641,7 @@ class _HomePageState extends State<HomePage> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Theme.of(context).primaryColor.withValues(alpha:0.8),
+                Theme.of(context).primaryColor.withValues(alpha: 0.8),
                 Theme.of(context).primaryColor,
               ],
             ),
@@ -652,7 +669,7 @@ class _HomePageState extends State<HomePage> {
                       'from ${destination['price']!}',
                       style: GoogleFonts.poppins(
                         fontSize: 14,
-                        color: Colors.white.withValues(alpha:0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
                   ],
