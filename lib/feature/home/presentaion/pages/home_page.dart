@@ -1,3 +1,4 @@
+import 'package:flightmojo/core/common/datepicker_bottomsheet.dart';
 import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -414,75 +415,70 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 4),
         GestureDetector(
-          onTap: () async {
-            // Handle date selection
-            final DateTime? picked = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
-              builder: (context, child) {
-                return Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme: ColorScheme.light(
-                      primary: Theme.of(
-                        context,
-                      ).primaryColor, // header background
-                      onPrimary: Colors.white, // header text color
-                      onSurface: Colors.black, // body text color
-                    ),
-                    textButtonTheme: TextButtonThemeData(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Theme.of(
-                          context,
-                        ).primaryColor, // button text
-                      ),
-                    ),
-                  ),
-                  child: child!,
-                );
-              },
-            );
+  onTap: () {
+    // Parse current date if available
+    DateTime? initialDate;
+    if (value != 'Select date') {
+      try {
+        List<String> parts = value.split('/');
+        if (parts.length == 3) {
+          initialDate = DateTime(
+            int.parse(parts[2]), // year
+            int.parse(parts[1]), // month
+            int.parse(parts[0]), // day
+          );
+        }
+      } catch (e) {
+        // If parsing fails, use current date
+        initialDate = DateTime.now();
+      }
+    } else {
+      initialDate = DateTime.now();
+    }
 
-            if (picked != null) {
-              setState(() {
-                if (label == 'Departure') {
-                  _departureDate =
-                      "${picked.day}/${picked.month}/${picked.year}";
-                } else {
-                  _returnDate = "${picked.day}/${picked.month}/${picked.year}";
-                }
-              });
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]!),
-              borderRadius: BorderRadius.circular(8),
+    // Show custom date picker bottom sheet
+    showDatePickerBottomSheet(
+      context,
+      initialDate: initialDate,
+      onDateSelected: (picked) {
+        setState(() {
+          if (label == 'Departure') {
+            _departureDate = "${picked.day}/${picked.month}/${picked.year}";
+          } else {
+            _returnDate = "${picked.day}/${picked.month}/${picked.year}";
+          }
+        });
+      },
+    );
+  },
+  child: Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey[300]!),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      children: [
+        Icon(
+          Icons.calendar_today,
+          color: Theme.of(context).primaryColor,
+          size: 20,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value,
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.calendar_today,
-                  color: Theme.of(context).primaryColor,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    value,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
+      ],
+    ),
+  ),
+),
       ],
     );
   }

@@ -43,14 +43,11 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                     color: Colors.black,
                   ),
                 ),
-                  subtitle: Text(
-    'Above 12 years',
-    style: TextStyle(
-      fontSize: 12,
-      color: Colors.grey[600],
-    ),
-  ),
-                
+                subtitle: Text(
+                  'Above 12 years',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+
                 trailing: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
@@ -115,12 +112,9 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                   ),
                 ),
                 subtitle: Text(
-    '2-12 years',
-    style: TextStyle(
-      fontSize: 12,
-      color: Colors.grey[600],
-    ),
-  ),
+                  '2-12 years',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
                 trailing: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
@@ -178,13 +172,10 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                     color: Colors.black,
                   ),
                 ),
-                  subtitle: Text(
-    '0-2 years',
-    style: TextStyle(
-      fontSize: 12,
-      color: Colors.grey[600],
-    ),
-  ),
+                subtitle: Text(
+                  '0-2 years',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
                 trailing: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
