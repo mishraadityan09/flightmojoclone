@@ -412,11 +412,29 @@ class _HomePageState extends State<HomePage> {
           onTap: () async {
             // Handle date selection
             final DateTime? picked = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
-            );
+  context: context,
+  initialDate: DateTime.now(),
+  firstDate: DateTime.now(),
+  lastDate: DateTime.now().add(const Duration(days: 365)),
+  builder: (context, child) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: ColorScheme.light(
+          primary: Theme.of(context).primaryColor, // header background
+          onPrimary: Colors.white, // header text color
+          onSurface: Colors.black, // body text color
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).primaryColor, // button text
+          ),
+        ),
+      ),
+      child: child!,
+    );
+  },
+);
+
             if (picked != null) {
               setState(() {
                 if (label == 'Departure') {
@@ -539,7 +557,7 @@ class _HomePageState extends State<HomePage> {
                                     // Navigator.pop(context);
                                   }
                                 : null,
-                            icon: const Icon(Icons.remove),
+                            icon: const Icon(Icons.remove,color: Colors.grey,),
                           ),
                           Text('$tempPassengers', style: GoogleFonts.poppins()),
                           IconButton(
@@ -551,7 +569,7 @@ class _HomePageState extends State<HomePage> {
                                     // Navigator.pop(context);
                                   }
                                 : null,
-                            icon: const Icon(Icons.add),
+                            icon: const Icon(Icons.add,color: Colors.grey,),
                           ),
                         ],
                       ),

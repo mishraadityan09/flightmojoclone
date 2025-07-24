@@ -53,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back,color: Colors.grey,),
                     onPressed: () => context.pop(),
                   ),
                   Expanded(
@@ -63,7 +63,8 @@ class _SearchPageState extends State<SearchPage> {
                       onChanged: _onSearchChanged,
                       decoration: InputDecoration(
                         hintText: widget.hint,
-                        prefixIcon: const Icon(Icons.search),
+                        hintStyle: TextStyle(color: Colors.grey),
+                        prefixIcon: const Icon(Icons.search,color: Colors.grey,),
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -92,10 +93,10 @@ class _SearchPageState extends State<SearchPage> {
                   return Padding(
                     padding:EdgeInsetsGeometry.fromLTRB(32, 0, 0, 0),
                     child: ListTile(
-                      leading: const Icon(Icons.location_city),
+                      leading: const Icon(Icons.location_city,color: Colors.grey,),
                       title: Text(
                         city,
-                        style: GoogleFonts.poppins(fontSize: 16),
+                        style: GoogleFonts.poppins(fontSize: 16,color: Colors.grey),
                       ),
                       onTap: () {
                         context.pop(city); // Send result back

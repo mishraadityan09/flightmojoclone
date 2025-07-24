@@ -1,4 +1,5 @@
 import 'package:flightmojo/feature/search/presentation/pages/search.dart';
+import 'package:flightmojo/feature/searchResult/presentation/pages/search_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flightmojo/feature/home/presentaion/pages/home_page.dart';
 import 'package:flightmojo/feature/main/presentation/pages/main_page.dart';
@@ -59,8 +60,8 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.flightResults,
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>?;
-          return FlightResultsPage(searchParams: extra?['searchParams']);
+          // final extra = state.extra as Map<String, dynamic>?;
+          return FlightSearchResultsScreen();
         },
       ),
 
