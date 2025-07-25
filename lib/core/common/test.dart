@@ -103,7 +103,9 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
       });
     } else {
       // Return date mode
-      if (departureDate != null && normalizedTappedDate.isAfter(departureDate!)) {
+      if (departureDate != null && 
+          (normalizedTappedDate.isAfter(departureDate!) || 
+           normalizedTappedDate.isAtSameMomentAs(departureDate!))) {
         setState(() {
           returnDate = normalizedTappedDate;
         });
