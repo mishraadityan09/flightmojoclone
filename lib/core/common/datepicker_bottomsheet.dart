@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 
+enum DateSelectionMode {
+  departure,
+  returnDate,
+}
+
 class DatePickerBottomSheet extends StatefulWidget {
-  final DateTime? initialDate;
-  final Function(DateTime)? onDateSelected;
-  final Map<DateTime, double>? prices; // Add prices map
+  final DateTime? initialDepartureDate;
+  final DateTime? initialReturnDate;
+  final Function(DateTime, DateTime?)? onDatesSelected;
+  final Map<DateTime, double>? prices;
 
   const DatePickerBottomSheet({
     Key? key,
-    this.initialDate,
-    this.onDateSelected,
-    this.prices, // Add this parameter
+    this.initialDepartureDate,
+    this.initialReturnDate,
+    this.onDatesSelected,
+    this.prices,
   }) : super(key: key);
 
   @override
@@ -17,7 +24,9 @@ class DatePickerBottomSheet extends StatefulWidget {
 }
 
 class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
-  late DateTime selectedDate;
+  DateTime? departureDate;
+  DateTime? returnDate;
+  DateSelectionMode currentMode = DateSelectionMode.departure;
   late DateTime startDate;
   late DateTime endDate;
   late List<DateTime> months;
@@ -28,8 +37,12 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    selectedDate = widget.initialDate ?? DateTime(now.year, now.month, now.day); // Normalize initial date
-    startDate = DateTime(now.year, now.month, now.day); // Normalize start date
+    
+    // Initialize dates - normalize to remove time component
+    departureDate = widget.initialDepartureDate ?? DateTime(now.year, now.month, now.day);
+    returnDate = widget.initialReturnDate;
+    
+    startDate = DateTime(now.year, now.month, now.day);
     endDate = DateTime(now.year, now.month, now.day).add(Duration(days: 360));
     
     // Generate list of months for next 360 days
@@ -37,7 +50,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
     
     // Find initial month index
     currentMonthIndex = months.indexWhere((month) =>
-        month.year == selectedDate.year && month.month == selectedDate.month);
+        month.year == departureDate!.year && month.month == departureDate!.month);
     if (currentMonthIndex == -1) currentMonthIndex = 0;
     
     scrollController = ScrollController();
@@ -50,24 +63,61 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
     
     while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
       monthsList.add(current);
-      print(current); // Debugging line to check generated months
       current = DateTime(current.year, current.month + 1, 1);
     }
     
     return monthsList;
   }
 
-  // Helper method to get price for a specific date
   double? _getPriceForDate(DateTime date) {
     if (widget.prices == null) return null;
     
-    // Find exact match first
     for (var entry in widget.prices!.entries) {
       if (_isSameDay(entry.key, date)) {
         return entry.value;
       }
     }
     return null;
+  }
+
+  bool _isDateInRange(DateTime date) {
+    if (departureDate == null || returnDate == null) return false;
+    
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    final normalizedDeparture = DateTime(departureDate!.year, departureDate!.month, departureDate!.day);
+    final normalizedReturn = DateTime(returnDate!.year, returnDate!.month, returnDate!.day);
+    
+    return normalizedDate.isAfter(normalizedDeparture) && normalizedDate.isBefore(normalizedReturn);
+  }
+
+  void _handleDateTap(DateTime tappedDate) {
+    final normalizedTappedDate = DateTime(tappedDate.year, tappedDate.month, tappedDate.day);
+    
+    if (currentMode == DateSelectionMode.departure) {
+      setState(() {
+        departureDate = normalizedTappedDate;
+        // Clear return date if it's before the new departure date
+        if (returnDate != null && returnDate!.isBefore(normalizedTappedDate)) {
+          returnDate = null;
+        }
+      });
+    } else {
+      // Return date mode
+      if (departureDate != null && 
+          (normalizedTappedDate.isAfter(departureDate!) || 
+           normalizedTappedDate.isAtSameMomentAs(departureDate!))) {
+        setState(() {
+          returnDate = normalizedTappedDate;
+        });
+      } else if (departureDate != null && normalizedTappedDate.isBefore(departureDate!)) {
+        // If selected date is before departure, make it the new departure and clear return
+        setState(() {
+          departureDate = normalizedTappedDate;
+          returnDate = normalizedTappedDate;
+          // currentMode = DateSelectionMode.departure;
+        });
+      }
+    }
   }
 
   @override
@@ -82,58 +132,146 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
         children: [
           // Header
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Select Date',
+                  'Select Dates',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.close,color: Colors.black,),
+                  icon: Icon(Icons.close, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),
           ),
 
+          // Date selection tiles
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(children: [
-              Expanded(
-                child: ListTile(
-                  title: Text('Departure Date',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
-                  subtitle: Text(
-                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year} ',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        currentMode = DateSelectionMode.departure;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: currentMode == DateSelectionMode.departure 
+                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: currentMode == DateSelectionMode.departure 
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey.shade300,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Departure Date',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: currentMode == DateSelectionMode.departure 
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            departureDate != null
+                                ? '${departureDate!.day}/${departureDate!.month}/${departureDate!.year}'
+                                : 'Select date',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: ListTile(
-                  title: Text('Return Date',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
-                  subtitle: Text(
-                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year} ',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                SizedBox(width: 12),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        // Ensure departure date is set before switching to return mode
+                        if (departureDate == null) {
+                          final now = DateTime.now();
+                          departureDate = DateTime(now.year, now.month, now.day);
+                        }
+                        currentMode = DateSelectionMode.returnDate;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: currentMode == DateSelectionMode.returnDate 
+                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: currentMode == DateSelectionMode.returnDate 
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey.shade300,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Return Date',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: currentMode == DateSelectionMode.returnDate 
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            returnDate != null
+                                ? '${returnDate!.day}/${returnDate!.month}/${returnDate!.year}'
+                                : 'Select date',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              )
-            ],),
+              ],
+            ),
           ),
           
-          // Month/Year display
+          // Mode indicator
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Center(
               child: Text(
-                'Select a Date',
+                currentMode == DateSelectionMode.departure 
+                    ? 'Select Departure Date' 
+                    : 'Select Return Date',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
@@ -194,16 +332,38 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
           
           // Bottom buttons
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(8),
             child: Row(
               children: [
-              
+                if (departureDate != null || returnDate != null)
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          departureDate = null;
+                          returnDate = null;
+                          currentMode = DateSelectionMode.departure;
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text('Clear'),
+                    ),
+                  ),
+                if (departureDate != null || returnDate != null)
+                  SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      widget.onDateSelected?.call(selectedDate);
-                      Navigator.pop(context);
-                    },
+                    onPressed: departureDate != null
+                        ? () {
+                            widget.onDatesSelected?.call(departureDate!, returnDate);
+                            Navigator.pop(context);
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -224,7 +384,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   Widget _buildCalendarMonth(DateTime month) {
     final firstDayOfMonth = DateTime(month.year, month.month, 1);
     final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
-    final startingWeekday = firstDayOfMonth.weekday % 7; // Sunday = 0
+    final startingWeekday = firstDayOfMonth.weekday % 7;
     final totalDays = lastDayOfMonth.day;
     
     List<Widget> dayWidgets = [];
@@ -244,34 +404,50 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
       final normalizedEndDate = DateTime(endDate.year, endDate.month, endDate.day);
       
       final isToday = _isSameDay(normalizedDate, normalizedToday);
-      final isSelected = _isSameDay(normalizedDate, selectedDate);
-      final isDisabled = normalizedDate.isBefore(normalizedStartDate) || normalizedDate.isAfter(normalizedEndDate);
+      final isDeparture = departureDate != null && _isSameDay(normalizedDate, departureDate!);
+      final isReturn = returnDate != null && _isSameDay(normalizedDate, returnDate!);
+      final isInRange = _isDateInRange(date);
+      final normalizedDepartureDate = departureDate != null 
+          ? DateTime(departureDate!.year, departureDate!.month, departureDate!.day)
+          : null;
+      
+      final isDisabled = normalizedDate.isBefore(normalizedStartDate) || 
+                        normalizedDate.isAfter(normalizedEndDate) ||
+                        (currentMode == DateSelectionMode.returnDate && 
+                         normalizedDepartureDate != null && 
+                         normalizedDate.isBefore(normalizedDepartureDate));
       final price = _getPriceForDate(date);
+      
+      Color? backgroundColor;
+      Color? borderColor;
+      Color textColor = Colors.black;
+      
+      if (isDisabled) {
+        textColor = Colors.grey.shade400;
+      } else if (isDeparture || isReturn) {
+        backgroundColor = Theme.of(context).primaryColor;
+        textColor = Colors.white;
+      } else if (isInRange) {
+        backgroundColor = Theme.of(context).primaryColor.withOpacity(0.2);
+        textColor = Theme.of(context).primaryColor;
+      } else if (isToday) {
+        backgroundColor = Theme.of(context).primaryColor.withOpacity(0.1);
+        borderColor = Theme.of(context).primaryColor;
+        textColor = Theme.of(context).primaryColor;
+      }
       
       dayWidgets.add(
         GestureDetector(
-          onTap: isDisabled
-              ? null
-              : () {
-                  setState(() {
-                    selectedDate = normalizedDate; // Use normalized date
-                  });
-                },
+          onTap: isDisabled ? null : () => _handleDateTap(date),
           child: Container(
             margin: EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? Theme.of(context).primaryColor
-                  : isToday
-                      ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
-                      : Colors.transparent,
+              color: backgroundColor,
               borderRadius: BorderRadius.circular(8),
-              border: isToday && !isSelected
-                  ? Border.all(color: Theme.of(context).primaryColor)
-                  : null,
+              border: borderColor != null ? Border.all(color: borderColor) : null,
             ),
             child: Container(
-              height: 60, // Increased height to accommodate price
+              height: 60,
               padding: EdgeInsets.symmetric(vertical: 4),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -280,14 +456,8 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                   Text(
                     day.toString(),
                     style: TextStyle(
-                      color: isDisabled
-                          ? Colors.grey[400]
-                          : isSelected
-                              ? Colors.white
-                              : isToday
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.black,
-                      fontWeight: isSelected || isToday
+                      color: textColor,
+                      fontWeight: (isDeparture || isReturn || isToday)
                           ? FontWeight.bold
                           : FontWeight.normal,
                       fontSize: 16,
@@ -301,10 +471,10 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                         '₹${price.toStringAsFixed(0)}',
                         style: TextStyle(
                           color: isDisabled
-                              ? Colors.grey[400]
-                              : isSelected
-                                  ? Colors.white.withValues(alpha: 0.9)
-                                  : isToday
+                              ? Colors.grey.shade400
+                              : (isDeparture || isReturn)
+                                  ? Colors.white.withOpacity(0.9)
+                                  : isInRange || isToday
                                       ? Theme.of(context).primaryColor
                                       : Colors.grey[600],
                           fontSize: 10,
@@ -324,7 +494,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: GridView.count(
         crossAxisCount: 7,
-        childAspectRatio: 0.8, // Adjusted aspect ratio for taller cells
+        childAspectRatio: 0.8,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: dayWidgets,
@@ -353,48 +523,48 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   }
 }
 
-// Updated function to accept prices
+// Updated function to accept both departure and return dates
 void showDatePickerBottomSheet(
   BuildContext context, {
-  DateTime? initialDate,
-  Function(DateTime)? onDateSelected,
-  Map<DateTime, double>? prices, // Add prices parameter
+  DateTime? initialDepartureDate,
+  DateTime? initialReturnDate,
+  Function(DateTime, DateTime?)? onDatesSelected,
+  Map<DateTime, double>? prices,
 }) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    showDragHandle: true ,
+    showDragHandle: true,
     useRootNavigator: true,
-    
     builder: (context) => DatePickerBottomSheet(
-      initialDate: initialDate,
-      onDateSelected: onDateSelected,
-      prices: prices, // Pass prices to the widget
+      initialDepartureDate: initialDepartureDate,
+      initialReturnDate: initialReturnDate,
+      onDatesSelected: onDatesSelected,
+      prices: prices,
     ),
   );
 }
 
 // Example usage:
 /*
-// Create a map of dates and their prices
 Map<DateTime, double> samplePrices = {
   DateTime(2025, 7, 25): 150.0,
   DateTime(2025, 7, 26): 175.0,
   DateTime(2025, 7, 27): 200.0,
   DateTime(2025, 7, 28): 125.0,
-  // Add more dates and prices as needed
+  DateTime(2025, 7, 29): 180.0,
+  DateTime(2025, 7, 30): 160.0,
 };
 
-// Show the date picker with prices
 showDatePickerBottomSheet(
   context,
-  initialDate: DateTime.now(),
+  initialDepartureDate: DateTime.now(),
+  initialReturnDate: null,
   prices: samplePrices,
-  onDateSelected: (selectedDate) {
-    print('Selected date: $selectedDate');
-    // Handle the selected date
+  onDatesSelected: (departureDate, returnDate) {
+    print('Departure: $departureDate');
+    print('Return: $returnDate');
+    // Handle the selected dates
   },
 );
 */
-
-

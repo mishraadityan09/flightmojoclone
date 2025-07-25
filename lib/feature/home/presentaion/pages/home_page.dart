@@ -2,6 +2,7 @@ import 'package:flightmojo/core/common/datepicker_bottomsheet.dart';
 import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
@@ -139,78 +140,117 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () => setState(() {
-                                    _isRoundTrip = false;
-                                  }),
-                                  child: Container(
-                                    decoration: !_isRoundTrip
-                                        ? AppTheme.gradientContainerDecoration
-                                        : BoxDecoration(
-                                            color: Colors
-                                                .white, // or Theme.of(context).cardColor
-                                            borderRadius: BorderRadius.circular(
-                                              12,
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.grey.shade300),
+                                color: Colors.grey.shade100,
+                              ),
+                              child: Stack(
+                                children: [
+                                  // Sliding background indicator
+                                  AnimatedPositioned(
+                                    duration: const Duration(milliseconds: 10),
+                                    curve: Curves.easeInOutCubic,
+                                    left: _isRoundTrip ? null : 2,
+                                    right: _isRoundTrip ? 2 : null,
+                                    top: 2,
+                                    bottom: 2,
+                                    width:
+                                        (MediaQuery.of(context).size.width -
+                                            36) /
+                                        2.5, // Adjust based on your container width
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.1,
                                             ),
-                                            border: Border.all(
-                                              color: Colors.grey,
-                                              width: 1,
-                                            ),
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 1),
                                           ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    child: Text(
-                                      'One Way',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: !_isRoundTrip
-                                            ? Colors.white
-                                            : Colors.black,
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 12),
-                                GestureDetector(
-                                  onTap: () => setState(() {
-                                    _isRoundTrip = true;
-                                  }),
-                                  child: Container(
-                                    decoration: _isRoundTrip
-                                        ? AppTheme.gradientContainerDecoration
-                                        : BoxDecoration(
-                                            color: Colors
-                                                .white, // or Theme.of(context).cardColor
-                                            borderRadius: BorderRadius.circular(
-                                              12,
+                                  // Text buttons
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _isRoundTrip = false;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 12,
                                             ),
-                                            border: Border.all(
-                                              color: Colors.grey,
-                                              width: 1,
+                                            child: Center(
+                                              child: AnimatedDefaultTextStyle(
+                                                duration: const Duration(
+                                                  milliseconds: 10,
+                                                ),
+                                                style: TextStyle(
+                                                  color: !_isRoundTrip
+                                                      ? Colors.black
+                                                      : Colors.grey.shade600,
+                                                  fontWeight: !_isRoundTrip
+                                                      ? FontWeight.w500
+                                                      : FontWeight.normal,
+                                                  fontSize: 16,
+                                                ),
+                                                child: const Text('One Way'),
+                                              ),
                                             ),
                                           ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    child: Text(
-                                      'Round Trip',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: _isRoundTrip
-                                            ? Colors.white
-                                            : Colors.black,
+                                        ),
                                       ),
-                                    ),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _isRoundTrip = true;
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 12,
+                                            ),
+                                            child: Center(
+                                              child: AnimatedDefaultTextStyle(
+                                                duration: const Duration(
+                                                  milliseconds: 600,
+                                                ),
+                                                style: TextStyle(
+                                                  color: _isRoundTrip
+                                                      ? Colors.black
+                                                      : Colors.grey.shade600,
+                                                  fontWeight: _isRoundTrip
+                                                      ? FontWeight.w500
+                                                      : FontWeight.normal,
+                                                  fontSize: 16,
+                                                ),
+                                                child: const Text(
+                                                  'Round Trip',
+                                                  style: TextStyle(),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 16),
                             Row(
@@ -246,6 +286,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     'Departure',
                                     _departureDate,
+                                    _isRoundTrip
                                   ),
                                 ),
                                 if (_isRoundTrip) const SizedBox(width: 16),
@@ -255,6 +296,7 @@ class _HomePageState extends State<HomePage> {
                                       context,
                                       'Return',
                                       _returnDate,
+                                      _isRoundTrip,
                                     ),
                                   ),
                               ],
@@ -401,7 +443,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildDateField(BuildContext context, String label, String value) {
+  Widget _buildDateField(BuildContext context, String label, String value, bool isReturn) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -453,23 +495,24 @@ class _HomePageState extends State<HomePage> {
 
             // Example usage:
 
-            // Create a map of dates and their prices
             Map<DateTime, double> samplePrices = {
               DateTime(2025, 7, 25): 150.0,
               DateTime(2025, 7, 26): 175.0,
               DateTime(2025, 7, 27): 200.0,
               DateTime(2025, 7, 28): 125.0,
-              // Add more dates and prices as needed
+              DateTime(2025, 7, 29): 180.0,
+              DateTime(2025, 7, 30): 160.0,
             };
 
-            // Show the date picker with prices
             showDatePickerBottomSheet(
               context,
-              initialDate: DateTime.now(),
+              initialDepartureDate: DateTime.now(),
+              initialReturnDate: null,
               prices: samplePrices,
-              onDateSelected: (selectedDate) {
-                print('Selected date: $selectedDate');
-                // Handle the selected date
+              onDatesSelected: (departureDate, returnDate) {
+                print('Departure: $departureDate');
+                print('Return: $returnDate');
+                // Handle the selected dates
               },
             );
           },
@@ -499,6 +542,112 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _buildReturnDateField(BuildContext context, String label, String value, bool isReturn) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 4),
+        GestureDetector(
+          onTap: () {
+            // Parse current date if available
+            DateTime? initialDate;
+            if (value != 'Select date') {
+              try {
+                List<String> parts = value.split('/');
+                if (parts.length == 3) {
+                  initialDate = DateTime(
+                    int.parse(parts[2]), // year
+                    int.parse(parts[1]), // month
+                    int.parse(parts[0]), // day
+                  );
+                }
+              } catch (e) {
+                // If parsing fails, use current date
+                initialDate = DateTime.now();
+              }
+            } else {
+              initialDate = DateTime.now();
+            }
+
+            // Show custom date picker bottom sheet
+            // showDatePickerBottomSheet(
+            //   context,
+            //   initialDate: initialDate,
+            //   onDateSelected: (picked) {
+            //     setState(() {
+            //       if (label == 'Departure') {
+            //         _departureDate = "${picked.day}/${picked.month}/${picked.year}";
+            //       } else {
+            //         _returnDate = "${picked.day}/${picked.month}/${picked.year}";
+            //       }
+            //     });
+            //   },
+            // );
+
+            // Example usage:
+
+            Map<DateTime, double> samplePrices = {
+              DateTime(2025, 7, 25): 150.0,
+              DateTime(2025, 7, 26): 175.0,
+              DateTime(2025, 7, 27): 200.0,
+              DateTime(2025, 7, 28): 125.0,
+              DateTime(2025, 7, 29): 180.0,
+              DateTime(2025, 7, 30): 160.0,
+            };
+
+            showDatePickerBottomSheet(
+              context,
+              initialDepartureDate: DateTime.now(),
+              initialReturnDate: null,
+              prices: samplePrices,
+              onDatesSelected: (departureDate, returnDate) {
+                print('Departure: $departureDate');
+                print('Return: $returnDate');
+                // Handle the selected dates
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child:isReturn? Row(
+              children: [
+                Icon(
+                  Icons.calendar_today,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    value,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ):null,
           ),
         ),
       ],
