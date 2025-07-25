@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class DatePickerBottomSheet extends StatefulWidget {
   final DateTime? initialDate;
   final Function(DateTime)? onDateSelected;
+  final Map<DateTime, double>? prices; // Add prices map
 
   const DatePickerBottomSheet({
     Key? key,
     this.initialDate,
     this.onDateSelected,
+    this.prices, // Add this parameter
   }) : super(key: key);
 
   @override
@@ -25,9 +27,10 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   @override
   void initState() {
     super.initState();
-    selectedDate = widget.initialDate ?? DateTime.now();
-    startDate = DateTime.now();
-    endDate = DateTime.now().add(Duration(days: 360));
+    final now = DateTime.now();
+    selectedDate = widget.initialDate ?? DateTime(now.year, now.month, now.day); // Normalize initial date
+    startDate = DateTime(now.year, now.month, now.day); // Normalize start date
+    endDate = DateTime(now.year, now.month, now.day).add(Duration(days: 360));
     
     // Generate list of months for next 360 days
     months = generateMonths();
@@ -47,10 +50,24 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
     
     while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
       monthsList.add(current);
+      print(current); // Debugging line to check generated months
       current = DateTime(current.year, current.month + 1, 1);
     }
     
     return monthsList;
+  }
+
+  // Helper method to get price for a specific date
+  double? _getPriceForDate(DateTime date) {
+    if (widget.prices == null) return null;
+    
+    // Find exact match first
+    for (var entry in widget.prices!.entries) {
+      if (_isSameDay(entry.key, date)) {
+        return entry.value;
+      }
+    }
+    return null;
   }
 
   @override
@@ -77,14 +94,38 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.close),
+                  icon: Icon(Icons.close,color: Colors.black,),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),
           ),
+
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(children: [
+              Expanded(
+                child: ListTile(
+                  title: Text('Departure Date',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+                  subtitle: Text(
+                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year} ',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: Text('Return Date',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+                  subtitle: Text(
+                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year} ',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                ),
+              )
+            ],),
+          ),
           
-          // Month/Year display (removed navigation arrows)
+          // Month/Year display
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Center(
@@ -156,19 +197,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
             padding: EdgeInsets.all(16),
             child: Row(
               children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text('Cancel'),
-                  ),
-                ),
-                SizedBox(width: 16),
+              
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -181,7 +210,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text('Select'),
+                    child: Text('Done'),
                   ),
                 ),
               ],
@@ -208,9 +237,16 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
     // Add day cells
     for (int day = 1; day <= totalDays; day++) {
       final date = DateTime(month.year, month.month, day);
-      final isToday = _isSameDay(date, DateTime.now());
-      final isSelected = _isSameDay(date, selectedDate);
-      final isDisabled = date.isBefore(startDate) || date.isAfter(endDate);
+      final today = DateTime.now();
+      final normalizedToday = DateTime(today.year, today.month, today.day);
+      final normalizedDate = DateTime(date.year, date.month, date.day);
+      final normalizedStartDate = DateTime(startDate.year, startDate.month, startDate.day);
+      final normalizedEndDate = DateTime(endDate.year, endDate.month, endDate.day);
+      
+      final isToday = _isSameDay(normalizedDate, normalizedToday);
+      final isSelected = _isSameDay(normalizedDate, selectedDate);
+      final isDisabled = normalizedDate.isBefore(normalizedStartDate) || normalizedDate.isAfter(normalizedEndDate);
+      final price = _getPriceForDate(date);
       
       dayWidgets.add(
         GestureDetector(
@@ -218,7 +254,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
               ? null
               : () {
                   setState(() {
-                    selectedDate = date;
+                    selectedDate = normalizedDate; // Use normalized date
                   });
                 },
           child: Container(
@@ -227,7 +263,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
               color: isSelected
                   ? Theme.of(context).primaryColor
                   : isToday
-                      ? Theme.of(context).primaryColor.withOpacity(0.1)
+                      ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
                       : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: isToday && !isSelected
@@ -235,23 +271,48 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                   : null,
             ),
             child: Container(
-              height: 40,
-              child: Center(
-                child: Text(
-                  day.toString(),
-                  style: TextStyle(
-                    color: isDisabled
-                        ? Colors.grey[400]
-                        : isSelected
-                            ? Colors.white
-                            : isToday
-                                ? Theme.of(context).primaryColor
-                                : Colors.black,
-                    fontWeight: isSelected || isToday
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+              height: 60, // Increased height to accommodate price
+              padding: EdgeInsets.symmetric(vertical: 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Date number
+                  Text(
+                    day.toString(),
+                    style: TextStyle(
+                      color: isDisabled
+                          ? Colors.grey[400]
+                          : isSelected
+                              ? Colors.white
+                              : isToday
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.black,
+                      fontWeight: isSelected || isToday
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
+                  // Price display
+                  if (price != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: 2),
+                      child: Text(
+                        '₹${price.toStringAsFixed(0)}',
+                        style: TextStyle(
+                          color: isDisabled
+                              ? Colors.grey[400]
+                              : isSelected
+                                  ? Colors.white.withValues(alpha: 0.9)
+                                  : isToday
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.grey[600],
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
@@ -263,7 +324,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: GridView.count(
         crossAxisCount: 7,
-        childAspectRatio: 1,
+        childAspectRatio: 0.8, // Adjusted aspect ratio for taller cells
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: dayWidgets,
@@ -292,136 +353,46 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   }
 }
 
-// Helper function to show the bottom sheet
+// Updated function to accept prices
 void showDatePickerBottomSheet(
   BuildContext context, {
   DateTime? initialDate,
   Function(DateTime)? onDateSelected,
+  Map<DateTime, double>? prices, // Add prices parameter
 }) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    showDragHandle: true ,
     useRootNavigator: true,
-    backgroundColor: Colors.transparent,
+    
     builder: (context) => DatePickerBottomSheet(
       initialDate: initialDate,
       onDateSelected: onDateSelected,
+      prices: prices, // Pass prices to the widget
     ),
   );
 }
 
-// Updated GestureDetector code for your existing implementation
-// GestureDetector buildDateSelector(String label, String value) {
-//   return GestureDetector(
-//     onTap: () {
-//       // Parse current date if available
-//       DateTime? initialDate;
-//       if (value != 'Select date') {
-//         try {
-//           List<String> parts = value.split('/');
-//           if (parts.length == 3) {
-//             initialDate = DateTime(
-//               int.parse(parts[2]), // year
-//               int.parse(parts[1]), // month
-//               int.parse(parts[0]), // day
-//             );
-//           }
-//         } catch (e) {
-//           // If parsing fails, use current date
-//           initialDate = DateTime.now();
-//         }
-//       } else {
-//         initialDate = DateTime.now();
-//       }
+// Example usage:
+/*
+// Create a map of dates and their prices
+Map<DateTime, double> samplePrices = {
+  DateTime(2025, 7, 25): 150.0,
+  DateTime(2025, 7, 26): 175.0,
+  DateTime(2025, 7, 27): 200.0,
+  DateTime(2025, 7, 28): 125.0,
+  // Add more dates and prices as needed
+};
 
-//       // Show custom date picker bottom sheet
-//       showDatePickerBottomSheet(
-//         context,
-//         initialDate: initialDate,
-//         onDateSelected: (picked) {
-//           setState(() {
-//             if (label == 'Departure') {
-//               _departureDate = "${picked.day}/${picked.month}/${picked.year}";
-//             } else {
-//               _returnDate = "${picked.day}/${picked.month}/${picked.year}";
-//             }
-//           });
-//         },
-//       );
-//     },
-//     child: Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-//       decoration: BoxDecoration(
-//         border: Border.all(color: Colors.grey[300]!),
-//         borderRadius: BorderRadius.circular(8),
-//       ),
-//       child: Row(
-//         children: [
-//           Icon(
-//             Icons.calendar_today,
-//             color: Theme.of(context).primaryColor,
-//             size: 20,
-//           ),
-//           const SizedBox(width: 8),
-//           Expanded(
-//             child: Text(
-//               value,
-//               style: GoogleFonts.poppins(
-//                 fontSize: 16,
-//                 fontWeight: FontWeight.w500,
-//               ),
-//               overflow: TextOverflow.ellipsis,
-//             ),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
-
-// Example usage widget
-class DatePickerExample extends StatefulWidget {
-  @override
-  _DatePickerExampleState createState() => _DatePickerExampleState();
-}
-
-class _DatePickerExampleState extends State<DatePickerExample> {
-  DateTime? selectedDate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Date Picker Example'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              selectedDate != null
-                  ? 'Selected: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
-                  : 'No date selected',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                showDatePickerBottomSheet(
-                  context,
-                  initialDate: selectedDate ?? DateTime.now(),
-                  onDateSelected: (date) {
-                    setState(() {
-                      selectedDate = date;
-                    });
-                  },
-                );
-              },
-              child: Text('Select Date'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// Show the date picker with prices
+showDatePickerBottomSheet(
+  context,
+  initialDate: DateTime.now(),
+  prices: samplePrices,
+  onDateSelected: (selectedDate) {
+    print('Selected date: $selectedDate');
+    // Handle the selected date
+  },
+);
+*/

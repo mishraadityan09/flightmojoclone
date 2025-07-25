@@ -239,9 +239,9 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       // Calculate width for each chip to make them equal
-                      double chipWidth =
-                          (constraints.maxWidth - 24) /
-                          2; // 2 chips per row with spacing
+                      // double chipWidth =
+                      //     (constraints.maxWidth - 24) /
+                      //     2; // 2 chips per row with spacing
 
                       return Column(
                         children: [

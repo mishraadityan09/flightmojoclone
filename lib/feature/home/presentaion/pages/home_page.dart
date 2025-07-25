@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   String _toCity = 'Mumbai';
   String _departureDate = 'Today';
   String _returnDate = 'Tomorrow';
-  int _passengers = 1;
+  final int _passengers = 1;
   bool _isRoundTrip = false;
   final GlobalKey bottomPassengersSheet = GlobalKey();
 
@@ -415,70 +415,92 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 4),
         GestureDetector(
-  onTap: () {
-    // Parse current date if available
-    DateTime? initialDate;
-    if (value != 'Select date') {
-      try {
-        List<String> parts = value.split('/');
-        if (parts.length == 3) {
-          initialDate = DateTime(
-            int.parse(parts[2]), // year
-            int.parse(parts[1]), // month
-            int.parse(parts[0]), // day
-          );
-        }
-      } catch (e) {
-        // If parsing fails, use current date
-        initialDate = DateTime.now();
-      }
-    } else {
-      initialDate = DateTime.now();
-    }
+          onTap: () {
+            // Parse current date if available
+            DateTime? initialDate;
+            if (value != 'Select date') {
+              try {
+                List<String> parts = value.split('/');
+                if (parts.length == 3) {
+                  initialDate = DateTime(
+                    int.parse(parts[2]), // year
+                    int.parse(parts[1]), // month
+                    int.parse(parts[0]), // day
+                  );
+                }
+              } catch (e) {
+                // If parsing fails, use current date
+                initialDate = DateTime.now();
+              }
+            } else {
+              initialDate = DateTime.now();
+            }
 
-    // Show custom date picker bottom sheet
-    showDatePickerBottomSheet(
-      context,
-      initialDate: initialDate,
-      onDateSelected: (picked) {
-        setState(() {
-          if (label == 'Departure') {
-            _departureDate = "${picked.day}/${picked.month}/${picked.year}";
-          } else {
-            _returnDate = "${picked.day}/${picked.month}/${picked.year}";
-          }
-        });
-      },
-    );
-  },
-  child: Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey[300]!),
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Row(
-      children: [
-        Icon(
-          Icons.calendar_today,
-          color: Theme.of(context).primaryColor,
-          size: 20,
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            value,
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+            // Show custom date picker bottom sheet
+            // showDatePickerBottomSheet(
+            //   context,
+            //   initialDate: initialDate,
+            //   onDateSelected: (picked) {
+            //     setState(() {
+            //       if (label == 'Departure') {
+            //         _departureDate = "${picked.day}/${picked.month}/${picked.year}";
+            //       } else {
+            //         _returnDate = "${picked.day}/${picked.month}/${picked.year}";
+            //       }
+            //     });
+            //   },
+            // );
+
+            // Example usage:
+
+            // Create a map of dates and their prices
+            Map<DateTime, double> samplePrices = {
+              DateTime(2025, 7, 25): 150.0,
+              DateTime(2025, 7, 26): 175.0,
+              DateTime(2025, 7, 27): 200.0,
+              DateTime(2025, 7, 28): 125.0,
+              // Add more dates and prices as needed
+            };
+
+            // Show the date picker with prices
+            showDatePickerBottomSheet(
+              context,
+              initialDate: DateTime.now(),
+              prices: samplePrices,
+              onDateSelected: (selectedDate) {
+                print('Selected date: $selectedDate');
+                // Handle the selected date
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8),
             ),
-            overflow: TextOverflow.ellipsis,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.calendar_today,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    value,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ],
-    ),
-  ),
-),
       ],
     );
   }
@@ -506,7 +528,8 @@ class _HomePageState extends State<HomePage> {
               context: context,
               builder: (context) {
                 return PassengersBottomSheet();
-              });
+              },
+            );
             // _showPassengerDialog(context);
           },
           child: Container(
@@ -540,73 +563,73 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showPassengerDialog(BuildContext context) {
-    int tempPassengers = _passengers;
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: Text(
-                'Select Passengers',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Adults', style: GoogleFonts.poppins()),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: tempPassengers > 1
-                                ? () {
-                                    setDialogState(() {
-                                      tempPassengers--;
-                                    });
-                                    // Navigator.pop(context);
-                                  }
-                                : null,
-                            icon: const Icon(Icons.remove, color: Colors.grey),
-                          ),
-                          Text('$tempPassengers', style: GoogleFonts.poppins()),
-                          IconButton(
-                            onPressed: tempPassengers < 9
-                                ? () {
-                                    setDialogState(() {
-                                      tempPassengers++;
-                                    });
-                                    // Navigator.pop(context);
-                                  }
-                                : null,
-                            icon: const Icon(Icons.add, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    setState(() {
-                      _passengers = tempPassengers;
-                    });
-                  },
-                  child: Text('Done', style: GoogleFonts.poppins()),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+  // void _showPassengerDialog(BuildContext context) {
+  //   int tempPassengers = _passengers;
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //         builder: (context, setDialogState) {
+  //           return AlertDialog(
+  //             title: Text(
+  //               'Select Passengers',
+  //               style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+  //             ),
+  //             content: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     Text('Adults', style: GoogleFonts.poppins()),
+  //                     Row(
+  //                       children: [
+  //                         IconButton(
+  //                           onPressed: tempPassengers > 1
+  //                               ? () {
+  //                                   setDialogState(() {
+  //                                     tempPassengers--;
+  //                                   });
+  //                                   // Navigator.pop(context);
+  //                                 }
+  //                               : null,
+  //                           icon: const Icon(Icons.remove, color: Colors.grey),
+  //                         ),
+  //                         Text('$tempPassengers', style: GoogleFonts.poppins()),
+  //                         IconButton(
+  //                           onPressed: tempPassengers < 9
+  //                               ? () {
+  //                                   setDialogState(() {
+  //                                     tempPassengers++;
+  //                                   });
+  //                                   // Navigator.pop(context);
+  //                                 }
+  //                               : null,
+  //                           icon: const Icon(Icons.add, color: Colors.grey),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //             actions: [
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.pop(context);
+  //                   setState(() {
+  //                     _passengers = tempPassengers;
+  //                   });
+  //                 },
+  //                 child: Text('Done', style: GoogleFonts.poppins()),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildDestinationCard(
     BuildContext context,
