@@ -38,7 +38,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
     super.initState();
     final now = DateTime.now();
     
-    // Initialize dates
+    // Initialize dates - normalize to remove time component
     departureDate = widget.initialDepartureDate ?? DateTime(now.year, now.month, now.day);
     returnDate = widget.initialReturnDate;
     
@@ -208,6 +208,11 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
+                        // Ensure departure date is set before switching to return mode
+                        if (departureDate == null) {
+                          final now = DateTime.now();
+                          departureDate = DateTime(now.year, now.month, now.day);
+                        }
                         currentMode = DateSelectionMode.returnDate;
                       });
                     },
@@ -402,11 +407,15 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
       final isDeparture = departureDate != null && _isSameDay(normalizedDate, departureDate!);
       final isReturn = returnDate != null && _isSameDay(normalizedDate, returnDate!);
       final isInRange = _isDateInRange(date);
+      final normalizedDepartureDate = departureDate != null 
+          ? DateTime(departureDate!.year, departureDate!.month, departureDate!.day)
+          : null;
+      
       final isDisabled = normalizedDate.isBefore(normalizedStartDate) || 
                         normalizedDate.isAfter(normalizedEndDate) ||
                         (currentMode == DateSelectionMode.returnDate && 
-                         departureDate != null && 
-                         normalizedDate.isBefore(departureDate!));
+                         normalizedDepartureDate != null && 
+                         normalizedDate.isBefore(normalizedDepartureDate));
       final price = _getPriceForDate(date);
       
       Color? backgroundColor;
