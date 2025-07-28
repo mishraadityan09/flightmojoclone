@@ -109,16 +109,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _searchFlights({String? destinationOverride}) {
+    // Create comprehensive search data
+    final searchData = {
+      'searchParams': {
+        'from': _fromCity,
+        'to': destinationOverride ?? _toCity,
+        'departureDate': _departureDate,
+        'returnDate': _isRoundTrip ? _returnDate : null,
+        'passengers': _passengers,
+        'isRoundTrip': _isRoundTrip,
+        'searchTimestamp': DateTime.now().toIso8601String(),
+      },
+    };
+
+    // Navigate to results page
     context.push(
       AppRoutes.flightResults,
-      extra: {
-        'searchParams': {
-          'from': _fromCity,
-          'to': destinationOverride ?? _toCity,
-          'date': _departureDate,
-          'passengers': _passengers,
-        },
-      },
+      extra: searchData,
     );
   }
 
