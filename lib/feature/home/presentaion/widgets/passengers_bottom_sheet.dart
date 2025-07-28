@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PassengersBottomSheet extends StatefulWidget {
-  const PassengersBottomSheet({Key? key}) : super(key: key);
+  const PassengersBottomSheet({super.key});
 
   @override
   _PassengersBottomSheetState createState() => _PassengersBottomSheetState();
@@ -248,10 +248,10 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                           Row(
                             children: [
                               Expanded(
-                                child: Container(
+                                child: SizedBox(
                                   height: 48,
                                   child: ChoiceChip(
-                                    label: Container(
+                                    label: SizedBox(
                                       width: double.infinity,
                                       child: Text(
                                         'Economy',
@@ -266,10 +266,11 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                     ),
                                     selected: _travelClass == 'Economy',
                                     onSelected: (selected) {
-                                      if (selected)
+                                      if (selected) {
                                         setState(
                                           () => _travelClass = 'Economy',
                                         );
+                                      }
                                     },
                                     backgroundColor: Colors.grey[200],
                                     selectedColor: Theme.of(
@@ -287,10 +288,10 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                               ),
                               SizedBox(width: 8),
                               Expanded(
-                                child: Container(
+                                child: SizedBox(
                                   height: 48,
                                   child: ChoiceChip(
-                                    label: Container(
+                                    label: SizedBox(
                                       width: double.infinity,
                                       child: Text(
                                         'Premium Economy',
@@ -306,11 +307,12 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                     ),
                                     selected: _travelClass == 'Premium Economy',
                                     onSelected: (selected) {
-                                      if (selected)
+                                      if (selected) {
                                         setState(
                                           () =>
                                               _travelClass = 'Premium Economy',
                                         );
+                                      }
                                     },
                                     backgroundColor: Colors.grey[200],
                                     selectedColor: Theme.of(
@@ -332,10 +334,10 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                           Row(
                             children: [
                               Expanded(
-                                child: Container(
+                                child: SizedBox(
                                   height: 48,
                                   child: ChoiceChip(
-                                    label: Container(
+                                    label: SizedBox(
                                       width: double.infinity,
                                       child: Text(
                                         'Business',
@@ -350,10 +352,11 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                     ),
                                     selected: _travelClass == 'Business',
                                     onSelected: (selected) {
-                                      if (selected)
+                                      if (selected) {
                                         setState(
                                           () => _travelClass = 'Business',
                                         );
+                                      }
                                     },
                                     backgroundColor: Colors.grey[200],
                                     selectedColor: Theme.of(
@@ -371,10 +374,10 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                               ),
                               SizedBox(width: 8),
                               Expanded(
-                                child: Container(
+                                child: SizedBox(
                                   height: 48,
                                   child: ChoiceChip(
-                                    label: Container(
+                                    label: SizedBox(
                                       width: double.infinity,
                                       child: Text(
                                         'First Class',
@@ -389,10 +392,11 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                     ),
                                     selected: _travelClass == 'First Class',
                                     onSelected: (selected) {
-                                      if (selected)
+                                      if (selected) {
                                         setState(
                                           () => _travelClass = 'First Class',
                                         );
+                                      }
                                     },
                                     backgroundColor: Colors.grey[200],
                                     selectedColor: Theme.of(

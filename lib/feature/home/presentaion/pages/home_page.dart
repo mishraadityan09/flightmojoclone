@@ -19,8 +19,12 @@ class _HomePageState extends State<HomePage> {
   // State variables to hold selected values
   String _fromCity = 'Delhi';
   String _toCity = 'Mumbai';
-  String _departureDate = 'Today';
-  String _returnDate = 'Tomorrow';
+
+  String _departureDate =
+      "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
+  String _returnDate =
+      "${DateTime.now().add(const Duration(days: 1)).day}/${DateTime.now().add(const Duration(days: 1)).month}/${DateTime.now().add(const Duration(days: 1)).year}";
+
   final int _passengers = 1;
   bool _isRoundTrip = false;
   final GlobalKey bottomPassengersSheet = GlobalKey();
@@ -286,9 +290,21 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     'Departure',
                                     _departureDate,
-                                    _isRoundTrip
+                                    _isRoundTrip,
                                   ),
                                 ),
+                                const SizedBox(width: 16),
+
+                                if (!_isRoundTrip)
+                                  Expanded(
+                                    child: _buildEmptyReturnField(
+                                      context,
+                                      'Return',
+                                      _returnDate,
+                                      _isRoundTrip,
+                                    ),
+                                  ),
+
                                 if (_isRoundTrip) const SizedBox(width: 16),
                                 if (_isRoundTrip)
                                   Expanded(
@@ -443,7 +459,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildDateField(BuildContext context, String label, String value, bool isReturn) {
+  Widget _buildDateField(
+    BuildContext context,
+    String label,
+    String value,
+    bool isReturn,
+  ) {
+    print(label);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -478,23 +500,6 @@ class _HomePageState extends State<HomePage> {
               initialDate = DateTime.now();
             }
 
-            // Show custom date picker bottom sheet
-            // showDatePickerBottomSheet(
-            //   context,
-            //   initialDate: initialDate,
-            //   onDateSelected: (picked) {
-            //     setState(() {
-            //       if (label == 'Departure') {
-            //         _departureDate = "${picked.day}/${picked.month}/${picked.year}";
-            //       } else {
-            //         _returnDate = "${picked.day}/${picked.month}/${picked.year}";
-            //       }
-            //     });
-            //   },
-            // );
-
-            // Example usage:
-
             Map<DateTime, double> samplePrices = {
               DateTime(2025, 7, 25): 150.0,
               DateTime(2025, 7, 26): 175.0,
@@ -507,11 +512,25 @@ class _HomePageState extends State<HomePage> {
             showDatePickerBottomSheet(
               context,
               initialDepartureDate: DateTime.now(),
-              initialReturnDate: null,
+              initialReturnDate: DateTime.now().add(const Duration(days: 1)),
               prices: samplePrices,
+              isAddingReturnDate: label == 'Return' ? true : false,
               onDatesSelected: (departureDate, returnDate) {
-                print('Departure: $departureDate');
-                print('Return: $returnDate');
+                setState(() {
+                  if (label == 'Departure') {
+                    _departureDate =
+                        "${departureDate.day}/${departureDate.month}/${departureDate.year}";
+                  } else {
+                    _returnDate =
+                        "${returnDate?.day}/${returnDate?.month}/${returnDate?.year ?? ''}";
+                  }
+                });
+                print(
+                  'Departure: ${departureDate.day}/${departureDate.month}/${departureDate.year}',
+                );
+                print(
+                  'Return: ${returnDate?.day}/${returnDate?.month}/${returnDate?.year}',
+                );
                 // Handle the selected dates
               },
             );
@@ -548,8 +567,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-  Widget _buildReturnDateField(BuildContext context, String label, String value, bool isReturn) {
+  Widget _buildEmptyReturnField(
+    BuildContext context,
+    String label,
+    String value,
+    bool isReturn,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -584,23 +607,6 @@ class _HomePageState extends State<HomePage> {
               initialDate = DateTime.now();
             }
 
-            // Show custom date picker bottom sheet
-            // showDatePickerBottomSheet(
-            //   context,
-            //   initialDate: initialDate,
-            //   onDateSelected: (picked) {
-            //     setState(() {
-            //       if (label == 'Departure') {
-            //         _departureDate = "${picked.day}/${picked.month}/${picked.year}";
-            //       } else {
-            //         _returnDate = "${picked.day}/${picked.month}/${picked.year}";
-            //       }
-            //     });
-            //   },
-            // );
-
-            // Example usage:
-
             Map<DateTime, double> samplePrices = {
               DateTime(2025, 7, 25): 150.0,
               DateTime(2025, 7, 26): 175.0,
@@ -615,6 +621,7 @@ class _HomePageState extends State<HomePage> {
               initialDepartureDate: DateTime.now(),
               initialReturnDate: null,
               prices: samplePrices,
+              isAddingReturnDate: true,
               onDatesSelected: (departureDate, returnDate) {
                 print('Departure: $departureDate');
                 print('Return: $returnDate');
@@ -623,36 +630,152 @@ class _HomePageState extends State<HomePage> {
             );
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey[300]!),
               borderRadius: BorderRadius.circular(8),
             ),
-            child:isReturn? Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.calendar_today,
-                  color: Theme.of(context).primaryColor,
-                  size: 20,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.add,
+                      color: Theme.of(context).primaryColor,
+                      size: 10,
+                    ),
+                    Text(
+                      'Add Return Date',
+                      style: GoogleFonts.poppins(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    value,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                Text(
+                  'Save more with round trip',
+                  style: GoogleFonts.poppins(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w300,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
-            ):null,
+            ),
           ),
         ),
       ],
     );
   }
+
+  // Widget _buildReturnDateField(BuildContext context, String label, String value, bool isReturn) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         label,
+  //         style: GoogleFonts.poppins(
+  //           fontSize: 14,
+  //           fontWeight: FontWeight.w500,
+  //           color: Colors.grey[600],
+  //         ),
+  //       ),
+  //       const SizedBox(height: 4),
+  //       GestureDetector(
+  //         onTap: () {
+  //           // Parse current date if available
+  //           DateTime? initialDate;
+  //           if (value != 'Select date') {
+  //             try {
+  //               List<String> parts = value.split('/');
+  //               if (parts.length == 3) {
+  //                 initialDate = DateTime(
+  //                   int.parse(parts[2]), // year
+  //                   int.parse(parts[1]), // month
+  //                   int.parse(parts[0]), // day
+  //                 );
+  //               }
+  //             } catch (e) {
+  //               // If parsing fails, use current date
+  //               initialDate = DateTime.now();
+  //             }
+  //           } else {
+  //             initialDate = DateTime.now();
+  //           }
+
+  //           // Show custom date picker bottom sheet
+  //           // showDatePickerBottomSheet(
+  //           //   context,
+  //           //   initialDate: initialDate,
+  //           //   onDateSelected: (picked) {
+  //           //     setState(() {
+  //           //       if (label == 'Departure') {
+  //           //         _departureDate = "${picked.day}/${picked.month}/${picked.year}";
+  //           //       } else {
+  //           //         _returnDate = "${picked.day}/${picked.month}/${picked.year}";
+  //           //       }
+  //           //     });
+  //           //   },
+  //           // );
+
+  //           // Example usage:
+
+  //           Map<DateTime, double> samplePrices = {
+  //             DateTime(2025, 7, 25): 150.0,
+  //             DateTime(2025, 7, 26): 175.0,
+  //             DateTime(2025, 7, 27): 200.0,
+  //             DateTime(2025, 7, 28): 125.0,
+  //             DateTime(2025, 7, 29): 180.0,
+  //             DateTime(2025, 7, 30): 160.0,
+  //           };
+
+  //           showDatePickerBottomSheet(
+  //             context,
+  //             initialDepartureDate: DateTime.now(),
+  //             initialReturnDate: null,
+  //             prices: samplePrices,
+  //             onDatesSelected: (departureDate, returnDate) {
+  //               print('Departure: $departureDate');
+  //               print('Return: $returnDate');
+  //               // Handle the selected dates
+  //             },
+  //           );
+  //         },
+  //         child: Container(
+  //           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+  //           decoration: BoxDecoration(
+  //             border: Border.all(color: Colors.grey[300]!),
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           child:isReturn? Row(
+  //             children: [
+  //               Icon(
+  //                 Icons.calendar_today,
+  //                 color: Theme.of(context).primaryColor,
+  //                 size: 20,
+  //               ),
+  //               const SizedBox(width: 8),
+  //               Expanded(
+  //                 child: Text(
+  //                   value,
+  //                   style: GoogleFonts.poppins(
+  //                     fontSize: 16,
+  //                     fontWeight: FontWeight.w500,
+  //                   ),
+  //                   overflow: TextOverflow.ellipsis,
+  //                 ),
+  //               ),
+  //             ],
+  //           ):null,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildPassengerField(BuildContext context) {
     return Column(
@@ -711,74 +834,6 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-
-  // void _showPassengerDialog(BuildContext context) {
-  //   int tempPassengers = _passengers;
-  //   showModalBottomSheet(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setDialogState) {
-  //           return AlertDialog(
-  //             title: Text(
-  //               'Select Passengers',
-  //               style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-  //             ),
-  //             content: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Text('Adults', style: GoogleFonts.poppins()),
-  //                     Row(
-  //                       children: [
-  //                         IconButton(
-  //                           onPressed: tempPassengers > 1
-  //                               ? () {
-  //                                   setDialogState(() {
-  //                                     tempPassengers--;
-  //                                   });
-  //                                   // Navigator.pop(context);
-  //                                 }
-  //                               : null,
-  //                           icon: const Icon(Icons.remove, color: Colors.grey),
-  //                         ),
-  //                         Text('$tempPassengers', style: GoogleFonts.poppins()),
-  //                         IconButton(
-  //                           onPressed: tempPassengers < 9
-  //                               ? () {
-  //                                   setDialogState(() {
-  //                                     tempPassengers++;
-  //                                   });
-  //                                   // Navigator.pop(context);
-  //                                 }
-  //                               : null,
-  //                           icon: const Icon(Icons.add, color: Colors.grey),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ],
-  //             ),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                   setState(() {
-  //                     _passengers = tempPassengers;
-  //                   });
-  //                 },
-  //                 child: Text('Done', style: GoogleFonts.poppins()),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget _buildDestinationCard(
     BuildContext context,

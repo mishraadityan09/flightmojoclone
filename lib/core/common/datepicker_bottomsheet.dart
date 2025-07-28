@@ -10,14 +10,17 @@ class DatePickerBottomSheet extends StatefulWidget {
   final DateTime? initialReturnDate;
   final Function(DateTime, DateTime?)? onDatesSelected;
   final Map<DateTime, double>? prices;
+  
+  final bool isAddingReturnDate;
 
   const DatePickerBottomSheet({
-    Key? key,
+    super.key,
     this.initialDepartureDate,
     this.initialReturnDate,
     this.onDatesSelected,
-    this.prices,
-  }) : super(key: key);
+    this.prices, 
+    required this.isAddingReturnDate,
+  });
 
   @override
   _DatePickerBottomSheetState createState() => _DatePickerBottomSheetState();
@@ -37,10 +40,18 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    
+
+    if(widget.isAddingReturnDate) {
+      currentMode = DateSelectionMode.returnDate;
+      returnDate = widget.initialReturnDate;
+    } else {
+      currentMode = DateSelectionMode.departure;
+        returnDate =null;
+    }
+
     // Initialize dates - normalize to remove time component
     departureDate = widget.initialDepartureDate ?? DateTime(now.year, now.month, now.day);
-    returnDate = widget.initialReturnDate;
+    
     
     startDate = DateTime(now.year, now.month, now.day);
     endDate = DateTime(now.year, now.month, now.day).add(Duration(days: 360));
@@ -220,7 +231,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                       padding: EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: currentMode == DateSelectionMode.returnDate 
-                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
@@ -473,7 +484,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                           color: isDisabled
                               ? Colors.grey.shade400
                               : (isDeparture || isReturn)
-                                  ? Colors.white.withOpacity(0.9)
+                                  ? Colors.white.withValues(alpha:0.9)
                                   : isInRange || isToday
                                       ? Theme.of(context).primaryColor
                                       : Colors.grey[600],
@@ -530,6 +541,7 @@ void showDatePickerBottomSheet(
   DateTime? initialReturnDate,
   Function(DateTime, DateTime?)? onDatesSelected,
   Map<DateTime, double>? prices,
+  bool isAddingReturnDate = false,
 }) {
   showModalBottomSheet(
     context: context,
@@ -541,6 +553,7 @@ void showDatePickerBottomSheet(
       initialReturnDate: initialReturnDate,
       onDatesSelected: onDatesSelected,
       prices: prices,
+      isAddingReturnDate: isAddingReturnDate,
     ),
   );
 }

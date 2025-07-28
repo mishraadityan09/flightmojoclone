@@ -12,12 +12,12 @@ class DatePickerBottomSheet extends StatefulWidget {
   final Map<DateTime, double>? prices;
 
   const DatePickerBottomSheet({
-    Key? key,
+    super.key,
     this.initialDepartureDate,
     this.initialReturnDate,
     this.onDatesSelected,
     this.prices,
-  }) : super(key: key);
+  });
 
   @override
   _DatePickerBottomSheetState createState() => _DatePickerBottomSheetState();
@@ -568,3 +568,142 @@ showDatePickerBottomSheet(
   },
 );
 */
+
+
+// Enhanced _buildDateField method
+Widget _buildDateField(
+  BuildContext context, 
+  String label, 
+  String value, 
+  bool isRoundTrip,
+  {String? dateType} // Add dateType parameter
+) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[600],
+        ),
+      ),
+      const SizedBox(height: 4),
+      GestureDetector(
+        onTap: () {
+          // Parse current date if available
+          DateTime? initialDate = _parseDate(value);
+          
+          Map<DateTime, double> samplePrices = {
+            DateTime(2025, 7, 25): 150.0,
+            DateTime(2025, 7, 26): 175.0,
+            DateTime(2025, 7, 27): 200.0,
+            DateTime(2025, 7, 28): 125.0,
+            DateTime(2025, 7, 29): 180.0,
+            DateTime(2025, 7, 30): 160.0,
+          };
+
+          if (isRoundTrip) {
+            // For round trip, show both departure and return selection
+            showDatePickerBottomSheet(
+              context,
+              mode: 'roundtrip', // Add mode parameter
+              initialDepartureDate: _parseDate(_departureDate) ?? DateTime.now(),
+              initialReturnDate: _parseDate(_returnDate),
+              prices: samplePrices,
+              onDatesSelected: (departureDate, returnDate) {
+                setState(() {
+                  _departureDate = _formatDate(departureDate);
+                  if (returnDate != null) {
+                    _returnDate = _formatDate(returnDate);
+                  }
+                });
+              },
+            );
+          } else {
+            // For one way, show only departure selection
+            showDatePickerBottomSheet(
+              context,
+              mode: 'oneway', // Add mode parameter
+              initialDepartureDate: initialDate ?? DateTime.now(),
+              prices: samplePrices,
+              onDatesSelected: (departureDate, returnDate) {
+                setState(() {
+                  if (label == 'Departure') {
+                    _departureDate = _formatDate(departureDate);
+                  }
+                });
+              },
+            );
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.calendar_today,
+                color: Theme.of(context).primaryColor,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+// Helper methods
+DateTime? _parseDate(String value) {
+  if (value == 'Today' || value == 'Tomorrow' || value == 'Select date') {
+    return DateTime.now();
+  }
+  
+  try {
+    List<String> parts = value.split('/');
+    if (parts.length == 3) {
+      return DateTime(
+        int.parse(parts[2]), // year
+        int.parse(parts[1]), // month
+        int.parse(parts[0]), // day
+      );
+    }
+  } catch (e) {
+    // If parsing fails, return null
+  }
+  return null;
+}
+
+String _formatDate(DateTime date) {
+  return "${date.day}/${date.month}/${date.year}";
+}
+
+// Enhanced date picker function signature
+void showDatePickerBottomSheet(
+  BuildContext context, {
+  required String mode, // 'oneway' or 'roundtrip'
+  DateTime? initialDepartureDate,
+  DateTime? initialReturnDate,
+  Map<DateTime, double>? prices,
+  required Function(DateTime departureDate, DateTime? returnDate) onDatesSelected,
+}) {
+  // Your calendar implementation here
+  // Handle different modes within the same calendar widget
+}

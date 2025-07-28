@@ -12,7 +12,7 @@ class CustomSlidingSegmentedControl<T> extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
 
   const CustomSlidingSegmentedControl({
-    Key? key,
+    super.key,
     required this.initialValue,
     required this.children,
     this.decoration,
@@ -22,7 +22,7 @@ class CustomSlidingSegmentedControl<T> extends StatefulWidget {
     this.onValueChanged,
     this.minHeight,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomSlidingSegmentedControl<T>> createState() =>

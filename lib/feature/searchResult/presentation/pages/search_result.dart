@@ -7,12 +7,12 @@ class FlightSearchResultsScreen extends StatelessWidget {
   final String passengers;
 
   const FlightSearchResultsScreen({
-    Key? key,
+    super.key,
     this.fromCity = "New Delhi",
     this.toCity = "Mumbai",
     this.date = "15 Jul",
     this.passengers = "1 Adult",
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
