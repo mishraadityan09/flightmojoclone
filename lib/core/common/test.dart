@@ -1,844 +1,642 @@
+import 'package:flightmojo/core/common/datepicker_bottomsheet.dart';
+import 'package:flightmojo/core/theme/app_theme.dart';
+import 'package:flightmojo/feature/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router/app_routes.dart';
 
-enum DateSelectionMode {
-  departure,
-  returnDate,
-}
-
-class DatePickerBottomSheet extends StatefulWidget {
-  final DateTime? initialDepartureDate;
-  final DateTime? initialReturnDate;
-  final Function(DateTime, DateTime?)? onDatesSelected;
-  final Map<DateTime, double>? prices;
-
-  const DatePickerBottomSheet({
-    super.key,
-    this.initialDepartureDate,
-    this.initialReturnDate,
-    this.onDatesSelected,
-    this.prices,
-  });
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  _DatePickerBottomSheetState createState() => _DatePickerBottomSheetState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
-  DateTime? departureDate;
-  DateTime? returnDate;
-  DateSelectionMode currentMode = DateSelectionMode.departure;
-  late DateTime startDate;
-  late DateTime endDate;
-  late List<DateTime> months;
-  late ScrollController scrollController;
-  int currentMonthIndex = 0;
+class _HomePageState extends State<HomePage> {
+  // State variables
+  String _fromCity = 'Delhi';
+  String _toCity = 'Mumbai';
+  String _departureDate = _formatDate(DateTime.now());
+  String _returnDate = _formatDate(DateTime.now().add(const Duration(days: 1)));
+  int _passengers = 1;
+  bool _isRoundTrip = false;
 
-  @override
-  void initState() {
-    super.initState();
-    final now = DateTime.now();
-    
-    // Initialize dates - normalize to remove time component
-    departureDate = widget.initialDepartureDate ?? DateTime(now.year, now.month, now.day);
-    returnDate = widget.initialReturnDate;
-    
-    startDate = DateTime(now.year, now.month, now.day);
-    endDate = DateTime(now.year, now.month, now.day).add(Duration(days: 360));
-    
-    // Generate list of months for next 360 days
-    months = generateMonths();
-    
-    // Find initial month index
-    currentMonthIndex = months.indexWhere((month) =>
-        month.year == departureDate!.year && month.month == departureDate!.month);
-    if (currentMonthIndex == -1) currentMonthIndex = 0;
-    
-    scrollController = ScrollController();
+  // Constants
+  static const List<Map<String, String>> _destinations = [
+    {'name': 'Mumbai', 'price': '₹4,500'},
+    {'name': 'Bangalore', 'price': '₹5,200'},
+    {'name': 'Chennai', 'price': '₹4,800'},
+    {'name': 'Kolkata', 'price': '₹3,900'},
+  ];
+
+  static const Map<DateTime, double> _samplePrices = {
+    // You might want to make this dynamic
+  };
+
+  // Helper methods
+  static String _formatDate(DateTime date) {
+    return "${date.day}/${date.month}/${date.year}";
   }
 
-  List<DateTime> generateMonths() {
-    List<DateTime> monthsList = [];
-    DateTime current = DateTime(startDate.year, startDate.month, 1);
-    DateTime end = DateTime(endDate.year, endDate.month, 1);
-    
-    while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
-      monthsList.add(current);
-      current = DateTime(current.year, current.month + 1, 1);
-    }
-    
-    return monthsList;
-  }
-
-  double? _getPriceForDate(DateTime date) {
-    if (widget.prices == null) return null;
-    
-    for (var entry in widget.prices!.entries) {
-      if (_isSameDay(entry.key, date)) {
-        return entry.value;
+  DateTime? _parseDate(String dateString) {
+    try {
+      final parts = dateString.split('/');
+      if (parts.length == 3) {
+        return DateTime(
+          int.parse(parts[2]), // year
+          int.parse(parts[1]), // month
+          int.parse(parts[0]), // day
+        );
       }
+    } catch (e) {
+      debugPrint('Error parsing date: $e');
     }
     return null;
   }
 
-  bool _isDateInRange(DateTime date) {
-    if (departureDate == null || returnDate == null) return false;
-    
-    final normalizedDate = DateTime(date.year, date.month, date.day);
-    final normalizedDeparture = DateTime(departureDate!.year, departureDate!.month, departureDate!.day);
-    final normalizedReturn = DateTime(returnDate!.year, returnDate!.month, returnDate!.day);
-    
-    return normalizedDate.isAfter(normalizedDeparture) && normalizedDate.isBefore(normalizedReturn);
-  }
+  // Event handlers
+  Future<void> _selectLocation(String fieldType) async {
+    final result = await context.push(
+      AppRoutes.flightSearch,
+      extra: {'hint': fieldType},
+    );
 
-  void _handleDateTap(DateTime tappedDate) {
-    final normalizedTappedDate = DateTime(tappedDate.year, tappedDate.month, tappedDate.day);
-    
-    if (currentMode == DateSelectionMode.departure) {
+    if (result != null && result is String) {
       setState(() {
-        departureDate = normalizedTappedDate;
-        // Clear return date if it's before the new departure date
-        if (returnDate != null && returnDate!.isBefore(normalizedTappedDate)) {
-          returnDate = null;
+        if (fieldType == 'From') {
+          _fromCity = result;
+        } else if (fieldType == 'To') {
+          _toCity = result;
         }
       });
-    } else {
-      // Return date mode
-      if (departureDate != null && 
-          (normalizedTappedDate.isAfter(departureDate!) || 
-           normalizedTappedDate.isAtSameMomentAs(departureDate!))) {
-        setState(() {
-          returnDate = normalizedTappedDate;
-        });
-      } else if (departureDate != null && normalizedTappedDate.isBefore(departureDate!)) {
-        // If selected date is before departure, make it the new departure and clear return
-        setState(() {
-          departureDate = normalizedTappedDate;
-          returnDate = null;
-          currentMode = DateSelectionMode.departure;
-        });
-      }
     }
+  }
+
+  void _selectDate(String dateType) {
+    final initialDate = dateType == 'Departure' 
+        ? _parseDate(_departureDate) ?? DateTime.now()
+        : _parseDate(_returnDate) ?? DateTime.now().add(const Duration(days: 1));
+
+    showDatePickerBottomSheet(
+      context,
+      initialDepartureDate: dateType == 'Departure' ? initialDate : _parseDate(_departureDate) ?? DateTime.now(),
+      initialReturnDate: dateType == 'Return' ? initialDate : null,
+      prices: const {
+        // Add your sample prices here
+      },
+      isAddingReturnDate: dateType == 'Return',
+      onDatesSelected: (departureDate, returnDate) {
+        setState(() {
+          if (dateType == 'Departure') {
+            _departureDate = _formatDate(departureDate);
+          } else if (returnDate != null) {
+            _returnDate = _formatDate(returnDate);
+          }
+        });
+      },
+    );
+  }
+
+  void _showPassengersBottomSheet() {
+    showModalBottomSheet(
+      showDragHandle: true,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => const PassengersBottomSheet(),
+    );
+  }
+
+  void _searchFlights({String? destinationOverride}) {
+    context.push(
+      AppRoutes.flightResults,
+      extra: {
+        'searchParams': {
+          'from': _fromCity,
+          'to': destinationOverride ?? _toCity,
+          'date': _departureDate,
+          'passengers': _passengers,
+        },
+      },
+    );
+  }
+
+  void _toggleTripType(bool isRoundTrip) {
+    setState(() {
+      _isRoundTrip = isRoundTrip;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.7,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeroSection(),
+            _buildPopularDestinationsSection(),
+          ],
+        ),
       ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Select Dates',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close, color: Colors.black),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ),
+    );
+  }
 
-          // Date selection tiles
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        currentMode = DateSelectionMode.departure;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: currentMode == DateSelectionMode.departure 
-                            ? Theme.of(context).primaryColor.withOpacity(0.1)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: currentMode == DateSelectionMode.departure 
-                              ? Theme.of(context).primaryColor
-                              : Colors.grey.shade300,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Departure Date',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: currentMode == DateSelectionMode.departure 
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            departureDate != null
-                                ? '${departureDate!.day}/${departureDate!.month}/${departureDate!.year}'
-                                : 'Select date',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        // Ensure departure date is set before switching to return mode
-                        if (departureDate == null) {
-                          final now = DateTime.now();
-                          departureDate = DateTime(now.year, now.month, now.day);
-                        }
-                        currentMode = DateSelectionMode.returnDate;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: currentMode == DateSelectionMode.returnDate 
-                            ? Theme.of(context).primaryColor.withOpacity(0.1)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: currentMode == DateSelectionMode.returnDate 
-                              ? Theme.of(context).primaryColor
-                              : Colors.grey.shade300,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Return Date',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: currentMode == DateSelectionMode.returnDate 
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            returnDate != null
-                                ? '${returnDate!.day}/${returnDate!.month}/${returnDate!.year}'
-                                : 'Select date',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: Text(
+        'FlightsMojo',
+        style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      foregroundColor: Colors.white,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications_outlined),
+          onPressed: () {}, // Add notification logic
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeroSection() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor.withValues(alpha: 0.8),
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeroText(),
+            const SizedBox(height: 24),
+            _buildSearchCard(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeroText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Find Your Perfect Flight',
+          style: GoogleFonts.poppins(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Book flights at the best prices',
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            color: Colors.white.withValues(alpha: 0.9),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchCard() {
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            _buildFlightsBadge(),
+            const SizedBox(height: 16),
+            _buildTripTypeSelector(),
+            const SizedBox(height: 16),
+            _buildLocationFields(),
+            const SizedBox(height: 16),
+            _buildDateFields(),
+            const SizedBox(height: 16),
+            _buildPassengerField(),
+            const SizedBox(height: 20),
+            _buildSearchButton(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFlightsBadge() {
+    return Row(
+      children: [
+        Container(
+          decoration: AppTheme.gradientContainerDecoration,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Text(
+            'Flights',
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
             ),
           ),
-          
-          // Mode indicator
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Center(
-              child: Text(
-                currentMode == DateSelectionMode.departure 
-                    ? 'Select Departure Date' 
-                    : 'Select Return Date',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).primaryColor,
-                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTripTypeSelector() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+        color: Colors.grey.shade100,
+      ),
+      child: Stack(
+        children: [
+          _buildSlidingIndicator(),
+          _buildTripTypeButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSlidingIndicator() {
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOutCubic,
+      left: _isRoundTrip ? null : 2,
+      right: _isRoundTrip ? 2 : null,
+      top: 2,
+      bottom: 2,
+      width: (MediaQuery.of(context).size.width - 36) / 2.5,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTripTypeButtons() {
+    return Row(
+      children: [
+        _buildTripTypeButton('One Way', false),
+        _buildTripTypeButton('Round Trip', true),
+      ],
+    );
+  }
+
+  Widget _buildTripTypeButton(String text, bool isRoundTrip) {
+    final isSelected = _isRoundTrip == isRoundTrip;
+    
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _toggleTripType(isRoundTrip),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Center(
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.grey.shade600,
+                fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+                fontSize: 16,
               ),
+              child: Text(text),
             ),
           ),
-          
-          // Fixed weekday headers
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                  .map((day) => Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          child: Text(
-                            day,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[600],
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-          
-          // Calendar months (vertically scrollable)
-          Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: months.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Month header
-                    Container(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        _getMonthYearText(months[index]),
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                    // Calendar grid
-                    _buildCalendarMonth(months[index]),
-                    SizedBox(height: 16),
-                  ],
-                );
-              },
-            ),
-          ),
-          
-          // Bottom buttons
-          Container(
-            padding: EdgeInsets.all(16),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLocationFields() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildLocationField('From', _fromCity, Icons.flight_takeoff),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _buildLocationField('To', _toCity, Icons.flight_land),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLocationField(String label, String value, IconData icon) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildFieldLabel(label),
+        const SizedBox(height: 4),
+        GestureDetector(
+          onTap: () => _selectLocation(label),
+          child: _buildFieldContainer(
             child: Row(
               children: [
-                if (departureDate != null || returnDate != null)
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          departureDate = null;
-                          returnDate = null;
-                          currentMode = DateSelectionMode.departure;
-                        });
-                      },
-                      style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text('Clear'),
-                    ),
-                  ),
-                if (departureDate != null || returnDate != null)
-                  SizedBox(width: 12),
+                Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: departureDate != null
-                        ? () {
-                            widget.onDatesSelected?.call(departureDate!, returnDate);
-                            Navigator.pop(context);
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                  child: Text(
+                    value,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    child: Text('Done'),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateFields() {
+    return Row(
+      children: [
+        Expanded(child: _buildDateField('Departure', _departureDate)),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _isRoundTrip 
+              ? _buildDateField('Return', _returnDate)
+              : _buildAddReturnDateField(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateField(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildFieldLabel(label),
+        const SizedBox(height: 4),
+        GestureDetector(
+          onTap: () => _selectDate(label),
+          child: _buildFieldContainer(
+            child: Row(
+              children: [
+                Icon(
+                  Icons.calendar_today,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    value,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddReturnDateField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildFieldLabel('Return'),
+        const SizedBox(height: 4),
+        GestureDetector(
+          onTap: () => _toggleTripType(true),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.add,
+                      color: Theme.of(context).primaryColor,
+                      size: 10,
+                    ),
+                    Text(
+                      'Add Return Date',
+                      style: GoogleFonts.poppins(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Save more with round trip',
+                  style: GoogleFonts.poppins(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w300,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPassengerField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildFieldLabel('Passengers'),
+        const SizedBox(height: 4),
+        GestureDetector(
+          onTap: _showPassengersBottomSheet,
+          child: _buildFieldContainer(
+            child: Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '$_passengers Adult${_passengers > 1 ? 's' : ''}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _searchFlights,
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Text(
+          'Search Flights',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPopularDestinationsSection() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Popular Destinations',
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.2,
+            ),
+            itemCount: _destinations.length,
+            itemBuilder: (context, index) => _buildDestinationCard(_destinations[index]),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCalendarMonth(DateTime month) {
-    final firstDayOfMonth = DateTime(month.year, month.month, 1);
-    final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
-    final startingWeekday = firstDayOfMonth.weekday % 7;
-    final totalDays = lastDayOfMonth.day;
-    
-    List<Widget> dayWidgets = [];
-    
-    // Add empty cells for days before the first day of the month
-    for (int i = 0; i < startingWeekday; i++) {
-      dayWidgets.add(Container());
-    }
-    
-    // Add day cells
-    for (int day = 1; day <= totalDays; day++) {
-      final date = DateTime(month.year, month.month, day);
-      final today = DateTime.now();
-      final normalizedToday = DateTime(today.year, today.month, today.day);
-      final normalizedDate = DateTime(date.year, date.month, date.day);
-      final normalizedStartDate = DateTime(startDate.year, startDate.month, startDate.day);
-      final normalizedEndDate = DateTime(endDate.year, endDate.month, endDate.day);
-      
-      final isToday = _isSameDay(normalizedDate, normalizedToday);
-      final isDeparture = departureDate != null && _isSameDay(normalizedDate, departureDate!);
-      final isReturn = returnDate != null && _isSameDay(normalizedDate, returnDate!);
-      final isInRange = _isDateInRange(date);
-      final normalizedDepartureDate = departureDate != null 
-          ? DateTime(departureDate!.year, departureDate!.month, departureDate!.day)
-          : null;
-      
-      final isDisabled = normalizedDate.isBefore(normalizedStartDate) || 
-                        normalizedDate.isAfter(normalizedEndDate) ||
-                        (currentMode == DateSelectionMode.returnDate && 
-                         normalizedDepartureDate != null && 
-                         normalizedDate.isBefore(normalizedDepartureDate));
-      final price = _getPriceForDate(date);
-      
-      Color? backgroundColor;
-      Color? borderColor;
-      Color textColor = Colors.black;
-      
-      if (isDisabled) {
-        textColor = Colors.grey.shade400;
-      } else if (isDeparture || isReturn) {
-        backgroundColor = Theme.of(context).primaryColor;
-        textColor = Colors.white;
-      } else if (isInRange) {
-        backgroundColor = Theme.of(context).primaryColor.withOpacity(0.2);
-        textColor = Theme.of(context).primaryColor;
-      } else if (isToday) {
-        backgroundColor = Theme.of(context).primaryColor.withOpacity(0.1);
-        borderColor = Theme.of(context).primaryColor;
-        textColor = Theme.of(context).primaryColor;
-      }
-      
-      dayWidgets.add(
-        GestureDetector(
-          onTap: isDisabled ? null : () => _handleDateTap(date),
-          child: Container(
-            margin: EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
-              border: borderColor != null ? Border.all(color: borderColor) : null,
+  Widget _buildDestinationCard(Map<String, String> destination) {
+    return GestureDetector(
+      onTap: () => _searchFlights(destinationOverride: destination['name']),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Theme.of(context).primaryColor.withValues(alpha: 0.8),
+                Theme.of(context).primaryColor,
+              ],
             ),
-            child: Container(
-              height: 60,
-              padding: EdgeInsets.symmetric(vertical: 4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Date number
-                  Text(
-                    day.toString(),
-                    style: TextStyle(
-                      color: textColor,
-                      fontWeight: (isDeparture || isReturn || isToday)
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontSize: 16,
-                    ),
-                  ),
-                  // Price display
-                  if (price != null)
-                    Padding(
-                      padding: EdgeInsets.only(top: 2),
-                      child: Text(
-                        '₹${price.toStringAsFixed(0)}',
-                        style: TextStyle(
-                          color: isDisabled
-                              ? Colors.grey.shade400
-                              : (isDeparture || isReturn)
-                                  ? Colors.white.withOpacity(0.9)
-                                  : isInRange || isToday
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.grey[600],
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                        ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(Icons.location_city, color: Colors.white, size: 32),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      destination['name']!,
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                ],
-              ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'from ${destination['price']!}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-      );
-    }
-    
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: GridView.count(
-        crossAxisCount: 7,
-        childAspectRatio: 0.8,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: dayWidgets,
       ),
     );
   }
 
-  bool _isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year &&
-        date1.month == date2.month &&
-        date1.day == date2.day;
-  }
-
-  String _getMonthYearText(DateTime date) {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-}
-
-// Updated function to accept both departure and return dates
-void showDatePickerBottomSheet(
-  BuildContext context, {
-  DateTime? initialDepartureDate,
-  DateTime? initialReturnDate,
-  Function(DateTime, DateTime?)? onDatesSelected,
-  Map<DateTime, double>? prices,
-}) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    useRootNavigator: true,
-    builder: (context) => DatePickerBottomSheet(
-      initialDepartureDate: initialDepartureDate,
-      initialReturnDate: initialReturnDate,
-      onDatesSelected: onDatesSelected,
-      prices: prices,
-    ),
-  );
-}
-
-// Example usage:
-/*
-Map<DateTime, double> samplePrices = {
-  DateTime(2025, 7, 25): 150.0,
-  DateTime(2025, 7, 26): 175.0,
-  DateTime(2025, 7, 27): 200.0,
-  DateTime(2025, 7, 28): 125.0,
-  DateTime(2025, 7, 29): 180.0,
-  DateTime(2025, 7, 30): 160.0,
-};
-
-showDatePickerBottomSheet(
-  context,
-  initialDepartureDate: DateTime.now(),
-  initialReturnDate: null,
-  prices: samplePrices,
-  onDatesSelected: (departureDate, returnDate) {
-    print('Departure: $departureDate');
-    print('Return: $returnDate');
-    // Handle the selected dates
-  },
-);
-*/
-
-
-// Enhanced _buildDateField method
-// Widget _buildDateField(
-//   BuildContext context, 
-//   String label, 
-//   String value, 
-//   bool isRoundTrip,
-//   {String? dateType} // Add dateType parameter
-// ) {
-//   return Column(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     children: [
-//       Text(
-//         label,
-//         style: GoogleFonts.poppins(
-//           fontSize: 14,
-//           fontWeight: FontWeight.w500,
-//           color: Colors.grey[600],
-//         ),
-//       ),
-//       const SizedBox(height: 4),
-//       GestureDetector(
-//         onTap: () {
-//           // Parse current date if available
-//           DateTime? initialDate = _parseDate(value);
-          
-//           Map<DateTime, double> samplePrices = {
-//             DateTime(2025, 7, 25): 150.0,
-//             DateTime(2025, 7, 26): 175.0,
-//             DateTime(2025, 7, 27): 200.0,
-//             DateTime(2025, 7, 28): 125.0,
-//             DateTime(2025, 7, 29): 180.0,
-//             DateTime(2025, 7, 30): 160.0,
-//           };
-
-//           if (isRoundTrip) {
-//             // For round trip, show both departure and return selection
-//             showDatePickerBottomSheet(
-//               context,
-//               mode: 'roundtrip', // Add mode parameter
-//               initialDepartureDate: _parseDate(_departureDate) ?? DateTime.now(),
-//               initialReturnDate: _parseDate(_returnDate),
-//               prices: samplePrices,
-//               onDatesSelected: (departureDate, returnDate) {
-//                 setState(() {
-//                   _departureDate = _formatDate(departureDate);
-//                   if (returnDate != null) {
-//                     _returnDate = _formatDate(returnDate);
-//                   }
-//                 });
-//               },
-//             );
-//           } else {
-//             // For one way, show only departure selection
-//             showDatePickerBottomSheet(
-//               context,
-//               mode: 'oneway', // Add mode parameter
-//               initialDepartureDate: initialDate ?? DateTime.now(),
-//               prices: samplePrices,
-//               onDatesSelected: (departureDate, returnDate) {
-//                 setState(() {
-//                   if (label == 'Departure') {
-//                     _departureDate = _formatDate(departureDate);
-//                   }
-//                 });
-//               },
-//             );
-//           }
-//         },
-//         child: Container(
-//           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-//           decoration: BoxDecoration(
-//             border: Border.all(color: Colors.grey[300]!),
-//             borderRadius: BorderRadius.circular(8),
-//           ),
-//           child: Row(
-//             children: [
-//               Icon(
-//                 Icons.calendar_today,
-//                 color: Theme.of(context).primaryColor,
-//                 size: 20,
-//               ),
-//               const SizedBox(width: 8),
-//               Expanded(
-//                 child: Text(
-//                   value,
-//                   style: GoogleFonts.poppins(
-//                     fontSize: 16,
-//                     fontWeight: FontWeight.w500,
-//                   ),
-//                   overflow: TextOverflow.ellipsis,
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     ],
-//   );
-// }
-
-// // Helper methods
-// DateTime? _parseDate(String value) {
-//   if (value == 'Today' || value == 'Tomorrow' || value == 'Select date') {
-//     return DateTime.now();
-//   }
-  
-//   try {
-//     List<String> parts = value.split('/');
-//     if (parts.length == 3) {
-//       return DateTime(
-//         int.parse(parts[2]), // year
-//         int.parse(parts[1]), // month
-//         int.parse(parts[0]), // day
-//       );
-//     }
-//   } catch (e) {
-//     // If parsing fails, return null
-//   }
-//   return null;
-// }
-
-// String _formatDate(DateTime date) {
-//   return "${date.day}/${date.month}/${date.year}";
-// }
-
-// // Enhanced date picker function signature
-// void showDatePickerBottomSheet(
-//   BuildContext context, {
-//   required String mode, // 'oneway' or 'roundtrip'
-//   DateTime? initialDepartureDate,
-//   DateTime? initialReturnDate,
-//   Map<DateTime, double>? prices,
-//   required Function(DateTime departureDate, DateTime? returnDate) onDatesSelected,
-// }) {
-//   // Your calendar implementation here
-//   // Handle different modes within the same calendar widget
-// }
-
-Widget _buildDateField(
-  BuildContext context,
-  String label,
-  String value,
-  bool isReturn,
-) {
-  print(label);
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: GoogleFonts.poppins(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: Colors.grey[600],
-        ),
+  // Helper widgets
+  Widget _buildFieldLabel(String label) {
+    return Text(
+      label,
+      style: GoogleFonts.poppins(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Colors.grey[600],
       ),
-      const SizedBox(height: 4),
-      GestureDetector(
-        onTap: () {
-          // Parse current date if available
-          DateTime? initialDepartureDate;
-          DateTime? initialReturnDate;
-          
-          // Parse departure date
-          if (_departureDate != 'Select date') {
-            try {
-              List<String> parts = _departureDate.split('/');
-              if (parts.length == 3) {
-                initialDepartureDate = DateTime(
-                  int.parse(parts[2]), // year
-                  int.parse(parts[1]), // month
-                  int.parse(parts[0]), // day
-                );
-              }
-            } catch (e) {
-              // If parsing fails, use current date
-              initialDepartureDate = DateTime.now();
-            }
-          } else {
-            initialDepartureDate = DateTime.now();
-          }
+    );
+  }
 
-          // Parse return date if available
-          if (_returnDate != 'Select date' && _isRoundTrip) {
-            try {
-              List<String> parts = _returnDate.split('/');
-              if (parts.length == 3) {
-                initialReturnDate = DateTime(
-                  int.parse(parts[2]), // year
-                  int.parse(parts[1]), // month
-                  int.parse(parts[0]), // day
-                );
-              }
-            } catch (e) {
-              // If parsing fails, set to day after departure
-              initialReturnDate = initialDepartureDate.add(const Duration(days: 1));
-            }
-          } else if (_isRoundTrip) {
-            initialReturnDate = initialDepartureDate.add(const Duration(days: 1));
-          }
-
-          Map<DateTime, double> samplePrices = {
-            DateTime(2025, 7, 25): 150.0,
-            DateTime(2025, 7, 26): 175.0,
-            DateTime(2025, 7, 27): 200.0,
-            DateTime(2025, 7, 28): 125.0,
-            DateTime(2025, 7, 29): 180.0,
-            DateTime(2025, 7, 30): 160.0,
-          };
-
-          showDatePickerBottomSheet(
-            context,
-            initialDepartureDate: initialDepartureDate, // Use the parsed date
-            initialReturnDate: initialReturnDate, // Use the parsed return date
-            prices: samplePrices,
-            isAddingReturnDate: label == 'Return' ? true : false,
-            onDatesSelected: (departureDate, returnDate) {
-              setState(() {
-                if (label == 'Departure') {
-                  _departureDate =
-                      "${departureDate.day}/${departureDate.month}/${departureDate.year}";
-                  // If we're in round trip mode and return date is not set or is before new departure date
-                  if (_isRoundTrip && (returnDate == null || returnDate.isBefore(departureDate))) {
-                    _returnDate =
-                        "${departureDate.add(const Duration(days: 1)).day}/${departureDate.add(const Duration(days: 1)).month}/${departureDate.add(const Duration(days: 1)).year}";
-                  }
-                } else {
-                  _returnDate =
-                      "${returnDate?.day}/${returnDate?.month}/${returnDate?.year ?? ''}";
-                }
-              });
-              print(
-                'Departure: ${departureDate.day}/${departureDate.month}/${departureDate.year}',
-              );
-              print(
-                'Return: ${returnDate?.day}/${returnDate?.month}/${returnDate?.year}',
-              );
-              // Handle the selected dates
-            },
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300]!),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.calendar_today,
-                color: Theme.of(context).primaryColor,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  value,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
+  Widget _buildFieldContainer({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(8),
       ),
-    ],
-  );
+      child: child,
+    );
+  }
 }
