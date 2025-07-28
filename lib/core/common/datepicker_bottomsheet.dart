@@ -43,15 +43,14 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
 
     if(widget.isAddingReturnDate) {
       currentMode = DateSelectionMode.returnDate;
-      returnDate = widget.initialReturnDate;
     } else {
       currentMode = DateSelectionMode.departure;
-        returnDate =null;
+      
     }
 
     // Initialize dates - normalize to remove time component
     departureDate = widget.initialDepartureDate ?? DateTime(now.year, now.month, now.day);
-    
+    returnDate = widget.initialReturnDate;
     
     startDate = DateTime(now.year, now.month, now.day);
     endDate = DateTime(now.year, now.month, now.day).add(Duration(days: 360));
