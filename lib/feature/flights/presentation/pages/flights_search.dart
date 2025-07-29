@@ -18,7 +18,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   String _toCity = 'Mumbai';
   String _departureDate = _formatDate(DateTime.now());
   String _returnDate = _formatDate(DateTime.now().add(const Duration(days: 1)));
-  int _passengers = 1;
+  final int _passengers = 1;
   bool _isRoundTrip = false;
 
   // Helper methods

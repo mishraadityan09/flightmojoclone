@@ -1,6 +1,7 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 enum ServiceType { flight }
@@ -18,19 +19,19 @@ class _HomePageState extends State<HomePage> {
   ServiceType _selectedService = ServiceType.flight;
 
   // Hotel-specific state variables
-  String _hotelCity = 'Mumbai';
-  String _checkInDate = _formatDate(DateTime.now());
-  String _checkOutDate = _formatDate(
+  final String _hotelCity = 'Mumbai';
+  final String _checkInDate = _formatDate(DateTime.now());
+  final String _checkOutDate = _formatDate(
     DateTime.now().add(const Duration(days: 2)),
   );
-  int _hotelGuests = 2;
-  int _rooms = 1;
+  final int _hotelGuests = 2;
+  final int _rooms = 1;
 
   // Cab-specific state variables
-  String _pickupLocation = 'Airport';
-  String _dropLocation = 'Hotel';
-  String _cabDate = _formatDate(DateTime.now());
-  String _cabTime = '10:00 AM';
+  final String _pickupLocation = 'Airport';
+  final String _dropLocation = 'Hotel';
+  final String _cabDate = _formatDate(DateTime.now());
+  final String _cabTime = '10:00 AM';
 
   // Reference to the flight widget for external access
   final GlobalKey _flightWidgetKey = GlobalKey();
@@ -51,6 +52,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: _buildAppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,17 +77,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
+
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: Text(
-        'TravelMojo',
-        style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-      backgroundColor: Theme.of(context).primaryColor,
-      foregroundColor: Colors.white,
+      centerTitle: false,
+      title:   SvgPicture.network(
+            'https://flightsmojo.in/images/logo_white.svg',
+            width: 30,
+            height: 30,
+            color: Colors.white,
+          ),
+      backgroundColor: Colors.black,
+      foregroundColor: Colors.black,
       actions: [
         IconButton(
-          icon: const Icon(Icons.notifications_outlined),
+          icon: Icon(Icons.notifications_outlined,color: Theme.of(context).primaryColor),
           onPressed: () {},
         ),
       ],

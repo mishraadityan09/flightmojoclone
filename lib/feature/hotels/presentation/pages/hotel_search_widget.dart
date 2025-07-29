@@ -16,7 +16,7 @@ class HotelSearchWidget extends StatelessWidget {
   final VoidCallback onSearchHotels;
 
   const HotelSearchWidget({
-    Key? key,
+    super.key,
     required this.hotelCity,
     required this.checkInDate,
     required this.checkOutDate,
@@ -28,7 +28,7 @@ class HotelSearchWidget extends StatelessWidget {
     required this.onShowGuestsSelector,
     required this.onShowRoomsSelector,
     required this.onSearchHotels,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

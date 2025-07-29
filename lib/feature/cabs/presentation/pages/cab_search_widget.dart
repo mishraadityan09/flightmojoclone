@@ -14,7 +14,7 @@ class CabSearchWidget extends StatelessWidget {
   final VoidCallback onSearchCabs;
 
   const CabSearchWidget({
-    Key? key,
+    super.key,
     required this.pickupLocation,
     required this.dropLocation,
     required this.cabDate,
@@ -24,7 +24,7 @@ class CabSearchWidget extends StatelessWidget {
     required this.onSelectCabDate,
     required this.onSelectCabTime,
     required this.onSearchCabs,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
