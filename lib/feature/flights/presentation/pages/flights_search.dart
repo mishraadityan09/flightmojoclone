@@ -42,67 +42,95 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
     return null;
   }
 
+  // Responsive font size getters based on MediaQuery width
+  double get screenWidth => MediaQuery.of(context).size.width;
+
+  double get headingFontSize =>
+      (screenWidth * 0.055).clamp(20.0, 24.0); // 5.5% width, clamp 20-24
+
+  double get buttonLabelFontSize =>
+      (screenWidth * 0.045).clamp(16.0, 18.0); // 4.5% width, clamp 16-18
+
+  double get bodyTextFontSize =>
+      (screenWidth * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
+
+  double get secondaryLabelFontSize =>
+      (screenWidth * 0.030).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+
+  double get secondaryFontSize =>
+      (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+
+  double get smallFontSize =>
+      (screenWidth * 0.025).clamp(10.0, 12.0); // ~2.5% width, clamp 10-12
+
+  double get iconSize => 20.0; // Fixed icon size for consistency
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _buildTripTypeSelector(),
-            const SizedBox(height: 16),
-            _buildLocationFields(),
-            const SizedBox(height: 16),
-            _buildDateFields(),
-            const SizedBox(height: 16),
-            _buildPassengerField(),
-            const SizedBox(height: 20),
-            _buildSearchButton(),
-          ],
+    return Column(
+      children: [
+        Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                _buildTripTypeSelector(),
+                const SizedBox(height: 16),
+                _buildLocationFields(),
+                const SizedBox(height: 16),
+                _buildDateFields(),
+                const SizedBox(height: 16),
+                _buildPassengerField(),
+                const SizedBox(height: 20),
+                _buildSearchButton(),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildTripTypeSelector() {
     return Container(
-      width: double.infinity,
+      height: 48,
+      margin: const EdgeInsets.symmetric(horizontal: 0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(36),
         border: Border.all(color: Colors.grey.shade300),
         color: Colors.grey.shade100,
       ),
       child: Stack(
-        children: [
-          _buildSlidingIndicator(),
-          _buildTripTypeButtons(),
-        ],
+        children: [_buildSlidingIndicator(), _buildTripTypeButtons()],
       ),
     );
   }
 
   Widget _buildSlidingIndicator() {
-    return AnimatedPositioned(
+    return AnimatedAlign(
       duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOutCubic,
-      left: _isRoundTrip ? null : 2,
-      right: _isRoundTrip ? 2 : null,
-      top: 2,
-      bottom: 2,
-      width: (MediaQuery.of(context).size.width - 36) / 2.5,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
+      curve: Curves.easeInOut,
+      alignment: _isRoundTrip ? Alignment.centerRight : Alignment.centerLeft,
+      child: FractionallySizedBox(
+        widthFactor: 0.5,
+        heightFactor: 1,
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(36),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 3,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -119,22 +147,21 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
 
   Widget _buildTripTypeButton(String text, bool isRoundTrip) {
     final isSelected = _isRoundTrip == isRoundTrip;
-    
+
     return Expanded(
       child: GestureDetector(
-        onTap: () => _toggleTripType(isRoundTrip),
+        onTap: () => setState(() => _isRoundTrip = isRoundTrip),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Center(
-            child: AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 300),
-              style: TextStyle(
-                color: isSelected ? Colors.black : Colors.grey.shade600,
-                fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                fontSize: 16,
-              ),
-              child: Text(text),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 300),
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.grey.shade600,
+              fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+              fontSize: buttonLabelFontSize,
             ),
+            child: Text(text),
           ),
         ),
       ),
@@ -142,16 +169,50 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   }
 
   Widget _buildLocationFields() {
-    return Row(
+    return Stack(
       children: [
-        Expanded(
-          child: _buildLocationField('From', _fromCity, Icons.flight_takeoff),
+        Column(
+          children: [
+            _buildLocationField('From', _fromCity, Icons.flight_takeoff),
+            const SizedBox(height: 4),
+            _buildLocationField('To', _toCity, Icons.flight_land),
+          ],
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildLocationField('To', _toCity, Icons.flight_land),
-        ),
+        Positioned(right: 12, top: 24, bottom: 0, child: _buildExchangeIcon()),
       ],
+    );
+  }
+
+  Widget _buildExchangeIcon() {
+    return Center(
+      child: GestureDetector(
+        onTap: _exchangeLocations,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Transform.rotate(
+            angle:
+                3.1416 /
+                2, // 90 degrees in radians; use -3.1416/2 for the other direction
+            child: Icon(
+              Icons.sync_alt,
+              color: Theme.of(context).primaryColor,
+              size: iconSize,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -166,18 +227,23 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
           child: _buildFieldContainer(
             child: Row(
               children: [
-                Icon(icon, color: Theme.of(context).primaryColor, size: 20),
+                Icon(
+                  icon,
+                  color: Theme.of(context).primaryColor,
+                  size: iconSize,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     value,
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: bodyTextFontSize,
                       fontWeight: FontWeight.w500,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                const SizedBox(width: 40), // Space for exchange icon
               ],
             ),
           ),
@@ -192,7 +258,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
         Expanded(child: _buildDateField('Departure', _departureDate)),
         const SizedBox(width: 16),
         Expanded(
-          child: _isRoundTrip 
+          child: _isRoundTrip
               ? _buildDateField('Return', _returnDate)
               : _buildAddReturnDateField(),
         ),
@@ -214,14 +280,14 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                 Icon(
                   Icons.calendar_today,
                   color: Theme.of(context).primaryColor,
-                  size: 20,
+                  size: iconSize,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     value,
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: bodyTextFontSize,
                       fontWeight: FontWeight.w500,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -262,7 +328,9 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                     Text(
                       'Add Return Date',
                       style: GoogleFonts.poppins(
-                        fontSize: 10,
+                        fontSize: smallFontSize - 2 < 10
+                            ? 10
+                            : smallFontSize - 2,
                         fontWeight: FontWeight.w300,
                         color: Colors.grey[600],
                       ),
@@ -273,7 +341,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                 Text(
                   'Save more with round trip',
                   style: GoogleFonts.poppins(
-                    fontSize: 10,
+                    fontSize: smallFontSize - 2,
                     fontWeight: FontWeight.w300,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -300,14 +368,14 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                 Icon(
                   Icons.person,
                   color: Theme.of(context).primaryColor,
-                  size: 20,
+                  size: iconSize,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     '$_passengers Adult${_passengers > 1 ? 's' : ''}',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: bodyTextFontSize,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -334,7 +402,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
         child: Text(
           'Search Flights',
           style: GoogleFonts.poppins(
-            fontSize: 18,
+            fontSize: buttonLabelFontSize,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -347,7 +415,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
     return Text(
       label,
       style: GoogleFonts.poppins(
-        fontSize: 14,
+        fontSize: secondaryLabelFontSize,
         fontWeight: FontWeight.w500,
         color: Colors.grey[600],
       ),
@@ -384,27 +452,35 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   }
 
   void _selectDate(String dateType) {
-    final initialDate = dateType == 'Departure' 
+    final initialDate = dateType == 'Departure'
         ? _parseDate(_departureDate) ?? DateTime.now()
-        : _parseDate(_returnDate) ?? DateTime.now().add(const Duration(days: 1));
+        : _parseDate(_returnDate) ??
+              DateTime.now().add(const Duration(days: 1));
 
     showDatePickerBottomSheet(
       context,
-      initialDepartureDate: dateType == 'Departure' ? initialDate : _parseDate(_departureDate) ?? DateTime.now(),
-      initialReturnDate: dateType == 'Return' ? initialDate : (_isRoundTrip ? _parseDate(_returnDate) : null),
+      initialDepartureDate: dateType == 'Departure'
+          ? initialDate
+          : _parseDate(_departureDate) ?? DateTime.now(),
+      initialReturnDate: dateType == 'Return'
+          ? initialDate
+          : (_isRoundTrip ? _parseDate(_returnDate) : null),
       prices: const {},
       isAddingReturnDate: dateType == 'Return',
       onDatesSelected: (departureDate, returnDate) {
         setState(() {
           _departureDate = _formatDate(departureDate);
-          
+
           if (returnDate != null) {
             _returnDate = _formatDate(returnDate);
             _isRoundTrip = true;
           } else if (dateType == 'Departure' && _isRoundTrip) {
             final currentReturnDate = _parseDate(_returnDate);
-            if (currentReturnDate != null && currentReturnDate.isBefore(departureDate)) {
-              _returnDate = _formatDate(departureDate.add(const Duration(days: 1)));
+            if (currentReturnDate != null &&
+                currentReturnDate.isBefore(departureDate)) {
+              _returnDate = _formatDate(
+                departureDate.add(const Duration(days: 1)),
+              );
             }
           }
         });
@@ -428,11 +504,24 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       if (isRoundTrip) {
         final departureDateTime = _parseDate(_departureDate);
         final returnDateTime = _parseDate(_returnDate);
-        if (departureDateTime != null && 
-            (returnDateTime == null || returnDateTime.isBefore(departureDateTime) || returnDateTime.isAtSameMomentAs(departureDateTime))) {
-          _returnDate = _formatDate(departureDateTime.add(const Duration(days: 1)));
+        if (departureDateTime != null &&
+            (returnDateTime == null ||
+                returnDateTime.isBefore(departureDateTime) ||
+                returnDateTime.isAtSameMomentAs(departureDateTime))) {
+          _returnDate = _formatDate(
+            departureDateTime.add(const Duration(days: 1)),
+          );
         }
       }
+    });
+  }
+
+  void _exchangeLocations() {
+    setState(() {
+      debugPrint('clicked');
+      final temp = _fromCity;
+      _fromCity = _toCity;
+      _toCity = temp;
     });
   }
 

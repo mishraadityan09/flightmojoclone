@@ -4,7 +4,7 @@ import '../../../../core/router/app_routes.dart';
 
 class MainPage extends StatefulWidget {
   final Widget child;
-  
+
   const MainPage({super.key, required this.child});
 
   @override
@@ -13,12 +13,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
-  
+
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
-    
+
     // Navigate to the corresponding route
     switch (index) {
       case 0:
@@ -38,6 +38,12 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Responsive font sizing based on screen width
+    final double screenWidth = MediaQuery.of(context).size.width;
+
+    // Calculate label font size based on screen width
+    double labelFontSize = (screenWidth * 0.035).clamp(10.0, 14.0);
+
     // Update current index based on current route
     final String location = GoRouterState.of(context).uri.path;
     if (location == AppRoutes.main) {
@@ -49,7 +55,7 @@ class _MainPageState extends State<MainPage> {
     } else if (location == AppRoutes.profile) {
       _currentIndex = 3;
     }
-    
+
     return Scaffold(
       body: widget.child,
       bottomNavigationBar: BottomNavigationBar(
@@ -58,6 +64,14 @@ class _MainPageState extends State<MainPage> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
+        selectedLabelStyle: TextStyle(
+          fontSize: labelFontSize,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: labelFontSize,
+          fontWeight: FontWeight.w400,
+        ),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

@@ -1,6 +1,7 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -49,52 +50,249 @@ class _HomePageState extends State<HomePage> {
     return "${date.day}/${date.month}/${date.year}";
   }
 
+  // Responsive text size getters
+  double get screenWidth => MediaQuery.of(context).size.width;
+
+  double get headingFontSize =>
+      (screenWidth * 0.055).clamp(20.0, 24.0); // 5.5% width, clamp 20-24
+
+  double get subheadingFontSize =>
+      (screenWidth * 0.045).clamp(16.0, 18.0); // 4.5% width, clamp 16-18
+
+  double get bodyFontSize =>
+      (screenWidth * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
+
+  double get secondaryFontSize =>
+      (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+
+  double get smallFontSize =>
+      (screenWidth * 0.025).clamp(10.0, 12.0); // ~2.5% width, clamp 10-12
+
+  final double iconSize = 20; // Fixed icon size for consistency
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Colors.grey.shade50,
       appBar: _buildAppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // _buildHeroText(),
-          const SizedBox(height: 8),
-          _buildServiceChips(),
-          const SizedBox(height: 12),
-          Expanded(
-            child: SingleChildScrollView(
+      extendBodyBehindAppBar: false,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Black background section
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
+                ),
+              ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildServiceContent(),
-                  const SizedBox(height: 20),
-                  _buildPopularDestinationsSection(),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Hey Traveler 👋',
+                      style: GoogleFonts.poppins(
+                        fontSize: bodyFontSize,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  'ONLY FLIGHTS',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: subheadingFontSize,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                '.',
+                                style: GoogleFonts.poppins(
+                                  fontSize: subheadingFontSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red, // red dot
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  'ONLY EXPERTS',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: subheadingFontSize,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                '.',
+                                style: GoogleFonts.poppins(
+                                  fontSize: subheadingFontSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // _buildServiceChips(),
+                  const SizedBox(height: 120), // Add space for the widget
                 ],
               ),
             ),
-          ),
-        ],
+
+            // Service content widget - now outside the stack
+            Transform.translate(
+              offset: const Offset(0, -90), // Move it up to overlap
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: _buildServiceContent(),
+              ),
+            ),
+
+            const SizedBox(height: 0), // Reduced spacing
+            Transform.translate(
+              offset: const Offset(0, -70),
+              child: _buildPopularDestinationsSection(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-
-
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      centerTitle: false,
-      title:   SvgPicture.network(
-            'https://flightsmojo.in/images/logo_white.svg',
-            width: 30,
-            height: 30,
-            color: Colors.white,
-          ),
+      elevation: 0,
       backgroundColor: Colors.black,
-      foregroundColor: Colors.black,
-      actions: [
-        IconButton(
-          icon: Icon(Icons.notifications_outlined,color: Theme.of(context).primaryColor),
-          onPressed: () {},
+      surfaceTintColor: Colors.black,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        statusBarIconBrightness: Brightness.light,
+      ),
+      leadingWidth: 200,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: Row(
+          children: [
+            // SvgPicture.asset(
+            //   'assets/images/logo.svg',
+            //   width: 32,
+            //   height: 32,
+            //   color: Colors.white.withValues(alpha: 1), // You can adjust opacity here
+            //   //colorBlendMode: BlendMode.darken, // or try BlendMode.overlay, screen, etc.
+            // )
+            // Logo/Icon
+            // SvgPicture.network(
+            //   'http://test.flightsmojo.in/images/logo_white.svg',
+            //   width: 32,
+            //   height: 32,
+
+
+            // ),
+            // App Name
+            Image.asset('assets/images/logo.png', width: 130, height: 130),
+          ],
         ),
+      ),
+      actions: [
+        // Notification Icon
+        Container(
+          margin: const EdgeInsets.only(right: 8),
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade800,
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: IconButton(
+            iconSize: iconSize,
+            padding: EdgeInsets.zero,
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Icon(
+                  Icons.notifications_outlined,
+                  color: Colors.white,
+                  size: iconSize,
+                ),
+                // Small dot for unread notification
+                Positioned(
+                  right: 3,
+                  top: 4,
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            onPressed: () {},
+          ),
+        ),
+
+        // Profile Icon
+        // Container(
+        //   margin: const EdgeInsets.only(right: 16),
+        //   decoration: BoxDecoration(
+        //     color: Colors.grey.shade800,
+        //     borderRadius: BorderRadius.circular(12),
+        //   ),
+        //   child: IconButton(
+        //     icon: const Icon(
+        //       Icons.person_outline,
+        //       color: Colors.white,
+        //       size: 24,
+        //     ),
+        //     onPressed: () {},
+        //   ),
+        // ),
       ],
     );
   }
@@ -108,7 +306,7 @@ class _HomePageState extends State<HomePage> {
           end: Alignment.bottomCenter,
           colors: [
             Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withValues(alpha: 0.8),
+            Theme.of(context).primaryColor.withOpacity(0.8),
           ],
         ),
       ),
@@ -119,7 +317,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             'Your Travel Companion',
             style: GoogleFonts.poppins(
-              fontSize: 28,
+              fontSize: (screenWidth * 0.07).clamp(24.0, 28.0),
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -128,8 +326,8 @@ class _HomePageState extends State<HomePage> {
           Text(
             'Book flights, hotels & cabs at best prices',
             style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: bodyFontSize,
+              color: Colors.white.withOpacity(0.9),
             ),
           ),
         ],
@@ -174,18 +372,19 @@ class _HomePageState extends State<HomePage> {
               gradient: isSelected
                   ? LinearGradient(
                       colors: [
-                        Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColor.withValues(alpha: 0.8),
+                        Colors.orange,
+                        Colors.orange.withOpacity(0.8),
                       ],
                     )
                   : null,
-              color: isSelected ? null : Colors.grey.shade200,
+              color: isSelected ? null : Colors.grey.shade800,
+              border: isSelected
+                  ? null
+                  : Border.all(color: Colors.grey.shade600),
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: Theme.of(
-                          context,
-                        ).primaryColor.withValues(alpha: 0.3),
+                        color: Colors.orange.withOpacity(0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -211,16 +410,18 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Icon(
                         iconData,
-                        size: 20,
-                        color: isSelected ? Colors.white : Colors.black54,
+                        size: iconSize,
+                        color: isSelected ? Colors.white : Colors.grey.shade300,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         label,
                         style: GoogleFonts.poppins(
-                          color: isSelected ? Colors.white : Colors.black87,
+                          color: isSelected
+                              ? Colors.white
+                              : Colors.grey.shade300,
                           fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                          fontSize: bodyFontSize,
                         ),
                       ),
                     ],
@@ -243,13 +444,13 @@ class _HomePageState extends State<HomePage> {
       // case ServiceType.hotel:
       //   child = Text(
       //     'Hotel search functionality will be implemented here.',
-      //     style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
+      //     style: GoogleFonts.poppins(fontSize: bodyFontSize, fontWeight: FontWeight.w500),
       //   );
       //   break;
       // case ServiceType.cab:
       //   child = Text(
       //     'Cab search functionality will be implemented here.',
-      //     style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
+      //     style: GoogleFonts.poppins(fontSize: bodyFontSize, fontWeight: FontWeight.w500),
       //   );
       //   break;
     }
@@ -268,7 +469,18 @@ class _HomePageState extends State<HomePage> {
       },
       child: Container(
         key: ValueKey<ServiceType>(_selectedService),
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(20),
         child: child,
       ),
     );
@@ -285,7 +497,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             'Popular Destinations',
             style: GoogleFonts.poppins(
-              fontSize: 22,
+              fontSize: headingFontSize,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -321,7 +533,7 @@ class _HomePageState extends State<HomePage> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Theme.of(context).primaryColor.withValues(alpha: 0.8),
+                Theme.of(context).primaryColor.withOpacity(0.8),
                 Theme.of(context).primaryColor,
               ],
             ),
@@ -339,7 +551,7 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       destination['name']!,
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: subheadingFontSize,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -348,8 +560,8 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       'from ${destination['price']!}',
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: bodyFontSize,
+                        color: Colors.white.withOpacity(0.9),
                       ),
                     ),
                   ],
@@ -361,6 +573,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
- 
 }
