@@ -1,5 +1,6 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
+import 'package:flightmojo/feature/home/presentaion/widgets/coupon_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -70,6 +71,21 @@ class _HomePageState extends State<HomePage> {
 
   final double iconSize = 20; // Fixed icon size for consistency
 
+  final List<Map<String, String>> _coupons = [
+    {
+      'title': 'Fly Domestic & Save Big',
+      'subtitle':
+          'Get up to 10% off on all domestic flights. Book your next trip and enjoy unbeatable savings!',
+      'promoCode': 'FM10DOM',
+    },
+    {
+      'title': 'Save on International Flights',
+      'subtitle':
+          'Enjoy up to 15% off on all international flights this season!',
+      'promoCode': 'INTL15',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,124 +95,148 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Black background section
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(40),
+            // Modified Black background section with travel image
+            Stack(
+              children: [
+                // Travel background image
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(40),
+                    bottomRight: Radius.circular(40),
+                  ),
+                  child: Image.asset(
+                    'assets/images/travelBg.jpg', // Your image asset
+                    width: double.infinity,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Hey Traveler 👋',
-                      style: GoogleFonts.poppins(
-                        fontSize: bodyFontSize,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                // Black semi-transparent overlay for readability
+                Container(
+                  width: double.infinity,
+                  height: 250,
+                  decoration: const BoxDecoration(
+                    color: Color(0xB3000000), // Black with ~70% opacity
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40),
+                    ),
+                  ),
+                ),
+                // Your existing black section layout, now with transparent color
+                Container(
+                  width: double.infinity,
+                  height: 250,
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'Hey Traveler 👋',
+                          style: GoogleFonts.poppins(
+                            fontSize: bodyFontSize,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  'ONLY FLIGHTS',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: subheadingFontSize,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      'ONLY FLIGHTS',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: subheadingFontSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Text(
-                                '.',
-                                style: GoogleFonts.poppins(
-                                  fontSize: subheadingFontSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red, // red dot
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  'ONLY EXPERTS',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: subheadingFontSize,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                  Text(
+                                    '.',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: subheadingFontSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                              Text(
-                                '.',
-                                style: GoogleFonts.poppins(
-                                  fontSize: subheadingFontSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red,
-                                ),
+                            ),
+                            const SizedBox(width: 10),
+                            Flexible(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      'ONLY EXPERTS',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: subheadingFontSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    '.',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: subheadingFontSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 120),
+                    ],
                   ),
-                  // _buildServiceChips(),
-                  const SizedBox(height: 120), // Add space for the widget
-                ],
-              ),
+                ),
+              ],
             ),
 
-            // Service content widget - now outside the stack
+            // Service content widget
             Transform.translate(
-              offset: const Offset(0, -90), // Move it up to overlap
+              offset: const Offset(0, -150),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                
                 child: _buildServiceContent(),
               ),
             ),
 
+            
+
             const SizedBox(height: 0), // Reduced spacing
             Transform.translate(
-              offset: const Offset(0, -70),
+              offset: const Offset(0, -150),
               child: _buildPopularDestinationsSection(),
             ),
+
+            // Insert before Popular Destinations section
           ],
         ),
       ),
@@ -229,7 +269,6 @@ class _HomePageState extends State<HomePage> {
             //   'http://test.flightsmojo.in/images/logo_white.svg',
             //   width: 32,
             //   height: 32,
-
 
             // ),
             // App Name
@@ -371,10 +410,7 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(25),
               gradient: isSelected
                   ? LinearGradient(
-                      colors: [
-                        Colors.orange,
-                        Colors.orange.withOpacity(0.8),
-                      ],
+                      colors: [Colors.orange, Colors.orange.withOpacity(0.8)],
                     )
                   : null,
               color: isSelected ? null : Colors.grey.shade800,
@@ -469,17 +505,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: Container(
         key: ValueKey<ServiceType>(_selectedService),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
+        
         padding: const EdgeInsets.all(20),
         child: child,
       ),
@@ -490,10 +516,37 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildPopularDestinationsSection() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Available Coupons',
+                style: GoogleFonts.poppins(
+                  fontSize: headingFontSize,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _coupons.length,
+                itemBuilder: (context, index) {
+                  final coupon = _coupons[index];
+                  return CouponCard(
+                    title: coupon['title']!,
+                    subtitle: coupon['subtitle']!,
+                    promoCode: coupon['promoCode']!,
+                  );
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Text(
             'Popular Destinations',
             style: GoogleFonts.poppins(

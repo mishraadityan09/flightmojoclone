@@ -3,6 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 
+class CityAirport {
+  final String city;
+  final String code;
+
+  CityAirport({required this.city, required this.code});
+}
+
 class SearchPage extends StatefulWidget {
   final String hint;
   const SearchPage({super.key, required this.hint});
@@ -14,18 +21,18 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
 
-  final List<String> suggestions = [
-    'Delhi',
-    'Mumbai',
-    'Bangalore',
-    'Chennai',
-    'Kolkata',
-    'Hyderabad',
-    'Goa',
+  final List<CityAirport> suggestions = [
+    CityAirport(city: 'Delhi', code: 'DEL'),
+    CityAirport(city: 'Mumbai', code: 'BOM'),
+    CityAirport(city: 'Bangalore', code: 'BLR'),
+    CityAirport(city: 'Chennai', code: 'MAA'),
+    CityAirport(city: 'Kolkata', code: 'CCU'),
+    CityAirport(city: 'Hyderabad', code: 'HYD'),
+    CityAirport(city: 'Goa', code: 'GOI'),
   ];
 
-  List<String> filteredResults = [];
- 
+  List<CityAirport> filteredResults = [];
+
   @override
   void initState() {
     super.initState();
@@ -34,9 +41,12 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onSearchChanged(String query) {
     setState(() {
-      filteredResults = suggestions
-          .where((city) => city.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      filteredResults = suggestions.where((item) {
+        final cityLower = item.city.toLowerCase();
+        final codeLower = item.code.toLowerCase();
+        final queryLower = query.toLowerCase();
+        return cityLower.contains(queryLower) || codeLower.contains(queryLower);
+      }).toList();
     });
   }
 
@@ -53,7 +63,10 @@ class _SearchPageState extends State<SearchPage> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back,color: Colors.grey,),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.grey,
+                    ),
                     onPressed: () => context.pop(),
                   ),
                   Expanded(
@@ -63,15 +76,19 @@ class _SearchPageState extends State<SearchPage> {
                       onChanged: _onSearchChanged,
                       decoration: InputDecoration(
                         hintText: widget.hint,
-                        hintStyle: TextStyle(color: Colors.grey),
-                        prefixIcon: const Icon(Icons.search,color: Colors.grey,),
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       style: GoogleFonts.poppins(
                         fontSize: 14,
@@ -89,17 +106,31 @@ class _SearchPageState extends State<SearchPage> {
               child: ListView.builder(
                 itemCount: filteredResults.length,
                 itemBuilder: (context, index) {
-                  final city = filteredResults[index];
+                  final item = filteredResults[index];
                   return Padding(
-                    padding:EdgeInsetsGeometry.fromLTRB(32, 0, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
                     child: ListTile(
-                      leading: const Icon(Icons.location_city,color: Colors.grey,),
+                      leading: const Icon(
+                        Icons.location_city,
+                        color: Colors.grey,
+                      ),
                       title: Text(
-                        city,
-                        style: GoogleFonts.poppins(fontSize: 16,color: Colors.grey),
+                        item.city,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      subtitle: Text(
+                        item.code,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
                       onTap: () {
-                        context.pop(city); // Send result back
+                        // Return both city and airport code, as a Map (or you can create your custom object)
+                        context.pop({'city': item.city, 'code': item.code});
                       },
                     ),
                   );
