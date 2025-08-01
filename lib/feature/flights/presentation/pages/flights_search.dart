@@ -73,7 +73,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       (screenWidth * 0.035).clamp(15.0, 18.0); // 3.5% width, clamp 16-18
 
   double get bodyTextFontSize =>
-      (screenWidth * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
+      (screenWidth * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
 
   double get secondaryLabelFontSize =>
       (screenWidth * 0.030).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
@@ -450,7 +450,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   }
 
   Widget _buildPassengerField() {
-  // Build passenger count text e.g., "3 Passengers"
+  // Build passenger count text e.g., "3 Adults"
   final passengerText =
       '$_passengers Passenger${_passengers > 1 ? 's' : ''}'; // You can customize this text
 

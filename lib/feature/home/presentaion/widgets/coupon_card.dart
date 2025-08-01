@@ -171,7 +171,7 @@ class _CouponCardState extends State<CouponCard> {
         _topContentKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox != null && mounted) {
       setState(() {
-        _notchY = renderBox.size.height + 10; // Top content height + spacing
+        _notchY = renderBox.size.height + 9; // Top content height + spacing
       });
     }
   }
@@ -180,10 +180,10 @@ class _CouponCardState extends State<CouponCard> {
   double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 
   double headingFontSize(BuildContext context) =>
-      (screenWidth(context) * 0.03).clamp(16.0, 18.0);
+      (screenWidth(context) * 0.03).clamp(14.0, 16.0);
 
   double subheadingFontSize(BuildContext context) =>
-      (screenWidth(context) * 0.03).clamp(14.0, 16.0);
+      (screenWidth(context) * 0.03).clamp(12.0, 14.0);
 
   double bodyFontSize(BuildContext context) =>
       (screenWidth(context) * 0.03).clamp(12.0, 14.0);
@@ -229,7 +229,7 @@ class _CouponCardState extends State<CouponCard> {
                   // Top content section (measured)
                   Container(
                     key: _topContentKey,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     child: Row(
                       children: [
                         Container(
