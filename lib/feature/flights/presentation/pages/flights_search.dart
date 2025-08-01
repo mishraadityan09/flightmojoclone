@@ -19,6 +19,8 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   String _toCity = 'Mumbai';
   String _fromCityName = 'Delhi';
   String _fromCityCode = 'DEL';
+  String _fromAirportName = 'Indira Gandhi International Airport';
+  String _toAirportName = 'Chhatrapati Shivaji Maharaj International Airport';
 
   String _toCityName = 'Mumbai';
   String _toCityCode = 'BOM';
@@ -56,7 +58,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       (screenWidth * 0.055).clamp(20.0, 24.0); // 5.5% width, clamp 20-24
 
   double get buttonLabelFontSize =>
-      (screenWidth * 0.045).clamp(16.0, 18.0); // 4.5% width, clamp 16-18
+      (screenWidth * 0.043).clamp(16.0, 18.0); // 4.5% width, clamp 16-18
 
   double get bodyTextFontSize =>
       (screenWidth * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
@@ -105,8 +107,8 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
 
   Widget _buildTripTypeSelector() {
     return Container(
-      height: 44,
-      margin: const EdgeInsets.symmetric(horizontal: 0),
+      height: 52,
+      margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(36),
         border: Border.all(color: Colors.grey.shade300),
@@ -127,7 +129,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
         widthFactor: 0.5,
         heightFactor: 1,
         child: Container(
-          margin: const EdgeInsets.all(2),
+          margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(36),
@@ -166,7 +168,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             duration: const Duration(milliseconds: 300),
             style: TextStyle(
               color: isSelected ? Colors.white : Colors.grey.shade600,
-              fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+              fontWeight: isSelected ? FontWeight.w400 : FontWeight.normal,
               fontSize: buttonLabelFontSize,
             ),
             child: Text(text),
@@ -185,6 +187,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
               label: "From",
               city: _fromCityName,
               code: _fromCityCode,
+              airportName: _fromAirportName,
               icon: LucideIcons.planeTakeoff,
               onTap: () => _selectLocation("From"),
             ),
@@ -194,6 +197,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
               label: "To",
               city: _toCityName,
               code: _toCityCode,
+              airportName: _toAirportName,
               icon: LucideIcons.planeLanding,
               onTap: () => _selectLocation("To"),
             ),
@@ -241,11 +245,13 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
     required String label,
     String? city,
     String? code,
+    String? airportName,
     String? value,
     required IconData icon,
     required VoidCallback onTap,
   }) {
-    final bool showCityCode = city != null && code != null;
+    final bool showCityCode =
+        city != null && code != null && airportName != null;
 
     return InkWell(
       onTap: onTap,
@@ -272,27 +278,46 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
           ),
         ),
         child: showCityCode
-            ? RichText(
-                text: TextSpan(
-                  style: GoogleFonts.poppins(
-                    fontSize: bodyTextFontSize,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(text: city),
-                    const WidgetSpan(child: SizedBox(width: 8)),
-                    TextSpan(
-                      text: code,
-                      style: GoogleFonts.poppins(
-                        fontSize: bodyTextFontSize - 2,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey.shade500,
-                      ),
-                    ),
-                  ],
-                ),
-              )
+            ? Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    // City and Code on one line with some spacing
+    RichText(
+      text: TextSpan(
+        style: GoogleFonts.poppins(
+          fontSize: bodyTextFontSize,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+        ),
+        children: [
+          TextSpan(text: city),
+          const WidgetSpan(child: SizedBox(width: 8)),
+          TextSpan(
+            text: code,
+            style: GoogleFonts.poppins(
+              fontSize: bodyTextFontSize - 2,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey.shade500,
+            ),
+          ),
+        ],
+      ),
+    ),
+
+    // Airport name on a separate line, ellipsis if too long
+    Text(
+      airportName,
+      style: GoogleFonts.poppins(
+        fontSize: bodyTextFontSize - 4,
+        fontWeight: FontWeight.w400,
+        color: Colors.grey.shade600,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    ),
+  ],
+)
+
             : Text(
                 value ?? '',
                 style: GoogleFonts.poppins(
@@ -519,13 +544,16 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       setState(() {
         final city = result['city'] as String? ?? '';
         final code = result['code'] as String? ?? '';
+        final airportName = result['airportName'] as String? ?? '';
 
         if (fieldType == 'From') {
           _fromCityName = city;
           _fromCityCode = code;
+          _fromAirportName = airportName; // Add this variable in your state
         } else if (fieldType == 'To') {
           _toCityName = city;
           _toCityCode = code;
+          _toAirportName = airportName; // Add this variable in your state
         }
       });
     }
@@ -596,22 +624,26 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
     });
   }
 
-void _exchangeLocations() {
-  setState(() {
-    debugPrint('clicked');
-    
-    // Swap city names
-    final tempCity = _fromCityName;
-    _fromCityName = _toCityName;
-    _toCityName = tempCity;
-    
-    // Swap airport codes
-    final tempCode = _fromCityCode;
-    _fromCityCode = _toCityCode;
-    _toCityCode = tempCode;
-  });
-}
+  void _exchangeLocations() {
+    setState(() {
+      debugPrint('clicked');
 
+      // Swap city names
+      final tempCity = _fromCityName;
+      _fromCityName = _toCityName;
+      _toCityName = tempCity;
+
+      // Swap airport codes
+      final tempCode = _fromCityCode;
+      _fromCityCode = _toCityCode;
+      _toCityCode = tempCode;
+
+      // Swap airport names
+      final tempAirportName = _fromAirportName;
+      _fromAirportName = _toAirportName;
+      _toAirportName = tempAirportName;
+    });
+  }
 
   void _searchFlights({String? destinationOverride}) {
     final searchData = {

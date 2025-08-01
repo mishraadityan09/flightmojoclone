@@ -6,8 +6,13 @@ import '../../../../core/theme/app_theme.dart';
 class CityAirport {
   final String city;
   final String code;
+  final String airportName;
 
-  CityAirport({required this.city, required this.code});
+  CityAirport({
+    required this.city,
+    required this.code,
+    required this.airportName,
+  });
 }
 
 class SearchPage extends StatefulWidget {
@@ -22,13 +27,13 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
 
   final List<CityAirport> suggestions = [
-    CityAirport(city: 'Delhi', code: 'DEL'),
-    CityAirport(city: 'Mumbai', code: 'BOM'),
-    CityAirport(city: 'Bangalore', code: 'BLR'),
-    CityAirport(city: 'Chennai', code: 'MAA'),
-    CityAirport(city: 'Kolkata', code: 'CCU'),
-    CityAirport(city: 'Hyderabad', code: 'HYD'),
-    CityAirport(city: 'Goa', code: 'GOI'),
+    CityAirport(city: 'Delhi', code: 'DEL', airportName: 'Indira Gandhi International Airport'),
+    CityAirport(city: 'Mumbai', code: 'BOM', airportName: 'Chhatrapati Shivaji Maharaj International Airport'),
+    CityAirport(city: 'Bangalore', code: 'BLR', airportName: 'Kempegowda International Airport'),
+    CityAirport(city: 'Chennai', code: 'MAA', airportName: 'Chennai International Airport'),
+    CityAirport(city: 'Kolkata', code: 'CCU', airportName: 'Netaji Subhas Chandra Bose International Airport'),
+    CityAirport(city: 'Hyderabad', code: 'HYD', airportName: 'Rajiv Gandhi International Airport'),
+    CityAirport(city: 'Goa', code: 'GOI', airportName: 'Dabolim Airport'),
   ];
 
   List<CityAirport> filteredResults = [];
@@ -44,8 +49,11 @@ class _SearchPageState extends State<SearchPage> {
       filteredResults = suggestions.where((item) {
         final cityLower = item.city.toLowerCase();
         final codeLower = item.code.toLowerCase();
+        final airportNameLower = item.airportName.toLowerCase();
         final queryLower = query.toLowerCase();
-        return cityLower.contains(queryLower) || codeLower.contains(queryLower);
+        return cityLower.contains(queryLower) ||
+            codeLower.contains(queryLower) ||
+            airportNameLower.contains(queryLower);
       }).toList();
     });
   }
@@ -121,16 +129,31 @@ class _SearchPageState extends State<SearchPage> {
                           color: Colors.grey,
                         ),
                       ),
-                      subtitle: Text(
-                        item.code,
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                        ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.code,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          Text(
+                            item.airportName,
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.grey.shade500,
+                            ),
+                          ),
+                        ],
                       ),
                       onTap: () {
-                        // Return both city and airport code, as a Map (or you can create your custom object)
-                        context.pop({'city': item.city, 'code': item.code});
+                        context.pop({
+                          'city': item.city,
+                          'code': item.code,
+                          'airportName': item.airportName,
+                        });
                       },
                     ),
                   );
