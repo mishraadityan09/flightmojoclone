@@ -40,9 +40,8 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     // Responsive font sizing based on screen width
     final double screenWidth = MediaQuery.of(context).size.width;
-
     // Calculate label font size based on screen width
-    double labelFontSize = (screenWidth * 0.035).clamp(10.0, 14.0);
+    final double labelFontSize = (screenWidth * 0.035).clamp(10.0, 14.0);
 
     // Update current index based on current route
     final String location = GoRouterState.of(context).uri.path;
@@ -56,42 +55,70 @@ class _MainPageState extends State<MainPage> {
       _currentIndex = 3;
     }
 
+    final primaryColor = Theme.of(context).primaryColor;
+    final unselectedColor = Colors.grey;
+
+    final items = [
+      {'icon': Icons.home, 'label': 'Home', 'index': 0},
+      {'icon': Icons.search, 'label': 'Search', 'index': 1},
+      {'icon': Icons.book, 'label': 'Bookings', 'index': 2},
+      {'icon': Icons.person, 'label': 'Profile', 'index': 3},
+    ];
+
+    Widget _buildCustomBottomNavigationBar() {
+      return Material(
+        elevation: 10,
+        child: Container(
+          color: Colors.white,
+          height: 70,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items.map((item) {
+              final bool selected = _currentIndex == item['index'];
+              return InkWell(
+                onTap: () => _onItemTapped(item['index'] as int),
+                borderRadius: BorderRadius.circular(30), // capsule shape
+                splashColor: primaryColor.withOpacity(0.2),
+                highlightColor: Colors.transparent,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: selected
+                      ? BoxDecoration(
+                          color: primaryColor.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(30),
+                        )
+                      : null,
+                  child: Row(
+                    children: [
+                      Icon(
+                        item['icon'] as IconData,
+                        color: selected ? primaryColor : unselectedColor,
+                      ),
+                      if (selected) ...[
+                        const SizedBox(width: 8),
+                        Text(
+                          item['label'] as String,
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: labelFontSize,
+                          ),
+                        ),
+                      ]
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle: TextStyle(
-          fontSize: labelFontSize,
-          fontWeight: FontWeight.w600,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontSize: labelFontSize,
-          fontWeight: FontWeight.w400,
-        ),
-        items: const [
-          BottomNavigationBarItem(
-            
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Bookings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+      bottomNavigationBar: _buildCustomBottomNavigationBar(),
     );
   }
 }
