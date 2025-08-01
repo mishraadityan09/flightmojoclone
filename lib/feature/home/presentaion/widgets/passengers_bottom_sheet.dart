@@ -424,7 +424,13 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    // Pass the selected data back as a Map
+                    Navigator.of(context).pop({
+                      'adultCount': _adultCount,
+                      'childCount': _childCount,
+                      'infantCount': _infantCount,
+                      'travelClass': _travelClass,
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),
