@@ -5,6 +5,7 @@ import 'package:flightmojo/feature/home/presentaion/widgets/coupon_card.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/flight_deal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 enum ServiceType { flight }
@@ -223,13 +224,11 @@ class _HomePageState extends State<HomePage> {
             Transform.translate(
               offset: const Offset(0, -150),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8),
                 
+
                 child: _buildServiceContent(),
               ),
             ),
-
-            
 
             const SizedBox(height: 0), // Reduced spacing
             Transform.translate(
@@ -238,6 +237,44 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // Insert before Popular Destinations section
+            Transform.translate(
+              offset: const Offset(0, -100),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // SVG love-themed background
+                  SvgPicture.asset(
+                    'assets/images/heart.svg', // Use your own SVG path
+                    width: 520,
+                    height: 100,
+                    fit: BoxFit.cover,
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withOpacity(0.1), // Light color
+                  ),
+                  // Beautifully styled Text (in straight line)
+                  Text(
+                    'BUILD WITH LOVE AT FLIGHTSMOJO',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 255, 125, 50),
+                      letterSpacing: 2,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 4,
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withOpacity(0.5),
+                          offset: Offset(1, 2),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -337,140 +374,140 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildHeroText() {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withOpacity(0.8),
-          ],
-        ),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Your Travel Companion',
-            style: GoogleFonts.poppins(
-              fontSize: (screenWidth * 0.07).clamp(24.0, 28.0),
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Book flights, hotels & cabs at best prices',
-            style: GoogleFonts.poppins(
-              fontSize: bodyFontSize,
-              color: Colors.white.withOpacity(0.9),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildHeroText() {
+  //   return Container(
+  //     width: double.infinity,
+  //     decoration: BoxDecoration(
+  //       gradient: LinearGradient(
+  //         begin: Alignment.topCenter,
+  //         end: Alignment.bottomCenter,
+  //         colors: [
+  //           Theme.of(context).primaryColor,
+  //           Theme.of(context).primaryColor.withOpacity(0.8),
+  //         ],
+  //       ),
+  //     ),
+  //     padding: const EdgeInsets.all(20),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(
+  //           'Your Travel Companion',
+  //           style: GoogleFonts.poppins(
+  //             fontSize: (screenWidth * 0.07).clamp(24.0, 28.0),
+  //             fontWeight: FontWeight.bold,
+  //             color: Colors.white,
+  //           ),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         Text(
+  //           'Book flights, hotels & cabs at best prices',
+  //           style: GoogleFonts.poppins(
+  //             fontSize: bodyFontSize,
+  //             color: Colors.white.withOpacity(0.9),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildServiceChips() {
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: ServiceType.values.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, index) {
-          final service = ServiceType.values[index];
-          final isSelected = service == _selectedService;
+  // Widget _buildServiceChips() {
+  //   return Container(
+  //     height: 50,
+  //     padding: const EdgeInsets.symmetric(horizontal: 16),
+  //     child: ListView.separated(
+  //       scrollDirection: Axis.horizontal,
+  //       itemCount: ServiceType.values.length,
+  //       separatorBuilder: (_, __) => const SizedBox(width: 12),
+  //       itemBuilder: (context, index) {
+  //         final service = ServiceType.values[index];
+  //         final isSelected = service == _selectedService;
 
-          String label;
-          IconData iconData;
+  //         String label;
+  //         IconData iconData;
 
-          switch (service) {
-            case ServiceType.flight:
-              label = 'Flights';
-              iconData = Icons.flight;
-              break;
-            // case ServiceType.hotel:
-            //   label = 'Hotels';
-            //   iconData = Icons.hotel;
-            //   break;
-            // case ServiceType.cab:
-            //   label = 'Cabs';
-            //   iconData = Icons.directions_car;
-            //   break;
-          }
+  //         switch (service) {
+  //           case ServiceType.flight:
+  //             label = 'Flights';
+  //             iconData = Icons.flight;
+  //             break;
+  //           // case ServiceType.hotel:
+  //           //   label = 'Hotels';
+  //           //   iconData = Icons.hotel;
+  //           //   break;
+  //           // case ServiceType.cab:
+  //           //   label = 'Cabs';
+  //           //   iconData = Icons.directions_car;
+  //           //   break;
+  //         }
 
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25),
-              gradient: isSelected
-                  ? LinearGradient(
-                      colors: [Colors.orange, Colors.orange.withOpacity(0.8)],
-                    )
-                  : null,
-              color: isSelected ? null : Colors.grey.shade800,
-              border: isSelected
-                  ? null
-                  : Border.all(color: Colors.grey.shade600),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: Colors.orange.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(25),
-                onTap: () {
-                  setState(() {
-                    _selectedService = service;
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        iconData,
-                        size: iconSize,
-                        color: isSelected ? Colors.white : Colors.grey.shade300,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        label,
-                        style: GoogleFonts.poppins(
-                          color: isSelected
-                              ? Colors.white
-                              : Colors.grey.shade300,
-                          fontWeight: FontWeight.w600,
-                          fontSize: bodyFontSize,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  //         return AnimatedContainer(
+  //           duration: const Duration(milliseconds: 300),
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(25),
+  //             gradient: isSelected
+  //                 ? LinearGradient(
+  //                     colors: [Colors.orange, Colors.orange.withOpacity(0.8)],
+  //                   )
+  //                 : null,
+  //             color: isSelected ? null : Colors.grey.shade800,
+  //             border: isSelected
+  //                 ? null
+  //                 : Border.all(color: Colors.grey.shade600),
+  //             boxShadow: isSelected
+  //                 ? [
+  //                     BoxShadow(
+  //                       color: Colors.orange.withOpacity(0.3),
+  //                       blurRadius: 8,
+  //                       offset: const Offset(0, 2),
+  //                     ),
+  //                   ]
+  //                 : null,
+  //           ),
+  //           child: Material(
+  //             color: Colors.transparent,
+  //             child: InkWell(
+  //               borderRadius: BorderRadius.circular(25),
+  //               onTap: () {
+  //                 setState(() {
+  //                   _selectedService = service;
+  //                 });
+  //               },
+  //               child: Padding(
+  //                 padding: const EdgeInsets.symmetric(
+  //                   horizontal: 20,
+  //                   vertical: 12,
+  //                 ),
+  //                 child: Row(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   children: [
+  //                     Icon(
+  //                       iconData,
+  //                       size: iconSize,
+  //                       color: isSelected ? Colors.white : Colors.grey.shade300,
+  //                     ),
+  //                     const SizedBox(width: 8),
+  //                     Text(
+  //                       label,
+  //                       style: GoogleFonts.poppins(
+  //                         color: isSelected
+  //                             ? Colors.white
+  //                             : Colors.grey.shade300,
+  //                         fontWeight: FontWeight.w600,
+  //                         fontSize: bodyFontSize,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget _buildServiceContent() {
     Widget child;
@@ -506,7 +543,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: Container(
         key: ValueKey<ServiceType>(_selectedService),
-        
+
         padding: const EdgeInsets.all(20),
         child: child,
       ),
@@ -516,254 +553,124 @@ class _HomePageState extends State<HomePage> {
   // Hotel-specific widgets
 
   Widget _buildPopularDestinationsSection() {
-  return Padding(
-    padding: const EdgeInsets.all(16),
-    child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildRoutesSlider(
+            title: 'Popular Domestic Routes',
+            routes: _domesticRoutes,
+          ),
+
+          const SizedBox(height: 24),
+
+          // Popular International Routes Slider
+          _buildRoutesSlider(
+            title: 'Popular International Routes',
+            routes: _internationalRoutes,
+          ),
+
+          const SizedBox(height: 24),
+
+          // Available Coupons Section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Available Coupons',
+                style: GoogleFonts.poppins(
+                  fontSize: headingFontSize,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _coupons.length,
+                itemBuilder: (context, index) {
+                  final coupon = _coupons[index];
+                  return CouponCard(
+                    title: coupon['title']!,
+                    subtitle: coupon['subtitle']!,
+                    promoCode: coupon['promoCode']!,
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoutesSlider({
+    required String title,
+    required List<Map<String, String>> routes,
+  }) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-          _buildRoutesSlider(
-          title: 'Popular Domestic Routes',
-          routes: _domesticRoutes,
-        ),
-        
-        const SizedBox(height: 24),
-        
-        // Popular International Routes Slider
-        _buildRoutesSlider(
-          title: 'Popular International Routes',
-          routes: _internationalRoutes,
-        ),
-        
-        const SizedBox(height: 24),
-        
-        // Available Coupons Section
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Available Coupons',
-              style: GoogleFonts.poppins(
-                fontSize: headingFontSize,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 6),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _coupons.length,
-              itemBuilder: (context, index) {
-                final coupon = _coupons[index];
-                return CouponCard(
-                  title: coupon['title']!,
-                  subtitle: coupon['subtitle']!,
-                  promoCode: coupon['promoCode']!,
-                );
-              },
-            ),
-          ],
-        ),
-        
-        const SizedBox(height: 24),
-        
-       
-     
-        
-        // Popular Destinations Grid (keeping your original)
         Text(
-          'Popular Destinations',
+          title,
           style: GoogleFonts.poppins(
             fontSize: headingFontSize,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1.2,
+        const SizedBox(height: 12),
+        SizedBox(
+          height: null, // Let the card determine its own height
+          child: CarouselSlider(
+            options: CarouselOptions(
+              aspectRatio: screenWidth < 400
+                  ? 16 / 9
+                  : 2 / 1, // Use aspect ratio instead of fixed height
+              viewportFraction: screenWidth < 400 ? 0.52 : 0.45,
+              enableInfiniteScroll: false,
+              enlargeCenterPage: false,
+              enlargeFactor: 0.15,
+              padEnds: false,
+              disableCenter: false,
+              autoPlay: false,
+            ),
+            items: routes.map((route) {
+              return _buildRouteCard(route);
+            }).toList(),
           ),
-          itemCount: _destinations.length,
-          itemBuilder: (context, index) =>
-              _buildDestinationCard(_destinations[index]),
         ),
       ],
-    ),
-  );
-}
-
-Widget _buildRoutesSlider({
-  required String title,
-  required List<Map<String, String>> routes,
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        title,
-        style: GoogleFonts.poppins(
-          fontSize: headingFontSize,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      const SizedBox(height: 12),
-      SizedBox(
-        height: null, // Let the card determine its own height
-        child: CarouselSlider(
-          options: CarouselOptions(
-            aspectRatio: screenWidth < 400 ? 16/9 : 2/1, // Use aspect ratio instead of fixed height
-            viewportFraction: screenWidth < 400 ? 0.52 : 0.45,
-            enableInfiniteScroll: false,
-            enlargeCenterPage: false,
-            enlargeFactor: 0.15,
-            padEnds: false,
-            disableCenter: false,
-            autoPlay: false,
-          ),
-          items: routes.map((route) {
-            return _buildRouteCard(route);
-          }).toList(),
-        ),
-      ),
-    ],
-  );
-}
-
-Widget _buildRouteCard(Map<String, String> route) {
-  return FlightDealCard(
-    fromCity: route['from']!,
-    toCity: route['to']!,
-    date: route['date'] ?? 'Flexible',
-    price: route['price']!,
-    onTap: () {
-      print('Route tapped: ${route['from']} to ${route['to']}');
-      // Add your navigation logic here
-    },
-  );
-}
-
-// Add these data lists to your class
-final List<Map<String, String>> _domesticRoutes = [
-  {
-    'from': 'DEL',
-    'to': 'BOM',
-    'date': 'Mon, 19 Aug',
-    'price': '3450',
-  },
-  {
-    'from': 'BLR',
-    'to': 'DEL',
-    'date': 'Tue, 20 Aug',
-    'price': '4200',
-  },
-  {
-    'from': 'DEL',
-    'to': 'GOI',
-    'date': 'Wed, 21 Aug',
-    'price': '5100',
-  },
-  {
-    'from': 'BOM',
-    'to': 'BLR',
-    'date': 'Thu, 22 Aug',
-    'price': '3800',
-  },
-  {
-    'from': 'CCU',
-    'to': 'DEL',
-    'date': 'Fri, 23 Aug',
-    'price': '4500',
-  },
-];
-
-final List<Map<String, String>> _internationalRoutes = [
-  {
-    'from': 'DEL',
-    'to': 'DXB',
-    'date': 'Sat, 24 Aug',
-    'price': '18500',
-  },
-  {
-    'from': 'BOM',
-    'to': 'LHR',
-    'date': 'Sun, 25 Aug',
-    'price': '45200',
-  },
-  {
-    'from': 'DEL',
-    'to': 'SIN',
-    'date': 'Mon, 26 Aug',
-    'price': '22800',
-  },
-  {
-    'from': 'BLR',
-    'to': 'SFO',
-    'date': 'Tue, 27 Aug',
-    'price': '68500',
-  },
-  {
-    'from': 'DEL',
-    'to': 'BKK',
-    'date': 'Wed, 28 Aug',
-    'price': '15900',
-  },
-];
-
-  Widget _buildDestinationCard(Map<String, String> destination) {
-    return GestureDetector(
-      // onTap: () => _searchFlightsWithDestination(destination['name']!),
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).primaryColor.withOpacity(0.8),
-                Theme.of(context).primaryColor,
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.location_city, color: Colors.white, size: 32),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      destination['name']!,
-                      style: GoogleFonts.poppins(
-                        fontSize: subheadingFontSize,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'from ${destination['price']!}',
-                      style: GoogleFonts.poppins(
-                        fontSize: bodyFontSize,
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
+
+  Widget _buildRouteCard(Map<String, String> route) {
+    return FlightDealCard(
+      fromCity: route['from']!,
+      toCity: route['to']!,
+      date: route['date'] ?? 'Flexible',
+      price: route['price']!,
+      onTap: () {
+        print('Route tapped: ${route['from']} to ${route['to']}');
+        // Add your navigation logic here
+      },
+    );
+  }
+
+  // Add these data lists to your class
+  final List<Map<String, String>> _domesticRoutes = [
+    {'from': 'DEL', 'to': 'BOM', 'date': 'Mon, 19 Aug', 'price': '3450'},
+    {'from': 'BLR', 'to': 'DEL', 'date': 'Tue, 20 Aug', 'price': '4200'},
+    {'from': 'DEL', 'to': 'GOI', 'date': 'Wed, 21 Aug', 'price': '5100'},
+    {'from': 'BOM', 'to': 'BLR', 'date': 'Thu, 22 Aug', 'price': '3800'},
+    {'from': 'CCU', 'to': 'DEL', 'date': 'Fri, 23 Aug', 'price': '4500'},
+  ];
+
+  final List<Map<String, String>> _internationalRoutes = [
+    {'from': 'DEL', 'to': 'DXB', 'date': 'Sat, 24 Aug', 'price': '18500'},
+    {'from': 'BOM', 'to': 'LHR', 'date': 'Sun, 25 Aug', 'price': '45200'},
+    {'from': 'DEL', 'to': 'SIN', 'date': 'Mon, 26 Aug', 'price': '22800'},
+    {'from': 'BLR', 'to': 'SFO', 'date': 'Tue, 27 Aug', 'price': '68500'},
+    {'from': 'DEL', 'to': 'BKK', 'date': 'Wed, 28 Aug', 'price': '15900'},
+  ];
 }

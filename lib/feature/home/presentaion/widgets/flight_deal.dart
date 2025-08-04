@@ -26,7 +26,7 @@ class FlightDealCard extends StatelessWidget {
       (_getScreenWidth(context) * 0.030).clamp(11.0, 14.0); // 3% width, clamp 11-14
 
   double _getPriceFontSize(BuildContext context) =>
-      (_getScreenWidth(context) * 0.04).clamp(14.0, 16.0); // 4.5% width, clamp 16-20
+      (_getScreenWidth(context) * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
 
   double _getPriceLabelFontSize(BuildContext context) =>
       (_getScreenWidth(context) * 0.030).clamp(11.0, 14.0); // 3% width, clamp 11-14
@@ -74,8 +74,8 @@ class FlightDealCard extends StatelessWidget {
           // ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Route Section (now includes price)
             _buildRouteSection(context),
