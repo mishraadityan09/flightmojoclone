@@ -65,7 +65,7 @@ class _MainPageState extends State<MainPage> {
       {'icon': Icons.person, 'label': 'Profile', 'index': 3},
     ];
 
-    Widget _buildCustomBottomNavigationBar() {
+    Widget buildCustomBottomNavigationBar() {
       return Material(
         elevation: 10,
         child: Container(
@@ -118,7 +118,7 @@ class _MainPageState extends State<MainPage> {
 
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: _buildCustomBottomNavigationBar(),
+      bottomNavigationBar: buildCustomBottomNavigationBar(),
     );
   }
 }

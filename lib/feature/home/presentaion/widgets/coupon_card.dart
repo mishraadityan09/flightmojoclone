@@ -396,6 +396,8 @@ class _CouponCardState extends State<CouponCard> {
 
 // Example usage
 class TicketExample extends StatelessWidget {
+  const TicketExample({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

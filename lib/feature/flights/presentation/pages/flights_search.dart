@@ -16,8 +16,8 @@ class FlightSearchWidget extends StatefulWidget {
 
 class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   // Flight-specific state variables
-  String _fromCity = 'Delhi';
-  String _toCity = 'Mumbai';
+  final String _fromCity = 'Delhi';
+  final String _toCity = 'Mumbai';
   String _fromCityName = 'Delhi';
   String _fromCityCode = 'DEL';
   String _fromAirportName = 'Indira Gandhi International Airport';

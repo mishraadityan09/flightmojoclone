@@ -1,9 +1,9 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/coupon_card.dart';
+import 'package:flightmojo/feature/home/presentaion/widgets/flight_deal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 enum ServiceType { flight }
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
       (screenWidth * 0.045).clamp(16.0, 18.0); // 4.5% width, clamp 16-18
 
   double get bodyFontSize =>
-      (screenWidth * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
+      (screenWidth * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
 
   double get secondaryFontSize =>
       (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
@@ -520,6 +520,18 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          FlightDealCard(
+            fromCity: 'DEL',
+            toCity: 'KTM',
+            date: 'Sat, 16 Aug',
+            price: '4010',
+            onTap: () {
+              // Handle card tap - navigate to flight search
+              print('Flight card tapped!');
+              // You can add navigation logic here
+              // Navigator.push(context, MaterialPageRoute(...));
+            },
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
