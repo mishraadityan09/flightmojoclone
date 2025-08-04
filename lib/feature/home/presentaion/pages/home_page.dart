@@ -1,4 +1,5 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/coupon_card.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/flight_deal.dart';
@@ -515,75 +516,202 @@ class _HomePageState extends State<HomePage> {
   // Hotel-specific widgets
 
   Widget _buildPopularDestinationsSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FlightDealCard(
-            fromCity: 'DEL',
-            toCity: 'KTM',
-            date: 'Sat, 16 Aug',
-            price: '4010',
-            onTap: () {
-              // Handle card tap - navigate to flight search
-              print('Flight card tapped!');
-              // You can add navigation logic here
-              // Navigator.push(context, MaterialPageRoute(...));
-            },
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Available Coupons',
-                style: GoogleFonts.poppins(
-                  fontSize: headingFontSize,
-                  fontWeight: FontWeight.bold,
-                ),
+  return Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+          _buildRoutesSlider(
+          title: 'Popular Domestic Routes',
+          routes: _domesticRoutes,
+        ),
+        
+        const SizedBox(height: 24),
+        
+        // Popular International Routes Slider
+        _buildRoutesSlider(
+          title: 'Popular International Routes',
+          routes: _internationalRoutes,
+        ),
+        
+        const SizedBox(height: 24),
+        
+        // Available Coupons Section
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Available Coupons',
+              style: GoogleFonts.poppins(
+                fontSize: headingFontSize,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 6),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _coupons.length,
-                itemBuilder: (context, index) {
-                  final coupon = _coupons[index];
-                  return CouponCard(
-                    title: coupon['title']!,
-                    subtitle: coupon['subtitle']!,
-                    promoCode: coupon['promoCode']!,
-                  );
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Popular Destinations',
-            style: GoogleFonts.poppins(
-              fontSize: headingFontSize,
-              fontWeight: FontWeight.bold,
             ),
-          ),
-          const SizedBox(height: 16),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.2,
+            const SizedBox(height: 6),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _coupons.length,
+              itemBuilder: (context, index) {
+                final coupon = _coupons[index];
+                return CouponCard(
+                  title: coupon['title']!,
+                  subtitle: coupon['subtitle']!,
+                  promoCode: coupon['promoCode']!,
+                );
+              },
             ),
-            itemCount: _destinations.length,
-            itemBuilder: (context, index) =>
-                _buildDestinationCard(_destinations[index]),
+          ],
+        ),
+        
+        const SizedBox(height: 24),
+        
+       
+     
+        
+        // Popular Destinations Grid (keeping your original)
+        Text(
+          'Popular Destinations',
+          style: GoogleFonts.poppins(
+            fontSize: headingFontSize,
+            fontWeight: FontWeight.bold,
           ),
-        ],
+        ),
+        const SizedBox(height: 16),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1.2,
+          ),
+          itemCount: _destinations.length,
+          itemBuilder: (context, index) =>
+              _buildDestinationCard(_destinations[index]),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildRoutesSlider({
+  required String title,
+  required List<Map<String, String>> routes,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        title,
+        style: GoogleFonts.poppins(
+          fontSize: headingFontSize,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-    );
-  }
+      const SizedBox(height: 12),
+      SizedBox(
+        height: null, // Let the card determine its own height
+        child: CarouselSlider(
+          options: CarouselOptions(
+            aspectRatio: screenWidth < 400 ? 16/9 : 2/1, // Use aspect ratio instead of fixed height
+            viewportFraction: screenWidth < 400 ? 0.52 : 0.45,
+            enableInfiniteScroll: false,
+            enlargeCenterPage: false,
+            enlargeFactor: 0.15,
+            padEnds: false,
+            disableCenter: false,
+            autoPlay: false,
+          ),
+          items: routes.map((route) {
+            return _buildRouteCard(route);
+          }).toList(),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildRouteCard(Map<String, String> route) {
+  return FlightDealCard(
+    fromCity: route['from']!,
+    toCity: route['to']!,
+    date: route['date'] ?? 'Flexible',
+    price: route['price']!,
+    onTap: () {
+      print('Route tapped: ${route['from']} to ${route['to']}');
+      // Add your navigation logic here
+    },
+  );
+}
+
+// Add these data lists to your class
+final List<Map<String, String>> _domesticRoutes = [
+  {
+    'from': 'DEL',
+    'to': 'BOM',
+    'date': 'Mon, 19 Aug',
+    'price': '3450',
+  },
+  {
+    'from': 'BLR',
+    'to': 'DEL',
+    'date': 'Tue, 20 Aug',
+    'price': '4200',
+  },
+  {
+    'from': 'DEL',
+    'to': 'GOI',
+    'date': 'Wed, 21 Aug',
+    'price': '5100',
+  },
+  {
+    'from': 'BOM',
+    'to': 'BLR',
+    'date': 'Thu, 22 Aug',
+    'price': '3800',
+  },
+  {
+    'from': 'CCU',
+    'to': 'DEL',
+    'date': 'Fri, 23 Aug',
+    'price': '4500',
+  },
+];
+
+final List<Map<String, String>> _internationalRoutes = [
+  {
+    'from': 'DEL',
+    'to': 'DXB',
+    'date': 'Sat, 24 Aug',
+    'price': '18500',
+  },
+  {
+    'from': 'BOM',
+    'to': 'LHR',
+    'date': 'Sun, 25 Aug',
+    'price': '45200',
+  },
+  {
+    'from': 'DEL',
+    'to': 'SIN',
+    'date': 'Mon, 26 Aug',
+    'price': '22800',
+  },
+  {
+    'from': 'BLR',
+    'to': 'SFO',
+    'date': 'Tue, 27 Aug',
+    'price': '68500',
+  },
+  {
+    'from': 'DEL',
+    'to': 'BKK',
+    'date': 'Wed, 28 Aug',
+    'price': '15900',
+  },
+];
 
   Widget _buildDestinationCard(Map<String, String> destination) {
     return GestureDetector(

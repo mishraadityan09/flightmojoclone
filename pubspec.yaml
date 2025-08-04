@@ -44,6 +44,7 @@ dependencies:
   flutter_localization: ^0.3.3
   custom_sliding_segmented_control: ^1.8.5
   lucide_icons_flutter: ^3.0.7
+  carousel_slider: ^5.1.1
 
 
 
