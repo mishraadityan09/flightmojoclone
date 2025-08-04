@@ -1,5 +1,6 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flightmojo/core/common/plane_loader.dart';
 import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/coupon_card.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/flight_deal.dart';
@@ -275,6 +276,9 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+
+
+           
           ],
         ),
       ),
@@ -627,7 +631,7 @@ class _HomePageState extends State<HomePage> {
               aspectRatio: screenWidth < 400
                   ? 16 / 9
                   : 2 / 1, // Use aspect ratio instead of fixed height
-              viewportFraction: screenWidth < 400 ? 0.52 : 0.45,
+              viewportFraction: screenWidth < 400 ? 0.48 : 0.45,
               enableInfiniteScroll: false,
               enlargeCenterPage: false,
               enlargeFactor: 0.15,
