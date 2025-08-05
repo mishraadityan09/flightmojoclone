@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -58,20 +59,101 @@ class FlightSearchResultsScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Top airline options bar
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildAirlineOption('IndiGo', '₹ 4799', Colors.blue[800]!),
-                _buildAirlineOption('Air India', '₹ 4870', Colors.red[800]!),
-                _buildAirlineOption('SpiceJet', '₹ 4986', Colors.orange[800]!),
-                _buildAirlineOption('Air India E...', '₹ 5267', Colors.orange[600]!),
-              ],
+            margin: EdgeInsets.all(8),
+            child: IntrinsicHeight(
+              // Add this wrapper
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.15),
+                            spreadRadius: 1,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          height: 50, // Reduced height to match container
+                          viewportFraction:
+                              0.25, // Adjusted for better fit on small screens
+                          enableInfiniteScroll: false,
+                          enlargeCenterPage: false,
+                          autoPlay: false,
+                          padEnds: false,
+                          scrollDirection: Axis.horizontal,
+                        ),
+                        items: [
+                          _buildPriceGraphOptions(' 07 Aug', '₹ 4799'),
+                          _buildPriceGraphOptions(' 08 Aug', '₹ 4870'),
+                          _buildPriceGraphOptions(' 08 Aug', '₹ 4986'),
+                          _buildPriceGraphOptions(' 09 Aug', '₹ 5267'),
+                          _buildPriceGraphOptions(' 10 Aug', '₹ 5100'),
+                          _buildPriceGraphOptions(' 11 Aug', '₹ 4950'),
+                          _buildPriceGraphOptions(
+                            ' 12 Aug',
+                            '₹ 5350',
+                            showSeparator: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 6),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.15),
+                            spreadRadius: 1,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            LucideIcons.chartGantt,
+                            size: 18,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Price Graph',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: const Color.fromARGB(255, 102, 102, 102),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          
+
           // Flight results list
           Expanded(
             child: ListView(
@@ -142,7 +224,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                     _handleFlightSelection(context, '6E-449');
                   },
                 ),
-                  SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildFlightCard(
                   airline: 'IndiGo',
                   flightNumber: '6E-449',
@@ -155,7 +237,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                     _handleFlightSelection(context, '6E-449');
                   },
                 ),
-                  SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildFlightCard(
                   airline: 'IndiGo',
                   flightNumber: '6E-449',
@@ -168,7 +250,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                     _handleFlightSelection(context, '6E-449');
                   },
                 ),
-                  SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildFlightCard(
                   airline: 'IndiGo',
                   flightNumber: '6E-449',
@@ -181,7 +263,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                     _handleFlightSelection(context, '6E-449');
                   },
                 ),
-                  SizedBox(height: 12),
+                SizedBox(height: 12),
                 _buildFlightCard(
                   airline: 'IndiGo',
                   flightNumber: '6E-449',
@@ -202,44 +284,57 @@ class FlightSearchResultsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAirlineOption(String airline, String price, Color color) {
-    return GestureDetector(
-      onTap: () {
-        // Handle airline filter
-      },
-      child: Column(
+  Widget _buildPriceGraphOptions(
+    String date,
+    String price, {
+    bool showSeparator = true,
+  }) {
+    return Container(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: Text(
-                airline.substring(0, 2).toUpperCase(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
+          // Left separator (always show for proper containment)
+          Container(height: 40, width: 1, color: Colors.grey[300]),
+          // Content container
+          Expanded(
+            child: Container(
+              height: 40, // Fixed height to prevent overflow
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Text(
+                      date,
+                      style: TextStyle(
+                        fontSize: 12, // Reduced font size for small screens
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                  SizedBox(height: 1), // Reduced spacing
+                  Flexible(
+                    child: Text(
+                      price,
+                      style: TextStyle(
+                        fontSize: 10, // Reduced font size
+                        color: Colors.black54,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(height: 2),
-          Text(
-            airline,
-            style: TextStyle(fontSize: 9, color: Colors.grey[600]),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-          Text(
-            price,
-            style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
-            maxLines: 1,
-          ),
+          // Right separator (conditionally show)
+          if (showSeparator)
+            Container(height: 40, width: 1, color: Colors.grey[300]),
         ],
       ),
     );
@@ -261,7 +356,9 @@ class FlightSearchResultsScreen extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.all(16),
-            margin: EdgeInsets.only(top: 8), // Add margin to accommodate the badge
+            margin: EdgeInsets.only(
+              top: 8,
+            ), // Add margin to accommodate the badge
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
@@ -296,7 +393,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 12),
-                
+
                 // Flight details
                 Expanded(
                   child: Column(
@@ -374,15 +471,12 @@ class FlightSearchResultsScreen extends StatelessWidget {
                       SizedBox(height: 4),
                       Text(
                         flightNumber,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[500],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[500]),
                       ),
                     ],
                   ),
                 ),
-                
+
                 // Price
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -403,7 +497,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Saver Fare badge positioned at top-right border
           Positioned(
             top: 0,
