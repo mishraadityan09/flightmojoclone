@@ -108,10 +108,12 @@ class _HomePageState extends State<HomePage> {
                     bottomRight: Radius.circular(40),
                   ),
                   child: Image.asset(
-                    'assets/images/travelBg.jpg', // Your image asset
+                    'assets/images/flights.jpg', // Your image asset
                     width: double.infinity,
                     height: 250,
                     fit: BoxFit.cover,
+                    scale: 0.1,
+                    colorBlendMode: BlendMode.hardLight,
                   ),
                 ),
                 // Black semi-transparent overlay for readability

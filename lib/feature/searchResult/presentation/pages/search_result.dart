@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class FlightSearchResultsScreen extends StatelessWidget {
   final String fromCity;
   final String toCity;
-  final String date;
+  final String departureDate;
+  final String returnDate;
   final String passengers;
 
   const FlightSearchResultsScreen({
     super.key,
     this.fromCity = "New Delhi",
     this.toCity = "Mumbai",
-    this.date = "15 Jul",
+    this.departureDate = "15 Jul",
+    this.returnDate = "16 Jul",
     this.passengers = "1 Adult",
   });
 
@@ -32,14 +35,15 @@ class FlightSearchResultsScreen extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
             Text(
-              '$date | $passengers',
+              '$departureDate - $returnDate | $passengers',
               style: TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ],
         ),
+        centerTitle: false,
         actions: [
           IconButton(
-            icon: Icon(Icons.tune, color: Colors.white),
+            icon: Icon(LucideIcons.funnel, color: Colors.white),
             onPressed: () {
               // Add filter functionality
             },

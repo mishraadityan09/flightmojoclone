@@ -60,19 +60,21 @@ class _FlyingSceneState extends State<FlyingScene>
                 ),
               ),
 
-              // Moving cloud layer above plane with fade effect
+              // Moving cloud layer above plane with fade effect - MORE CLOUDS
               Positioned(
                 top: 100,
                 left: -cloudOffset,
                 child: Row(
                   children: [
                     cloudSvgWithFade(-cloudOffset, 0, screenWidth),
+                    SizedBox(width: screenWidth * 0.25),
+                    cloudSvgWithFade(-cloudOffset, screenWidth * 0.25 + 150, screenWidth),
                     SizedBox(width: screenWidth * 0.3),
-                    cloudSvgWithFade(-cloudOffset, screenWidth * 0.3 + 150, screenWidth),
+                    cloudSvgWithFade(-cloudOffset, screenWidth * 0.55 + 300, screenWidth),
                     SizedBox(width: screenWidth * 0.2),
-                    cloudSvgWithFade(-cloudOffset, screenWidth * 0.5 + 300, screenWidth),
-                    SizedBox(width: screenWidth * 0.4),
-                    cloudSvgWithFade(-cloudOffset, screenWidth * 0.9 + 450, screenWidth),
+                    cloudSvgWithFade(-cloudOffset, screenWidth * 0.75 + 450, screenWidth),
+                    SizedBox(width: screenWidth * 0.35),
+                    cloudSvgWithFade(-cloudOffset, screenWidth * 1.1 + 600, screenWidth),
                   ],
                 ),
               ),
@@ -82,17 +84,21 @@ class _FlyingSceneState extends State<FlyingScene>
                 child: Row(
                   children: [
                     cloudSvgWithFade(screenWidth - cloudOffset, 0, screenWidth),
-                    SizedBox(width: screenWidth * 0.25),
-                    cloudSvgWithFade(screenWidth - cloudOffset, screenWidth * 0.25 + 150, screenWidth),
-                    SizedBox(width: screenWidth * 0.35),
-                    cloudSvgWithFade(screenWidth - cloudOffset, screenWidth * 0.6 + 300, screenWidth),
+                    SizedBox(width: screenWidth * 0.2),
+                    cloudSvgWithFade(screenWidth - cloudOffset, screenWidth * 0.2 + 150, screenWidth),
+                    SizedBox(width: screenWidth * 0.3),
+                    cloudSvgWithFade(screenWidth - cloudOffset, screenWidth * 0.5 + 300, screenWidth),
+                    SizedBox(width: screenWidth * 0.18),
+                    cloudSvgWithFade(screenWidth - cloudOffset, screenWidth * 0.68 + 450, screenWidth),
+                    SizedBox(width: screenWidth * 0.3),
+                    cloudSvgWithFade(screenWidth - cloudOffset, screenWidth * 1.0 + 600, screenWidth),
                   ],
                 ),
               ),
 
-              // Centered plane (stationary) with orange accent
+              // Plane moved ABOVE center with orange accent
               Align(
-                alignment: const Alignment(0, 0), // a bit to the right
+                alignment: const Alignment(0, -0.4), // Moved up from center (was 0, 0)
                 child: Container(
                   padding: const EdgeInsets.all(8),
                  
@@ -108,22 +114,32 @@ class _FlyingSceneState extends State<FlyingScene>
                 ),
               ),
 
-              // Few clouds below plane with fade effect
+              // Few clouds below plane with fade effect - MORE CLOUDS
               Positioned(
-                top: screenHeight * 0.65,
+                top: screenHeight * 0.45,
                 left: -cloudOffset * 0.8, // Slightly different speed
                 child: Row(
                   children: [
                     cloudSvgWithFade(-cloudOffset * 0.8, 0, screenWidth, size: 130),
-                    SizedBox(width: screenWidth * 0.5),
-                    cloudSvgWithFade(-cloudOffset * 0.8, screenWidth * 0.5 + 130, screenWidth, size: 110),
+                    SizedBox(width: screenWidth * 0.3),
+                    cloudSvgWithFade(-cloudOffset * 0.8, screenWidth * 0.3 + 130, screenWidth, size: 110),
+                    SizedBox(width: screenWidth * 0.3),
+                    cloudSvgWithFade(-cloudOffset * 0.8, screenWidth * 0.6 + 240, screenWidth, size: 120),
                   ],
                 ),
               ),
               Positioned(
-                top: screenHeight * 0.75,
+                top: screenHeight * 0.5,
                 left: screenWidth - cloudOffset * 1.2,
-                child: cloudSvgWithFade(screenWidth - cloudOffset * 1.2, 0, screenWidth, size: 140),
+                child: Row(
+                  children: [
+                    cloudSvgWithFade(screenWidth - cloudOffset * 1.2, 0, screenWidth, size: 140),
+                    SizedBox(width: screenWidth * 0.3),
+                    cloudSvgWithFade(screenWidth - cloudOffset * 1.2, screenWidth * 0.3 + 160, screenWidth, size: 110),
+                    SizedBox(width: screenWidth * 0.3),
+                    cloudSvgWithFade(screenWidth - cloudOffset * 1.2, screenWidth * 0.6 + 310, screenWidth, size: 130),
+                  ],
+                ),
               ),
             ],
           );
@@ -155,7 +171,7 @@ class _FlyingSceneState extends State<FlyingScene>
     final opacity = calculateFadeOpacity(cloudPosition, screenWidth);
     
     return Opacity(
-      opacity: opacity.clamp(0.0, 1.0),
+      opacity: opacity.clamp(0.0, 0.8),
       child: cloudSvg(size: size),
     );
   }
@@ -166,7 +182,7 @@ class _FlyingSceneState extends State<FlyingScene>
       width: size,
       height: size * 0.3, // Maintain aspect ratio
       colorFilter: ColorFilter.mode(
-        const Color.fromARGB(255, 165, 165, 165).withOpacity(0.95),
+        const Color.fromARGB(255, 165, 165, 165).withOpacity(0.6),
         BlendMode.srcIn,
       ),
     );

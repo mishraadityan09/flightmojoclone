@@ -18,8 +18,11 @@ class LoadingOverlay {
         operation: () => operation(),
         infoToShow: infoToShow,
         onSuccess: (ctx, result) {
-          hide();
+          // Navigate first, then hide with delay
           onSuccess(ctx, result);
+          Future.delayed(const Duration(milliseconds: 100), () {
+            hide();
+          });
         },
         onError: (ctx, error) {
           hide();

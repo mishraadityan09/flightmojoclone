@@ -8,17 +8,23 @@ class GenericLoadingScreen<T> extends StatefulWidget {
   final Map<String, dynamic>? infoToShow;
   final void Function(BuildContext context, T result) onSuccess;
   final void Function(BuildContext context, Object error)? onError;
+  final Widget? customBackground;
+  final bool showInfoHeader;
 
   /// [operation] - async function to execute (e.g., fetch API)
-  /// [infoToShow] - simple key/value map to show on top of loader
+  /// [infoToShow] - simple key/value map to show in header
   /// [onSuccess] - callback to handle successful data and decide navigation
   /// [onError] - optional error handler to display error UI or retry
+  /// [customBackground] - optional custom background widget (defaults to FlyingScene)
+  /// [showInfoHeader] - whether to show the info header (defaults to true)
   const GenericLoadingScreen({
     Key? key,
     required this.operation,
     required this.onSuccess,
     this.infoToShow,
     this.onError,
+    this.customBackground,
+    this.showInfoHeader = true,
   }) : super(key: key);
 
   @override
@@ -52,9 +58,10 @@ class _GenericLoadingScreenState<T> extends State<GenericLoadingScreen<T>> {
       if (mounted) {
         setState(() {
           _loading = false;
-          print(e);
           _error = e;
         });
+        debugPrint('GenericLoadingScreen Error: $e');
+        
         if (widget.onError != null) {
           widget.onError!(context, e);
         }
@@ -64,120 +71,263 @@ class _GenericLoadingScreenState<T> extends State<GenericLoadingScreen<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final info = widget.infoToShow;
-    final from = info?['from']?.toString() ?? '';
-    final to = info?['to']?.toString() ?? '';
-    final departureDate = info?['departureDate']?.toString() ?? '';
-    final returnDate = info?['returnDate']?.toString();
-    final passengers = info?['passengers'];
-    final travelClass = info?['travelClass']?.toString() ?? '';
-    final isRoundTrip = info?['isRoundTrip'] as bool? ?? false;
-
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        titleSpacing: 0,
-        title: null,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(10),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Route line
-                Text(
-                  '$from → $to',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                // Details line
-                Row(
-                  children: [
-                    // Dates
-                    Text(
-                      isRoundTrip && returnDate != null && returnDate.isNotEmpty
-                          ? '$departureDate - $returnDate'
-                          : departureDate,
-                      style: const TextStyle(fontSize: 15, color: Colors.black87),
-                    ),
-                    const SizedBox(width: 10),
-                    const Text('|', style: TextStyle(color: Colors.grey)),
-                    const SizedBox(width: 10),
-                    // Passengers
-                    Text(
-                      passengers != null
-                          ? '$passengers ${passengers > 1 ? "Passengers" : "Passenger"}'
-                          : '',
-                      style: const TextStyle(fontSize: 15, color: Colors.black87),
-                    ),
-                    const SizedBox(width: 10),
-                    const Text('|', style: TextStyle(color: Colors.grey)),
-                    const SizedBox(width: 10),
-                    // Class
-                    Text(
-                      travelClass,
-                      style: const TextStyle(fontSize: 15, color: Colors.black87),
-                    ),
-                  ],
-                )
-              ],
+      backgroundColor: Colors.grey.shade50,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Info header card (if enabled and has data)
+            if (widget.showInfoHeader && 
+                widget.infoToShow != null && 
+                widget.infoToShow!.isNotEmpty)
+              _buildInfoHeader(),
+            
+            // Main content area
+            Expanded(
+              child: _error != null 
+                  ? _buildErrorWidget()
+                  : widget.customBackground ?? const FlyingScene(),
             ),
-          ),
+          ],
         ),
       ),
-      body: Stack(
+    );
+  }
+
+  Widget _buildInfoHeader() {
+    final info = widget.infoToShow!;
+    
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(16),
+      child: Column(
         children: [
-          const FlyingScene(),
-          if (_error != null) _errorWidget(),
-          // if (_loading) const Center(child: CircularProgressIndicator()),
+          // Airport codes and arrow
+          _buildRouteInfo(info),
+          const SizedBox(height: 16),
+          // Travel details
+          _buildTravelDetails(info),
         ],
       ),
     );
   }
 
-  Widget _errorWidget() {
-    return Center(
-      child: Card(
-        color: Colors.white.withOpacity(0.9),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 6,
-        margin: const EdgeInsets.all(20),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+  Widget _buildRouteInfo(Map<String, dynamic> info) {
+    final fromCode = _getAirportCode(info['from']?.toString() ?? '');
+    final toCode = _getAirportCode(info['to']?.toString() ?? '');
+    final fromCity = _getCityName(info['from']?.toString() ?? '');
+    final toCity = _getCityName(info['to']?.toString() ?? '');
+    
+    return Row(
+      children: [
+        // From airport
+        Expanded(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Error: $_error',
-                  style: const TextStyle(color: Colors.red, fontSize: 16)),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: _executeOperation,
-                child: const Text('Retry'),
+              Text(
+                fromCode,
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                  letterSpacing: -1,
+                ),
+              ),
+              Text(
+                fromCity,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ],
           ),
         ),
+        
+        // Arrow
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(
+            Icons.arrow_forward,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+        
+        // To airport
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                toCode,
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                  letterSpacing: -1,
+                ),
+              ),
+              Text(
+                toCity,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTravelDetails(Map<String, dynamic> info) {
+    final List<String> details = [];
+    
+    // Build the details string
+    if (info['departureDate'] != null) {
+      details.add(info['departureDate'].toString());
+    }
+    
+    if (info['passengers'] != null) {
+      details.add(info['passengers'].toString());
+    } else if (info['passengerCount'] != null) {
+      final count = info['passengerCount'];
+      details.add('$count Traveler${count > 1 ? 's' : ''}');
+    }
+    
+    if (info['travelClass'] != null) {
+      details.add(info['travelClass'].toString());
+    }
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        details.join(' • '),
+        style: const TextStyle(
+          fontSize: 14,
+          color: Colors.black87,
+          fontWeight: FontWeight.w500,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget _infoRow(String label, String value) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          children: [
-            Text('$label:',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(width: 10),
-            Expanded(child: Text(value, style: const TextStyle(fontSize: 16))),
+  String _getAirportCode(String location) {
+    // Extract airport code from location string
+    // You can customize this based on your data format
+    if (location.toLowerCase().contains('delhi')) return 'DEL';
+    if (location.toLowerCase().contains('mumbai')) return 'BOM';
+    if (location.toLowerCase().contains('bangalore')) return 'BLR';
+    if (location.toLowerCase().contains('chennai')) return 'MAA';
+    if (location.toLowerCase().contains('hyderabad')) return 'HYD';
+    if (location.toLowerCase().contains('kolkata')) return 'CCU';
+    if (location.toLowerCase().contains('pune')) return 'PNQ';
+    if (location.toLowerCase().contains('ahmedabad')) return 'AMD';
+    
+    // If no match found, return first 3 characters in uppercase
+    return location.length >= 3 ? location.substring(0, 3).toUpperCase() : location.toUpperCase();
+  }
+
+  String _getCityName(String location) {
+    // Extract city name from location string
+    if (location.toLowerCase().contains('delhi')) return 'New Delhi';
+    if (location.toLowerCase().contains('mumbai')) return 'Mumbai';
+    if (location.toLowerCase().contains('bangalore')) return 'Bangalore';
+    if (location.toLowerCase().contains('chennai')) return 'Chennai';
+    if (location.toLowerCase().contains('hyderabad')) return 'Hyderabad';
+    if (location.toLowerCase().contains('kolkata')) return 'Kolkata';
+    if (location.toLowerCase().contains('pune')) return 'Pune';
+    if (location.toLowerCase().contains('ahmedabad')) return 'Ahmedabad';
+    
+    return location;
+  }
+
+  Widget _buildErrorWidget() {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.red.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
           ],
         ),
-      );
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: Colors.red.shade400,
+              size: 48,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Something went wrong',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.red.shade700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _error.toString(),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.grey.shade600,
+                  ),
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: _executeOperation,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

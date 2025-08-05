@@ -727,36 +727,36 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   }
 
   void _searchFlights({String? destinationOverride}) {
-  final searchParams = {
-    'from': _fromCityName,
-    'to': destinationOverride ?? _toCityName,
-    'departureDate': _departureDate,
-    'returnDate': _isRoundTrip ? _returnDate : null,
-    'passengers': _passengers,
-    'travelClass': _travelClass,
-    'isRoundTrip': _isRoundTrip,
-  };
+    final searchParams = {
+      'from': _fromCityName,
+      'to': destinationOverride ?? _toCityName,
+      'departureDate': _departureDate,
+      'returnDate': _isRoundTrip ? _returnDate : null,
+      'passengers': _passengers,
+      'travelClass': _travelClass,
+      'isRoundTrip': _isRoundTrip,
+    };
 
-  LoadingOverlay.show<void>(
-    context: context,
-    infoToShow: searchParams,
-    operation: () async {
-      await Future.delayed(const Duration(seconds: 3));
-    },
-  onSuccess: (context, _) {
-  context.push(
-    AppRoutes.flightResults,
-    extra: {'searchParams': searchParams},
-  );
-},
+    LoadingOverlay.show<void>(
+      context: context,
+      infoToShow: searchParams,
+      operation: () async {
+        await Future.delayed(const Duration(seconds: 3));
+      },
+      onSuccess: (context, _) {
+        context.push(
+          AppRoutes.flightResults,
+          extra: {'searchParams': searchParams},
+        );
+      },
 
-    onError: (context, error) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Unexpected error: $error')));
-    },
-  );
-}
-
+      onError: (context, error) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Unexpected error: $error')));
+      },
+    );
+  }
 
   // Public method to handle external search with destination override
   void searchWithDestination(String destination) {
