@@ -1,4 +1,6 @@
 import 'package:flightmojo/core/common/datepicker_bottomsheet.dart';
+import 'package:flightmojo/core/common/generic_loading_screen.dart';
+import 'package:flightmojo/core/common/loading_overlay.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +8,20 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/router/app_routes.dart';
+
+class FlightResult {
+  final String flightNumber;
+  final String airline;
+  final String departureTime;
+  final String arrivalTime;
+
+  FlightResult({
+    required this.flightNumber,
+    required this.airline,
+    required this.departureTime,
+    required this.arrivalTime,
+  });
+}
 
 class FlightSearchWidget extends StatefulWidget {
   const FlightSearchWidget({super.key});
@@ -28,7 +44,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   late String _departureDate;
   late String _returnDate;
 
-   int _passengers = 1;
+  int _passengers = 1;
   String _travelClass = 'Economy';
 
   bool _isRoundTrip = false;
@@ -450,66 +466,68 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   }
 
   Widget _buildPassengerField() {
-  // Build passenger count text e.g., "3 Adults"
-  final passengerText =
-      '$_passengers Passenger${_passengers > 1 ? 's' : ''}'; // You can customize this text
+    // Build passenger count text e.g., "3 Adults"
+    final passengerText =
+        '$_passengers Passenger${_passengers > 1 ? 's' : ''}'; // You can customize this text
 
-  return GestureDetector(
-    onTap: _showPassengersBottomSheet,
-    child: InputDecorator(
-      decoration: InputDecoration(
-        labelText: 'Passengers',
-        labelStyle: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-        ),
-        prefixIcon: Icon(
-          _passengers > 1 ? LucideIcons.users : LucideIcons.user,
-          color: Colors.black,
-          size: iconSize,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Theme.of(context).primaryColor),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            passengerText,
-            style: GoogleFonts.poppins(
-              fontSize: bodyTextFontSize,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
+    return GestureDetector(
+      onTap: _showPassengersBottomSheet,
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: 'Passengers',
+          labelStyle: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
           ),
-          const SizedBox(height: 2),
-          Text(
-            _travelClass, // Display selected class here
-            style: GoogleFonts.poppins(
-              fontSize: bodyTextFontSize - 4,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey.shade600,
-            ),
+          prefixIcon: Icon(
+            _passengers > 1 ? LucideIcons.users : LucideIcons.user,
+            color: Colors.black,
+            size: iconSize,
           ),
-        ],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 12,
+          ),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              passengerText,
+              style: GoogleFonts.poppins(
+                fontSize: bodyTextFontSize,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              _travelClass, // Display selected class here
+              style: GoogleFonts.poppins(
+                fontSize: bodyTextFontSize - 4,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildSearchButton() {
     return SizedBox(
@@ -637,37 +655,37 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
     );
   }
 
-Future<void> _showPassengersBottomSheet() async {
-  final result = await showModalBottomSheet<Map<String, dynamic>>(
-    context: context,
-    showDragHandle: true,
-    useRootNavigator: true,
-    isScrollControlled: true,
-    builder: (context) => const PassengersBottomSheet(),
-  );
+  Future<void> _showPassengersBottomSheet() async {
+    final result = await showModalBottomSheet<Map<String, dynamic>>(
+      context: context,
+      showDragHandle: true,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (context) => const PassengersBottomSheet(),
+    );
 
-  if (result != null) {
-    setState(() {
-      // Extract values from the received Map
-      final int adults = result['adultCount'] ?? 1; // default 1
-      final int children = result['childCount'] ?? 0;
-      final int infants = result['infantCount'] ?? 0;
-      final String travelClass = result['travelClass'] ?? 'Economy';
+    if (result != null) {
+      setState(() {
+        // Extract values from the received Map
+        final int adults = result['adultCount'] ?? 1; // default 1
+        final int children = result['childCount'] ?? 0;
+        final int infants = result['infantCount'] ?? 0;
+        final String travelClass = result['travelClass'] ?? 'Economy';
 
-      // Update your state variables as needed
-      // For example, if you have _passengers as total adults+children+infants:
-      _passengers = adults + children + infants;
+        // Update your state variables as needed
+        // For example, if you have _passengers as total adults+children+infants:
+        _passengers = adults + children + infants;
 
-      // Store or use them separately if desired:
-      // _adultCount = adults;
-      // _childCount = children;
-      // _infantCount = infants;
-      _travelClass = travelClass;
+        // Store or use them separately if desired:
+        // _adultCount = adults;
+        // _childCount = children;
+        // _infantCount = infants;
+        _travelClass = travelClass;
 
-      // (Make sure these variables are declared in your State class)
-    });
+        // (Make sure these variables are declared in your State class)
+      });
+    }
   }
-}
 
   void _toggleTripType(bool isRoundTrip) {
     setState(() {
@@ -709,20 +727,36 @@ Future<void> _showPassengersBottomSheet() async {
   }
 
   void _searchFlights({String? destinationOverride}) {
-    final searchData = {
-      'searchParams': {
-        'from': _fromCity,
-        'to': destinationOverride ?? _toCity,
-        'departureDate': _departureDate,
-        'returnDate': _isRoundTrip ? _returnDate : null,
-        'passengers': _passengers,
-        'isRoundTrip': _isRoundTrip,
-        'searchTimestamp': DateTime.now().toIso8601String(),
-      },
-    };
+  final searchParams = {
+    'from': _fromCityName,
+    'to': destinationOverride ?? _toCityName,
+    'departureDate': _departureDate,
+    'returnDate': _isRoundTrip ? _returnDate : null,
+    'passengers': _passengers,
+    'travelClass': _travelClass,
+    'isRoundTrip': _isRoundTrip,
+  };
 
-    context.push(AppRoutes.flightResults, extra: searchData);
-  }
+  LoadingOverlay.show<void>(
+    context: context,
+    infoToShow: searchParams,
+    operation: () async {
+      await Future.delayed(const Duration(seconds: 3));
+    },
+  onSuccess: (context, _) {
+  context.push(
+    AppRoutes.flightResults,
+    extra: {'searchParams': searchParams},
+  );
+},
+
+    onError: (context, error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Unexpected error: $error')));
+    },
+  );
+}
+
 
   // Public method to handle external search with destination override
   void searchWithDestination(String destination) {
