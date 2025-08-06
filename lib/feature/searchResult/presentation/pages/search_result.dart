@@ -161,110 +161,107 @@ class FlightSearchResultsScreen extends StatelessWidget {
 
           // All Fare section (will hide on scroll)
           // All Fare section (matching Price Graph layout)
-SliverToBoxAdapter(
-  child: Container(
-    margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
-    child: IntrinsicHeight(
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
+          SliverToBoxAdapter(
             child: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.15),
-                    spreadRadius: 1,
-                    blurRadius: 6,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    LucideIcons.plane, // or any fare-related icon
-                    size: 18,
-                    color: Colors.blue,
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'All Fare',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: const Color.fromARGB(255, 102, 102, 102),
-                      fontWeight: FontWeight.w700,
+              margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
+              child: IntrinsicHeight(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.15),
+                              spreadRadius: 1,
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              LucideIcons.plane, // or any fare-related icon
+                              size: 18,
+                              color: Colors.blue,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'All Fare',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: const Color.fromARGB(255, 102, 102, 102),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(width: 6,),
-          Expanded(
-            flex: 4,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 8,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.15),
-                    spreadRadius: 1,
-                    blurRadius: 6,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: CarouselSlider(
-                options: CarouselOptions(
-                  height: 50,
-                  viewportFraction: 0.3,
-                  enableInfiniteScroll: false,
-                  enlargeCenterPage: false,
-                  autoPlay: false,
-                  padEnds: false,
-                  scrollDirection: Axis.horizontal,
+                    SizedBox(width: 6),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.15),
+                              spreadRadius: 1,
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: 50,
+                            viewportFraction: 0.3,
+                            enableInfiniteScroll: false,
+                            enlargeCenterPage: false,
+                            autoPlay: false,
+                            padEnds: false,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                          items: [
+                            _buildFareOptions(
+                              'Indigo',
+                              '₹ 4799',
+                              showFirstSeparator: false,
+                            ),
+                            _buildFareOptions('Air India', '₹ 4870'),
+                            _buildFareOptions('Air India', '₹ 4986'),
+                            _buildFareOptions('Akasha Air', '₹ 5267'),
+                            _buildFareOptions('Indigo', '₹ 5100'),
+                            _buildFareOptions('Indigo', '₹ 4950'),
+                            _buildFareOptions(
+                              'Indigo',
+                              '₹ 5350',
+                              showSeparator: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                items: [
-                  _buildFareOptions(
-                    'Indigo',
-                    '₹ 4799',
-                    showFirstSeparator: false,
-                  ),
-                  _buildFareOptions('Air India', '₹ 4870'),
-                  _buildFareOptions('Air India', '₹ 4986'),
-                  _buildFareOptions('Akasha Air', '₹ 5267'),
-                  _buildFareOptions('Indigo', '₹ 5100'),
-                  _buildFareOptions('Indigo', '₹ 4950'),
-                  _buildFareOptions(
-                    'Indigo',
-                    '₹ 5350',
-                    showSeparator: false,
-                  ),
-                ],
               ),
             ),
           ),
-          
-          
-        ],
-      ),
-    ),
-  ),
-),
-
 
           // Sticky Recommended header
           SliverPersistentHeader(
@@ -669,7 +666,7 @@ SliverToBoxAdapter(
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(8),
             margin: EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -704,62 +701,28 @@ SliverToBoxAdapter(
                   ),
                 ),
                 SizedBox(width: 12),
+                Column(
+                  children: [
+                    Text(
+                      airline,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      flightNumber,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                    ),
+                  ],
+                ),
+                 SizedBox(width: 16),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            departureTime,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800],
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Container(
-                              height: 1,
-                              color: Colors.grey[300],
-                              margin: EdgeInsets.symmetric(horizontal: 8),
-                            ),
-                          ),
-                          Icon(
-                            Icons.flight_takeoff,
-                            size: 16,
-                            color: Colors.grey[400],
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 1,
-                              color: Colors.grey[300],
-                              margin: EdgeInsets.symmetric(horizontal: 8),
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            arrivalTime,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Text(
-                            airline,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          SizedBox(width: 16),
                           Text(
                             duration,
                             style: TextStyle(
@@ -767,20 +730,65 @@ SliverToBoxAdapter(
                               color: Colors.grey[600],
                             ),
                           ),
-                          SizedBox(width: 4),
+                        ],
+                      ),
+
+                      Row(
+                        children: [
                           Text(
-                            '| Non Stop',
+                            departureTime,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          SizedBox(width: 8),
+
+                          // Use fixed width container for line
+                          Container(
+                            width: 40, // smaller value to reduce line length
+                            height: 1,
+                            color: Colors.grey[300],
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                          ),
+
+                          Icon(
+                            Icons.flight_takeoff,
+                            size: 16,
+                            color: Colors.grey[400],
+                          ),
+
+                          Container(
+                            width: 40, // same smaller width here
+                            height: 1,
+                            color: Colors.grey[300],
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                          ),
+                          SizedBox(width: 8),
+
+                          Text(
+                            arrivalTime,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Non Stop',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey[600],
                             ),
                           ),
                         ],
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        flightNumber,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[500]),
                       ),
                     ],
                   ),
@@ -790,11 +798,10 @@ SliverToBoxAdapter(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(height: 20),
                     Text(
                       price,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.grey[800],
                       ),
