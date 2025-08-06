@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flightmojo/feature/searchResult/presentation/widgets/flightdetail_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -467,6 +468,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                         context,
                         flight['flightNumber'] as String,
                       );
+                      
                     },
                   ),
                 );
@@ -651,235 +653,250 @@ class FlightSearchResultsScreen extends StatelessWidget {
     );
   }
 
- Widget _buildFlightCard({
-  required String airline,
-  required String flightNumber,
-  required String departureTime,
-  required String arrivalTime,
-  required String duration,
-  required String price,
-  required Color airlineLogo,
-  required VoidCallback onTap,
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Stack(
-      children: [
-        Container(
-          padding: EdgeInsets.all(8),
-          margin: EdgeInsets.only(top: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              // Airline logo - Fixed width
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: airlineLogo,
-                  borderRadius: BorderRadius.circular(8),
+  Widget _buildFlightCard({
+    required String airline,
+    required String flightNumber,
+    required String departureTime,
+    required String arrivalTime,
+    required String duration,
+    required String price,
+    required Color airlineLogo,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            margin: EdgeInsets.only(top: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
                 ),
-                child: Center(
-                  child: Text(
-                    airline.substring(0, 2).toUpperCase(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Airline logo - Fixed width
+                Container(
+                  height: 30,
+                  width: 30,
+                  child: SvgPicture.network(
+                    'https://www.flightsmojo.in/images/airlinesSvg/6E.svg',
                   ),
                 ),
-              ),
-              SizedBox(width: 8), // Reduced from 12
-              
-              // Airline info - Flexible with minimum width
-              Flexible(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      airline,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]), // Reduced from 14
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    SizedBox(height: 2), // Reduced from 4
-                    Text(
-                      flightNumber,
-                      style: TextStyle(fontSize: 10, color: Colors.grey[500]), // Reduced from 12
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ],
-                ),
-              ),
-              
-              SizedBox(width: 8), // Reduced from 16
-              
-              // Flight details - Takes most space
-              Expanded(
-                flex: 4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Duration
-                    Text(
-                      duration,
-                      style: TextStyle(
-                        fontSize: 10, // Reduced from 12
-                        color: Colors.grey[600],
+                SizedBox(width: 8), // Reduced from 12
+                // Airline info - Flexible with minimum width
+                Flexible(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        airline,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ), // Reduced from 14
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    
-                    // Flight timeline
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Departure time
-                        Flexible(
-                          child: Text(
-                            departureTime,
-                            style: TextStyle(
-                              fontSize: 12, // Reduced from 14
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800],
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        
-                        SizedBox(width: 4), // Reduced from 8
-                        
-                        // Flight line and icon - Responsive
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color: Colors.grey[300],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                child: Icon(
-                                  Icons.flight_takeoff,
-                                  size: 12, // Reduced from 16
-                                  color: Colors.grey[400],
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: 1,
-                                  color: Colors.grey[300],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        SizedBox(width: 4), // Reduced from 8
-                        
-                        // Arrival time
-                        Flexible(
-                          child: Text(
-                            arrivalTime,
-                            style: TextStyle(
-                              fontSize: 12, // Reduced from 14
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800],
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    SizedBox(height: 4),
-                    
-                    // Non-stop text
-                    Text(
-                      'Non Stop',
-                      style: TextStyle(
-                        fontSize: 10, // Reduced from 12
-                        color: Colors.grey[600],
+                      SizedBox(height: 2), // Reduced from 4
+                      Text(
+                        flightNumber,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey[500],
+                        ), // Reduced from 12
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              
-              SizedBox(width: 8),
-              
-              // Price - Fixed width
-              Container(
-                width: 60, // Fixed width to prevent overflow
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      price,
-                      style: TextStyle(
-                        fontSize: 12, // Reduced from 14
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      textAlign: TextAlign.end,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        
-        // Saver Fare badge
-        Positioned(
-          top: 0,
-          right: 16,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2), // Reduced padding
-            decoration: BoxDecoration(
-              color: Colors.green[100],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.green[300]!),
-            ),
-            child: Text(
-              'Saver Fare',
-              style: TextStyle(
-                color: Colors.green[700],
-                fontSize: 9, // Reduced from 10
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
 
-void _handleFlightSelection(BuildContext context, String flightNumber) {
-  print('Selected flight: $flightNumber');
+                SizedBox(width: 8), // Reduced from 16
+                // Flight details - Takes most space
+                Expanded(
+                  flex: 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Duration
+                      Text(
+                        duration,
+                        style: TextStyle(
+                          fontSize: 10, // Reduced from 12
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 4),
+
+                      // Flight timeline
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Departure time
+                          Flexible(
+                            child: Text(
+                              departureTime,
+                              style: TextStyle(
+                                fontSize: 12, // Reduced from 14
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+
+                          SizedBox(width: 4), // Reduced from 8
+                          // Flight line and icon - Responsive
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 1,
+                                    color: Colors.grey[300],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 4),
+                                  child: Icon(
+                                    Icons.flight_takeoff,
+                                    size: 12, // Reduced from 16
+                                    color: Colors.grey[400],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 1,
+                                    color: Colors.grey[300],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(width: 4), // Reduced from 8
+                          // Arrival time
+                          Flexible(
+                            child: Text(
+                              arrivalTime,
+                              style: TextStyle(
+                                fontSize: 12, // Reduced from 14
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 4),
+
+                      // Non-stop text
+                      Text(
+                        'Non Stop',
+                        style: TextStyle(
+                          fontSize: 10, // Reduced from 12
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(width: 8),
+
+                // Price - Fixed width
+                Container(
+                  width: 60, // Fixed width to prevent overflow
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        price,
+                        style: TextStyle(
+                          fontSize: 12, // Reduced from 14
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        textAlign: TextAlign.end,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Saver Fare badge
+          Positioned(
+            top: 0,
+            right: 16,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
+              ), // Reduced padding
+              decoration: BoxDecoration(
+                color: Colors.green[100],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.green[300]!),
+              ),
+              child: Text(
+                'Saver Fare',
+                style: TextStyle(
+                  color: Colors.green[700],
+                  fontSize: 9, // Reduced from 10
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleFlightSelection(BuildContext context, String flightNumber) {
+  showFlightDetailsBottomSheet(
+    context,
+    airline: "Air India",
+    flightNumber: "AI-2429",
+    departureTime: "07:00",
+    arrivalTime: "09:15",
+    departureDate: "07 Aug, 2025",
+    arrivalDate: "07 Aug, 2025",
+    departureCity: "New Delhi",
+    arrivalCity: "Mumbai",
+    departureAirport: "Indira Gandhi International",
+    arrivalAirport: "Chhatrapati Shivaji International",
+    departureTerminal: "3",
+    arrivalTerminal: "2",
+    duration: "2hr 15m",
+    price: "₹6,237",
+    cabinBaggage: "7 Kgs",
+    checkedBaggage: "15 Kgs",
+    airlineLogo: Colors.red,
+    classType: "Economy",
+  );
 }
 }
 
