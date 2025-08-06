@@ -160,10 +160,17 @@ class FlightSearchResultsScreen extends StatelessWidget {
           ),
 
           // All Fare section (will hide on scroll)
-          SliverToBoxAdapter(
+          // All Fare section (matching Price Graph layout)
+SliverToBoxAdapter(
+  child: Container(
+    margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
+    child: IntrinsicHeight(
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
             child: Container(
-              margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
-              // padding: EdgeInsets.all(4),
+              padding: EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -176,77 +183,88 @@ class FlightSearchResultsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 16,
-                            ),
-                            child: Text(
-                              'All Fare',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: const Color.fromARGB(255, 102, 102, 102),
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 40,
-                            width: 1,
-                            color: Colors.grey[300],
-                          ),
-                        ],
-                      ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    LucideIcons.plane, // or any fare-related icon
+                    size: 18,
+                    color: Colors.blue,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'All Fare',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: const Color.fromARGB(255, 102, 102, 102),
+                      fontWeight: FontWeight.w700,
                     ),
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 4,
-                        ),
-                        child: CarouselSlider(
-                          options: CarouselOptions(
-                            height: 50,
-                            viewportFraction: 0.3,
-                            enableInfiniteScroll: false,
-                            enlargeCenterPage: false,
-                            autoPlay: false,
-                            padEnds: false,
-                            scrollDirection: Axis.horizontal,
-                          ),
-                          items: [
-                            _buildFareOptions(
-                              'Indigo',
-                              '₹ 4799',
-                              showFirstSeparator: false,
-                            ),
-                            _buildFareOptions('Air India', '₹ 4870'),
-                            _buildFareOptions('Air India', '₹ 4986'),
-                            _buildFareOptions('Akasha Air', '₹ 5267'),
-                            _buildFareOptions('Indigo', '₹ 5100'),
-                            _buildFareOptions('Indigo', '₹ 4950'),
-                            _buildFareOptions(
-                              'Indigo',
-                              '₹ 5350',
-                              showSeparator: false,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
+          SizedBox(width: 6,),
+          Expanded(
+            flex: 4,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 1,
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: 50,
+                  viewportFraction: 0.3,
+                  enableInfiniteScroll: false,
+                  enlargeCenterPage: false,
+                  autoPlay: false,
+                  padEnds: false,
+                  scrollDirection: Axis.horizontal,
+                ),
+                items: [
+                  _buildFareOptions(
+                    'Indigo',
+                    '₹ 4799',
+                    showFirstSeparator: false,
+                  ),
+                  _buildFareOptions('Air India', '₹ 4870'),
+                  _buildFareOptions('Air India', '₹ 4986'),
+                  _buildFareOptions('Akasha Air', '₹ 5267'),
+                  _buildFareOptions('Indigo', '₹ 5100'),
+                  _buildFareOptions('Indigo', '₹ 4950'),
+                  _buildFareOptions(
+                    'Indigo',
+                    '₹ 5350',
+                    showSeparator: false,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          
+        ],
+      ),
+    ),
+  ),
+),
+
 
           // Sticky Recommended header
           SliverPersistentHeader(
