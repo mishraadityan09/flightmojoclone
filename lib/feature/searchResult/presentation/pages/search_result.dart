@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class FlightSearchResultsScreen extends StatelessWidget {
+class FlightSearchResultsScreen extends StatefulWidget {
   final String fromCity;
   final String toCity;
   final String departureDate;
@@ -21,6 +21,91 @@ class FlightSearchResultsScreen extends StatelessWidget {
   });
 
   @override
+  State<FlightSearchResultsScreen> createState() => _FlightSearchResultsScreenState();
+}
+
+class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
+  // State variables for tracking selections
+  int selectedDateIndex = 0;
+  int selectedFareIndex = 0;
+  int selectedRecommendedIndex = 0;
+
+  // Sample data that changes based on selections
+  final List<Map<String, dynamic>> priceGraphData = [
+    {'date': '07 Aug', 'price': '₹ 4799'},
+    {'date': '08 Aug', 'price': '₹ 4870'},
+    {'date': '09 Aug', 'price': '₹ 4986'},
+    {'date': '10 Aug', 'price': '₹ 5267'},
+    {'date': '11 Aug', 'price': '₹ 5100'},
+    {'date': '12 Aug', 'price': '₹ 4950'},
+    {'date': '13 Aug', 'price': '₹ 5350'},
+  ];
+
+  final List<Map<String, dynamic>> fareData = [
+    {'airline': 'Indigo', 'price': '₹ 4799'},
+    {'airline': 'Air India', 'price': '₹ 4870'},
+    {'airline': 'SpiceJet', 'price': '₹ 4986'},
+    {'airline': 'Akasha Air', 'price': '₹ 5267'},
+    {'airline': 'Vistara', 'price': '₹ 5100'},
+    {'airline': 'GoAir', 'price': '₹ 4950'},
+    {'airline': 'Alliance', 'price': '₹ 5350'},
+  ];
+
+  final List<Map<String, dynamic>> recommendedData = [
+    {
+      'type': 'Recommended',
+      'price': '₹ 4,950',
+      'color': Colors.blue,
+    },
+    {
+      'type': 'Cheapest',
+      'price': '₹ 4,799',
+      'color': Colors.green,
+    },
+    {
+      'type': 'Shortest',
+      'price': '₹ 5,350',
+      'color': Colors.orange,
+    },
+  ];
+
+  // Flight data that changes based on selections
+  List<Map<String, dynamic>> get currentFlights {
+    // This would typically come from an API based on selected date/fare/recommendation
+    final baseFlights = [
+      {
+        'airline': 'IndiGo',
+        'flightNumber': '6E-2766',
+        'departureTime': '04:00',
+        'arrivalTime': '06:15',
+        'duration': '2h 15m',
+        'price': priceGraphData[selectedDateIndex]['price'],
+        'color': Colors.blue[800]!,
+      },
+      {
+        'airline': 'Air India',
+        'flightNumber': 'AI-519',
+        'departureTime': '23:30',
+        'arrivalTime': '01:45',
+        'duration': '2h 15m',
+        'price': '₹ ${int.parse(priceGraphData[selectedDateIndex]['price'].replaceAll('₹ ', '').replaceAll(',', '')) + 200}',
+        'color': Colors.red[800]!,
+      },
+      {
+        'airline': 'SpiceJet',
+        'flightNumber': 'SG-853',
+        'departureTime': '01:55',
+        'arrivalTime': '04:15',
+        'duration': '2h 20m',
+        'price': '₹ ${int.parse(priceGraphData[selectedDateIndex]['price'].replaceAll('₹ ', '').replaceAll(',', '')) + 150}',
+        'color': Colors.orange[800]!,
+      },
+    ];
+    
+    return baseFlights;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -34,11 +119,11 @@ class FlightSearchResultsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$fromCity to $toCity',
+              '${widget.fromCity} to ${widget.toCity}',
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
             Text(
-              '$departureDate - $returnDate | $passengers',
+              '${widget.departureDate} - ${widget.returnDate} | ${widget.passengers}',
               style: TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ],
@@ -97,19 +182,21 @@ class FlightSearchResultsScreen extends StatelessWidget {
                             padEnds: false,
                             scrollDirection: Axis.horizontal,
                           ),
-                          items: [
-                            _buildPriceGraphOptions(' 07 Aug', '₹ 4799'),
-                            _buildPriceGraphOptions(' 08 Aug', '₹ 4870'),
-                            _buildPriceGraphOptions(' 08 Aug', '₹ 4986'),
-                            _buildPriceGraphOptions(' 09 Aug', '₹ 5267'),
-                            _buildPriceGraphOptions(' 10 Aug', '₹ 5100'),
-                            _buildPriceGraphOptions(' 11 Aug', '₹ 4950'),
-                            _buildPriceGraphOptions(
-                              ' 12 Aug',
-                              '₹ 5350',
-                              showSeparator: false,
-                            ),
-                          ],
+                          items: priceGraphData.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, dynamic> data = entry.value;
+                            return _buildPriceGraphOptions(
+                              data['date'],
+                              data['price'],
+                              isSelected: selectedDateIndex == index,
+                              onTap: () {
+                                setState(() {
+                                  selectedDateIndex = index;
+                                });
+                              },
+                              showSeparator: index != priceGraphData.length - 1,
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
@@ -160,8 +247,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
             ),
           ),
 
-          // All Fare section (will hide on scroll)
-          // All Fare section (matching Price Graph layout)
+          // All Fare section
           SliverToBoxAdapter(
             child: Container(
               margin: EdgeInsets.fromLTRB(8, 4, 8, 8),
@@ -188,7 +274,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              LucideIcons.plane, // or any fare-related icon
+                              LucideIcons.plane,
                               size: 18,
                               color: Colors.blue,
                             ),
@@ -238,23 +324,21 @@ class FlightSearchResultsScreen extends StatelessWidget {
                             padEnds: false,
                             scrollDirection: Axis.horizontal,
                           ),
-                          items: [
-                            _buildFareOptions(
-                              'Indigo',
-                              '₹ 4799',
-                              showFirstSeparator: false,
-                            ),
-                            _buildFareOptions('Air India', '₹ 4870'),
-                            _buildFareOptions('Air India', '₹ 4986'),
-                            _buildFareOptions('Akasha Air', '₹ 5267'),
-                            _buildFareOptions('Indigo', '₹ 5100'),
-                            _buildFareOptions('Indigo', '₹ 4950'),
-                            _buildFareOptions(
-                              'Indigo',
-                              '₹ 5350',
-                              showSeparator: false,
-                            ),
-                          ],
+                          items: fareData.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, dynamic> data = entry.value;
+                            return _buildFareOptions(
+                              data['airline'],
+                              data['price'],
+                              isSelected: selectedFareIndex == index,
+                              onTap: () {
+                                setState(() {
+                                  selectedFareIndex = index;
+                                });
+                              },
+                              showSeparator: index != fareData.length - 1,
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
@@ -269,131 +353,15 @@ class FlightSearchResultsScreen extends StatelessWidget {
             pinned: true,
             floating: false,
             delegate: _StickyHeaderDelegate(
-              child: Container(
-                color: Colors.grey[100], // Match your background
-                child: Container(
-                  height: 70.0,
-                  margin: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.15),
-                        spreadRadius: 1,
-                        blurRadius: 6,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      // First section - Recommended
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            print('Recommended tapped');
-                            // Add your logic here
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Recommended',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '₹ 4,950',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue[700],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(width: 1, height: 40, color: Colors.grey[300]),
-                      // Second section - Cheapest
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            print('Cheapest tapped');
-                            // Add your logic here
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Cheapest',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '₹ 4,799',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green[700],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(width: 1, height: 40, color: Colors.grey[300]),
-                      // Third section - Shortest
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            print('Shortest tapped');
-                            // Add your logic here
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Shortest',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '₹ 5,350',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange[700],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              selectedIndex: selectedRecommendedIndex, 
+              recommendedData: recommendedData,
+              onTap: (index) {
+                if (mounted) { // Check if widget is still mounted
+                  setState(() {
+                    selectedRecommendedIndex = index;
+                  });
+                }
+              },
             ),
           ),
 
@@ -401,57 +369,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                // Sample flight data - you can replace this with your actual data
-                final flights = [
-                  {
-                    'airline': 'IndiGo',
-                    'flightNumber': '6E-2766',
-                    'departureTime': '04:00',
-                    'arrivalTime': '06:15',
-                    'duration': '2h 15m',
-                    'price': '₹ 4799',
-                    'color': Colors.blue[800]!,
-                  },
-                  {
-                    'airline': 'IndiGo',
-                    'flightNumber': '6E-519',
-                    'departureTime': '23:30',
-                    'arrivalTime': '01:45',
-                    'duration': '2h 15m',
-                    'price': '₹ 4799',
-                    'color': Colors.blue[800]!,
-                  },
-                  {
-                    'airline': 'IndiGo',
-                    'flightNumber': '6E-853',
-                    'departureTime': '01:55',
-                    'arrivalTime': '04:15',
-                    'duration': '2h 20m',
-                    'price': '₹ 4799',
-                    'color': Colors.blue[800]!,
-                  },
-                  {
-                    'airline': 'Air India',
-                    'flightNumber': 'AI-2421',
-                    'departureTime': '02:15',
-                    'arrivalTime': '04:40',
-                    'duration': '2h 25m',
-                    'price': '₹ 4870',
-                    'color': Colors.red[800]!,
-                  },
-                  {
-                    'airline': 'IndiGo',
-                    'flightNumber': '6E-449',
-                    'departureTime': '05:00',
-                    'arrivalTime': '07:20',
-                    'duration': '2h 20m',
-                    'price': '₹ 4950',
-                    'color': Colors.blue[800]!,
-                  },
-                ];
-
-                // Repeat the flights to show more items
-                final flight = flights[index % flights.length];
+                final flight = currentFlights[index % currentFlights.length];
 
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -468,12 +386,11 @@ class FlightSearchResultsScreen extends StatelessWidget {
                         context,
                         flight['flightNumber'] as String,
                       );
-                      
                     },
                   ),
                 );
               },
-              childCount: 15, // Show 15 flight cards (3 times the sample data)
+              childCount: 15,
             ),
           ),
         ],
@@ -485,98 +402,61 @@ class FlightSearchResultsScreen extends StatelessWidget {
     String date,
     String price, {
     bool showSeparator = true,
+    bool isSelected = false,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(height: 40, width: 1, color: Colors.grey[300]),
-          Expanded(
-            child: Container(
-              height: 40,
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      date,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: isSelected ? Border.all(color: Colors.blue, width: 2) : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(height: 40, width: 1, color: Colors.grey[300]),
+            Expanded(
+              child: Container(
+                height: 40,
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        date,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isSelected ? Colors.blue : Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
                     ),
-                  ),
-                  SizedBox(height: 1),
-                  Flexible(
-                    child: Text(
-                      price,
-                      style: TextStyle(fontSize: 10, color: Colors.black54),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                    SizedBox(height: 1),
+                    Flexible(
+                      child: Text(
+                        price,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isSelected ? Colors.blue : Colors.black54,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          if (showSeparator)
-            Container(height: 40, width: 1, color: Colors.grey[300]),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRecommendedOptions(
-    String date,
-    String price, {
-    bool showSeparator = true,
-  }) {
-    return Container(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(height: 40, width: 1, color: Colors.grey[300]),
-          Expanded(
-            child: Container(
-              height: 40,
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      date,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                  SizedBox(height: 1),
-                  Flexible(
-                    child: Text(
-                      price,
-                      style: TextStyle(fontSize: 10, color: Colors.black54),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (showSeparator)
-            Container(height: 40, width: 1, color: Colors.grey[300]),
-        ],
+            if (showSeparator)
+              Container(height: 40, width: 1, color: Colors.grey[300]),
+          ],
+        ),
       ),
     );
   }
@@ -585,70 +465,71 @@ class FlightSearchResultsScreen extends StatelessWidget {
     String flightName,
     String price, {
     bool showSeparator = true,
-    bool showFirstSeparator = true,
+    bool isSelected = false,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      child: Row(
-        mainAxisSize: MainAxisSize.min, // or MainAxisSize.max if filling parent
-        children: [
-          // Left vertical line
-          //  if (!showFirstSeparator)
-          // Container(height: 40, width: 1, color: Colors.grey[300]),
-          SizedBox(width: 2),
-
-          // SVG Icon
-          Container(
-            height: 12,
-            width: 12,
-            child: SvgPicture.network(
-              'https://www.flightsmojo.in/images/airlinesSvg/6E.svg',
-            ),
-          ),
-
-          SizedBox(width: 6),
-
-          // Text Section (date + price)
-          Flexible(
-            // ✅ Best choice here
-            child: Container(
-              height: 40,
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: Text(
-                      flightName,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                  SizedBox(height: 2),
-                  Flexible(
-                    child: Text(
-                      price,
-                      style: TextStyle(fontSize: 11, color: Colors.black54),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: isSelected ? Border.all(color: Colors.green, width: 2) : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(width: 2),
+            Container(
+              height: 12,
+              width: 12,
+              child: SvgPicture.network(
+                'https://www.flightsmojo.in/images/airlinesSvg/6E.svg',
               ),
             ),
-          ),
-
-          SizedBox(width: 6),
-
-          // Right vertical line
-          if (showSeparator)
-            Container(height: 40, width: 1, color: Colors.grey[300]),
-        ],
+            SizedBox(width: 6),
+            Flexible(
+              child: Container(
+                height: 40,
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        flightName,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? Colors.green : Colors.black87,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Flexible(
+                      child: Text(
+                        price,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isSelected ? Colors.green : Colors.black54,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 6),
+            if (showSeparator)
+              Container(height: 40, width: 1, color: Colors.grey[300]),
+          ],
+        ),
       ),
     );
   }
@@ -685,7 +566,6 @@ class FlightSearchResultsScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Airline logo - Fixed width
                 Container(
                   height: 30,
                   width: 30,
@@ -693,8 +573,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                     'https://www.flightsmojo.in/images/airlinesSvg/6E.svg',
                   ),
                 ),
-                SizedBox(width: 8), // Reduced from 12
-                // Airline info - Flexible with minimum width
+                SizedBox(width: 8),
                 Flexible(
                   flex: 2,
                   child: Column(
@@ -706,61 +585,53 @@ class FlightSearchResultsScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
-                        ), // Reduced from 14
+                        ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
-                      SizedBox(height: 2), // Reduced from 4
+                      SizedBox(height: 2),
                       Text(
                         flightNumber,
                         style: TextStyle(
                           fontSize: 10,
                           color: Colors.grey[500],
-                        ), // Reduced from 12
+                        ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                     ],
                   ),
                 ),
-
-                SizedBox(width: 8), // Reduced from 16
-                // Flight details - Takes most space
+                SizedBox(width: 8),
                 Expanded(
                   flex: 4,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Duration
                       Text(
                         duration,
                         style: TextStyle(
-                          fontSize: 10, // Reduced from 12
+                          fontSize: 10,
                           color: Colors.grey[600],
                         ),
                       ),
                       SizedBox(height: 4),
-
-                      // Flight timeline
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Departure time
                           Flexible(
                             child: Text(
                               departureTime,
                               style: TextStyle(
-                                fontSize: 12, // Reduced from 14
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey[800],
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-
-                          SizedBox(width: 4), // Reduced from 8
-                          // Flight line and icon - Responsive
+                          SizedBox(width: 4),
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -775,7 +646,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                                   padding: EdgeInsets.symmetric(horizontal: 4),
                                   child: Icon(
                                     Icons.flight_takeoff,
-                                    size: 12, // Reduced from 16
+                                    size: 12,
                                     color: Colors.grey[400],
                                   ),
                                 ),
@@ -788,14 +659,12 @@ class FlightSearchResultsScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-
-                          SizedBox(width: 4), // Reduced from 8
-                          // Arrival time
+                          SizedBox(width: 4),
                           Flexible(
                             child: Text(
                               arrivalTime,
                               style: TextStyle(
-                                fontSize: 12, // Reduced from 14
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey[800],
                               ),
@@ -804,26 +673,20 @@ class FlightSearchResultsScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-
                       SizedBox(height: 4),
-
-                      // Non-stop text
                       Text(
                         'Non Stop',
                         style: TextStyle(
-                          fontSize: 10, // Reduced from 12
+                          fontSize: 10,
                           color: Colors.grey[600],
                         ),
                       ),
                     ],
                   ),
                 ),
-
                 SizedBox(width: 8),
-
-                // Price - Fixed width
                 Container(
-                  width: 60, // Fixed width to prevent overflow
+                  width: 60,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -831,7 +694,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                       Text(
                         price,
                         style: TextStyle(
-                          fontSize: 12, // Reduced from 14
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.grey[800],
                         ),
@@ -845,8 +708,6 @@ class FlightSearchResultsScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // Saver Fare badge
           Positioned(
             top: 0,
             right: 16,
@@ -854,7 +715,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: 8,
                 vertical: 2,
-              ), // Reduced padding
+              ),
               decoration: BoxDecoration(
                 color: Colors.green[100],
                 borderRadius: BorderRadius.circular(12),
@@ -864,7 +725,7 @@ class FlightSearchResultsScreen extends StatelessWidget {
                 'Saver Fare',
                 style: TextStyle(
                   color: Colors.green[700],
-                  fontSize: 9, // Reduced from 10
+                  fontSize: 9,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -876,41 +737,47 @@ class FlightSearchResultsScreen extends StatelessWidget {
   }
 
   void _handleFlightSelection(BuildContext context, String flightNumber) {
-  showFlightDetailsBottomSheet(
-    context,
-    airline: "Air India",
-    flightNumber: "AI-2429",
-    departureTime: "07:00",
-    arrivalTime: "09:15",
-    departureDate: "07 Aug, 2025",
-    arrivalDate: "07 Aug, 2025",
-    departureCity: "New Delhi",
-    arrivalCity: "Mumbai",
-    departureAirport: "Indira Gandhi International",
-    arrivalAirport: "Chhatrapati Shivaji International",
-    departureTerminal: "3",
-    arrivalTerminal: "2",
-    duration: "2hr 15m",
-    price: "₹6,237",
-    cabinBaggage: "7 Kgs",
-    checkedBaggage: "15 Kgs",
-    airlineLogo: Colors.red,
-    classType: "Economy",
-  );
-}
+    showFlightDetailsBottomSheet(
+      context,
+      airline: "Air India",
+      flightNumber: "AI-2429",
+      departureTime: "07:00",
+      arrivalTime: "09:15",
+      departureDate: "07 Aug, 2025",
+      arrivalDate: "07 Aug, 2025",
+      departureCity: "New Delhi",
+      arrivalCity: "Mumbai",
+      departureAirport: "Indira Gandhi International",
+      arrivalAirport: "Chhatrapati Shivaji International",
+      departureTerminal: "3",
+      arrivalTerminal: "2",
+      duration: "2hr 15m",
+      price: "₹6,237",
+      cabinBaggage: "7 Kgs",
+      checkedBaggage: "15 Kgs",
+      airlineLogo: Colors.red,
+      classType: "Economy",
+    );
+  }
 }
 
 // Custom delegate for sticky header
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
+  final int selectedIndex;
+  final List<Map<String, dynamic>> recommendedData;
+  final Function(int) onTap;
 
-  _StickyHeaderDelegate({required this.child});
+  _StickyHeaderDelegate({
+    this.selectedIndex = 0,
+    required this.recommendedData, 
+    required this.onTap,
+  });
 
   @override
-  double get minExtent => 78.0; // 70 + 8 margin
+  double get minExtent => 78.0;
 
   @override
-  double get maxExtent => 78.0; // 70 + 8 margin
+  double get maxExtent => 78.0;
 
   @override
   Widget build(
@@ -918,11 +785,78 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return child;
+    return Container(
+      color: Colors.grey[100],
+      child: Container(
+        height: 70.0,
+        margin: EdgeInsets.fromLTRB(8, 4, 8, 4),
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              spreadRadius: 1,
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: recommendedData.asMap().entries.map((entry) {
+            int index = entry.key;
+            Map<String, dynamic> data = entry.value;
+            bool isSelected = selectedIndex == index;
+            
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => onTap(index),
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 2),
+                  decoration: BoxDecoration(
+                    color: isSelected ? data['color'].withOpacity(0.1) : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    border: isSelected ? Border.all(color: data['color'], width: 2) : null,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        data['type'],
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected ? data['color'] : Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        data['price'],
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? data['color'] : data['color'][700],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+    if (oldDelegate is _StickyHeaderDelegate) {
+      return selectedIndex != oldDelegate.selectedIndex;
+    }
+    return true;
   }
 }
