@@ -586,7 +586,7 @@ class _HomePageState extends State<HomePage> {
               Text(
                 'Available Coupons',
                 style: GoogleFonts.poppins(
-                  fontSize: headingFontSize,
+                  fontSize: subheadingFontSize,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -621,7 +621,7 @@ class _HomePageState extends State<HomePage> {
         Text(
           title,
           style: GoogleFonts.poppins(
-            fontSize: headingFontSize,
+            fontSize: subheadingFontSize,
             fontWeight: FontWeight.bold,
           ),
         ),

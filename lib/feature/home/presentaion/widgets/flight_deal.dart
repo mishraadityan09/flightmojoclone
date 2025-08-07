@@ -20,13 +20,13 @@ class FlightDealCard extends StatelessWidget {
   double _getScreenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 
   double _getCityFontSize(BuildContext context) =>
-      (_getScreenWidth(context) * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
+      (_getScreenWidth(context) * 0.03).clamp(14.0, 16.0); // 4% width, clamp 14-16
 
   double _getDateFontSize(BuildContext context) =>
       (_getScreenWidth(context) * 0.030).clamp(11.0, 14.0); // 3% width, clamp 11-14
 
   double _getPriceFontSize(BuildContext context) =>
-      (_getScreenWidth(context) * 0.04).clamp(14.0, 16.0); // 4% width, clamp 14-16
+      (_getScreenWidth(context) * 0.03).clamp(14.0, 16.0); // 4% width, clamp 14-16
 
   double _getPriceLabelFontSize(BuildContext context) =>
       (_getScreenWidth(context) * 0.030).clamp(11.0, 14.0); // 3% width, clamp 11-14
