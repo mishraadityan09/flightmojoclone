@@ -21,7 +21,8 @@ class FlightSearchResultsScreen extends StatefulWidget {
   });
 
   @override
-  State<FlightSearchResultsScreen> createState() => _FlightSearchResultsScreenState();
+  State<FlightSearchResultsScreen> createState() =>
+      _FlightSearchResultsScreenState();
 }
 
 class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
@@ -52,21 +53,9 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
   ];
 
   final List<Map<String, dynamic>> recommendedData = [
-    {
-      'type': 'Recommended',
-      'price': '₹ 4,950',
-      'color': Colors.blue,
-    },
-    {
-      'type': 'Cheapest',
-      'price': '₹ 4,799',
-      'color': Colors.green,
-    },
-    {
-      'type': 'Shortest',
-      'price': '₹ 5,350',
-      'color': Colors.orange,
-    },
+    {'type': 'Recommended', 'price': '₹ 4,950', 'color': Colors.blue},
+    {'type': 'Cheapest', 'price': '₹ 4,799', 'color': Colors.green},
+    {'type': 'Shortest', 'price': '₹ 5,350', 'color': Colors.orange},
   ];
 
   // Flight data that changes based on selections
@@ -88,7 +77,8 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
         'departureTime': '23:30',
         'arrivalTime': '01:45',
         'duration': '2h 15m',
-        'price': '₹ ${int.parse(priceGraphData[selectedDateIndex]['price'].replaceAll('₹ ', '').replaceAll(',', '')) + 200}',
+        'price':
+            '₹ ${int.parse(priceGraphData[selectedDateIndex]['price'].replaceAll('₹ ', '').replaceAll(',', '')) + 200}',
         'color': Colors.red[800]!,
       },
       {
@@ -97,11 +87,12 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
         'departureTime': '01:55',
         'arrivalTime': '04:15',
         'duration': '2h 20m',
-        'price': '₹ ${int.parse(priceGraphData[selectedDateIndex]['price'].replaceAll('₹ ', '').replaceAll(',', '')) + 150}',
+        'price':
+            '₹ ${int.parse(priceGraphData[selectedDateIndex]['price'].replaceAll('₹ ', '').replaceAll(',', '')) + 150}',
         'color': Colors.orange[800]!,
       },
     ];
-    
+
     return baseFlights;
   }
 
@@ -256,41 +247,49 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.15),
-                              spreadRadius: 1,
-                              blurRadius: 6,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              LucideIcons.plane,
-                              size: 18,
-                              color: Colors.blue,
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'All Fare',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: const Color.fromARGB(255, 102, 102, 102),
-                                fontWeight: FontWeight.w700,
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.15),
+                                spreadRadius: 1,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                LucideIcons.plane,
+                                size: 18,
+                                color: Colors.blue,
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'All Fare',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: const Color.fromARGB(
+                                    255,
+                                    102,
+                                    102,
+                                    102,
+                                  ),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -353,10 +352,11 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
             pinned: true,
             floating: false,
             delegate: _StickyHeaderDelegate(
-              selectedIndex: selectedRecommendedIndex, 
+              selectedIndex: selectedRecommendedIndex,
               recommendedData: recommendedData,
               onTap: (index) {
-                if (mounted) { // Check if widget is still mounted
+                if (mounted) {
+                  // Check if widget is still mounted
                   setState(() {
                     selectedRecommendedIndex = index;
                   });
@@ -367,31 +367,28 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
 
           // Flight cards list
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final flight = currentFlights[index % currentFlights.length];
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final flight = currentFlights[index % currentFlights.length];
 
-                return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: _buildFlightCard(
-                    airline: flight['airline'] as String,
-                    flightNumber: flight['flightNumber'] as String,
-                    departureTime: flight['departureTime'] as String,
-                    arrivalTime: flight['arrivalTime'] as String,
-                    duration: flight['duration'] as String,
-                    price: flight['price'] as String,
-                    airlineLogo: flight['color'] as Color,
-                    onTap: () {
-                      _handleFlightSelection(
-                        context,
-                        flight['flightNumber'] as String,
-                      );
-                    },
-                  ),
-                );
-              },
-              childCount: 15,
-            ),
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: _buildFlightCard(
+                  airline: flight['airline'] as String,
+                  flightNumber: flight['flightNumber'] as String,
+                  departureTime: flight['departureTime'] as String,
+                  arrivalTime: flight['arrivalTime'] as String,
+                  duration: flight['duration'] as String,
+                  price: flight['price'] as String,
+                  airlineLogo: flight['color'] as Color,
+                  onTap: () {
+                    _handleFlightSelection(
+                      context,
+                      flight['flightNumber'] as String,
+                    );
+                  },
+                ),
+              );
+            }, childCount: 15),
           ),
         ],
       ),
@@ -472,7 +469,9 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.green.withOpacity(0.1) : Colors.transparent,
+          color: isSelected
+              ? Colors.green.withOpacity(0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: isSelected ? Border.all(color: Colors.green, width: 2) : null,
         ),
@@ -582,20 +581,14 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                     children: [
                       Text(
                         airline,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                       SizedBox(height: 2),
                       Text(
                         flightNumber,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey[500],
-                        ),
+                        style: TextStyle(fontSize: 10, color: Colors.grey[500]),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -611,10 +604,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                     children: [
                       Text(
                         duration,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 10, color: Colors.grey[600]),
                       ),
                       SizedBox(height: 4),
                       Row(
@@ -676,10 +666,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                       SizedBox(height: 4),
                       Text(
                         'Non Stop',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 10, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -712,10 +699,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
             top: 0,
             right: 16,
             child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 2,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 color: Colors.green[100],
                 borderRadius: BorderRadius.circular(12),
@@ -737,26 +721,74 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
   }
 
   void _handleFlightSelection(BuildContext context, String flightNumber) {
+    // Example usage with multiple segments
+    final segments = [
+      FlightSegment(
+        airline: "Emirates",
+        flightNumber: "EK545",
+        departureTime: "14:30",
+        arrivalTime: "18:45",
+        departureDate: "Dec 15",
+        arrivalDate: "Dec 15",
+        departureCity: "New York",
+        arrivalCity: "Dubai",
+        departureAirport: "JFK",
+        arrivalAirport: "DXB",
+        departureTerminal: "4",
+        arrivalTerminal: "3",
+        duration: "4h 15m",
+        airlineLogo: Colors.red,
+        classType: "Economy",
+      ),
+      FlightSegment(
+        airline: "Emirates",
+        flightNumber: "EK364",
+        departureTime: "22:15",
+        arrivalTime: "09:30+1",
+        departureDate: "Dec 15",
+        arrivalDate: "Dec 16",
+        departureCity: "Dubai",
+        arrivalCity: "Mumbai",
+        departureAirport: "DXB",
+        arrivalAirport: "BOM",
+        departureTerminal: "3",
+        arrivalTerminal: "2",
+        duration: "3h 15m",
+        airlineLogo: Colors.red,
+        classType: "Economy",
+      ),
+      FlightSegment(
+        airline: "Emirates",
+        flightNumber: "EK364",
+        departureTime: "22:15",
+        arrivalTime: "09:30+1",
+        departureDate: "Dec 15",
+        arrivalDate: "Dec 16",
+        departureCity: "Dubai",
+        arrivalCity: "Mumbai",
+        departureAirport: "DXB",
+        arrivalAirport: "BOM",
+        departureTerminal: "3",
+        arrivalTerminal: "2",
+        duration: "3h 15m",
+        airlineLogo: Colors.red,
+        classType: "Economy",
+      ),
+    ];
+
+    final layovers = [
+      LayoverInfo(duration: "3h 30m", city: "Dubai", airport: "DXB"),
+      LayoverInfo(duration: "3h 30m", city: "Dubai", airport: "DXB"),
+    ];
+
     showFlightDetailsBottomSheet(
       context,
-      airline: "Air India",
-      flightNumber: "AI-2429",
-      departureTime: "07:00",
-      arrivalTime: "09:15",
-      departureDate: "07 Aug, 2025",
-      arrivalDate: "07 Aug, 2025",
-      departureCity: "New Delhi",
-      arrivalCity: "Mumbai",
-      departureAirport: "Indira Gandhi International",
-      arrivalAirport: "Chhatrapati Shivaji International",
-      departureTerminal: "3",
-      arrivalTerminal: "2",
-      duration: "2hr 15m",
-      price: "₹6,237",
-      cabinBaggage: "7 Kgs",
-      checkedBaggage: "15 Kgs",
-      airlineLogo: Colors.red,
-      classType: "Economy",
+      flightSegments: segments,
+      layovers: layovers,
+      totalDuration: "11h 00m",
+      price: "\$1,250",
+      cabinBaggage: "7kg",
+      checkedBaggage: "23kg",
     );
   }
 }
@@ -769,7 +801,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   _StickyHeaderDelegate({
     this.selectedIndex = 0,
-    required this.recommendedData, 
+    required this.recommendedData,
     required this.onTap,
   });
 
@@ -808,16 +840,20 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
             int index = entry.key;
             Map<String, dynamic> data = entry.value;
             bool isSelected = selectedIndex == index;
-            
+
             return Expanded(
               child: GestureDetector(
                 onTap: () => onTap(index),
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
-                    color: isSelected ? data['color'].withOpacity(0.1) : Colors.transparent,
+                    color: isSelected
+                        ? data['color'].withOpacity(0.1)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
-                    border: isSelected ? Border.all(color: data['color'], width: 2) : null,
+                    border: isSelected
+                        ? Border.all(color: data['color'], width: 2)
+                        : null,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -837,7 +873,9 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: isSelected ? data['color'] : data['color'][700],
+                          color: isSelected
+                              ? data['color']
+                              : data['color'][700],
                         ),
                         textAlign: TextAlign.center,
                       ),
