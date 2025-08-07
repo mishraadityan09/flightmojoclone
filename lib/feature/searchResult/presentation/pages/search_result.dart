@@ -479,7 +479,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(width: 2),
-            Container(
+            SizedBox(
               height: 12,
               width: 12,
               child: SvgPicture.network(
@@ -565,7 +565,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   height: 30,
                   width: 30,
                   child: SvgPicture.network(
@@ -672,7 +672,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                   ),
                 ),
                 SizedBox(width: 8),
-                Container(
+                SizedBox(
                   width: 60,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

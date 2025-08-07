@@ -57,14 +57,14 @@ class FlightDetailsBottomSheet extends StatelessWidget {
   final String checkedBaggage;
 
   const FlightDetailsBottomSheet({
-    Key? key,
+    super.key,
     required this.flightSegments,
     required this.layovers,
     required this.totalDuration,
     required this.price,
     required this.cabinBaggage,
     required this.checkedBaggage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +167,7 @@ class FlightDetailsBottomSheet extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            '${_getCityCode(firstSegment.departureCity)}',
+            _getCityCode(firstSegment.departureCity),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
@@ -178,7 +178,7 @@ class FlightDetailsBottomSheet extends StatelessWidget {
           Icon(Icons.flight_takeoff, color: Colors.grey[400], size: 12),
           SizedBox(width: 8),
           Text(
-            '${_getCityCode(lastSegment.arrivalCity)}',
+            _getCityCode(lastSegment.arrivalCity),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
@@ -591,10 +591,10 @@ class BottomPriceSection extends StatelessWidget {
   final VoidCallback onContinue;
 
   const BottomPriceSection({
-    Key? key,
+    super.key,
     required this.price,
     required this.onContinue,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class FlyingScene extends StatefulWidget {
-  const FlyingScene({Key? key}) : super(key: key);
+  const FlyingScene({super.key});
 
   @override
   State<FlyingScene> createState() => _FlyingSceneState();

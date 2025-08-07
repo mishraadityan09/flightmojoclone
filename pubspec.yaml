@@ -45,6 +45,8 @@ dependencies:
   custom_sliding_segmented_control: ^1.8.5
   lucide_icons_flutter: ^3.0.7
   carousel_slider: ^5.1.1
+  pretty_dio_logger: ^1.4.0
+  dio: ^5.8.0+1
   
 
 

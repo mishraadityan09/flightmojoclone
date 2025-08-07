@@ -18,14 +18,14 @@ class GenericLoadingScreen<T> extends StatefulWidget {
   /// [customBackground] - optional custom background widget (defaults to FlyingScene)
   /// [showInfoHeader] - whether to show the info header (defaults to true)
   const GenericLoadingScreen({
-    Key? key,
+    super.key,
     required this.operation,
     required this.onSuccess,
     this.infoToShow,
     this.onError,
     this.customBackground,
     this.showInfoHeader = true,
-  }) : super(key: key);
+  });
 
   @override
   _GenericLoadingScreenState<T> createState() =>
@@ -268,7 +268,7 @@ class _GenericLoadingScreenState<T> extends State<GenericLoadingScreen<T>> {
           border: Border.all(color: Colors.red.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha:0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

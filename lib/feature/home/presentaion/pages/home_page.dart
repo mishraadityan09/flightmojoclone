@@ -1,6 +1,6 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flightmojo/core/common/plane_loader.dart';
+// import 'package:flightmojo/core/common/plane_loader.dart';
 import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/coupon_card.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/flight_deal.dart';
@@ -21,22 +21,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // Service selection state
-  ServiceType _selectedService = ServiceType.flight;
+  final ServiceType _selectedService = ServiceType.flight;
 
   // Hotel-specific state variables
-  final String _hotelCity = 'Mumbai';
-  final String _checkInDate = _formatDate(DateTime.now());
-  final String _checkOutDate = _formatDate(
-    DateTime.now().add(const Duration(days: 2)),
-  );
-  final int _hotelGuests = 2;
-  final int _rooms = 1;
+  // final String _hotelCity = 'Mumbai';
+  // final String _checkInDate = _formatDate(DateTime.now());
+  // final String _checkOutDate = _formatDate(
+  //   DateTime.now().add(const Duration(days: 2)),
+  // );
+  // final int _hotelGuests = 2;
+  // final int _rooms = 1;
 
-  // Cab-specific state variables
-  final String _pickupLocation = 'Airport';
-  final String _dropLocation = 'Hotel';
-  final String _cabDate = _formatDate(DateTime.now());
-  final String _cabTime = '10:00 AM';
+  // // Cab-specific state variables
+  // final String _pickupLocation = 'Airport';
+  // final String _dropLocation = 'Hotel';
+  // final String _cabDate = _formatDate(DateTime.now());
+  // final String _cabTime = '10:00 AM';
 
   // Reference to the flight widget for external access
   final GlobalKey _flightWidgetKey = GlobalKey();

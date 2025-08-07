@@ -1,5 +1,5 @@
 import 'package:flightmojo/core/common/datepicker_bottomsheet.dart';
-import 'package:flightmojo/core/common/generic_loading_screen.dart';
+// import 'package:flightmojo/core/common/generic_loading_screen.dart';
 import 'package:flightmojo/core/common/loading_overlay.dart';
 import 'package:flightmojo/feature/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +32,7 @@ class FlightSearchWidget extends StatefulWidget {
 
 class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   // Flight-specific state variables
-  final String _fromCity = 'Delhi';
-  final String _toCity = 'Mumbai';
+
   String _fromCityName = 'Delhi';
   String _fromCityCode = 'DEL';
   String _fromAirportName = 'Indira Gandhi International Airport';
@@ -163,7 +162,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             borderRadius: BorderRadius.circular(36),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 3,
                 offset: const Offset(0, 1),
               ),
@@ -248,7 +247,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             border: Border.all(color: Colors.grey, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha:0.1),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),

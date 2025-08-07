@@ -8,13 +8,13 @@ class FlightDealCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const FlightDealCard({
-    Key? key,
+    super.key,
     required this.fromCity,
     required this.toCity,
     required this.date,
     required this.price,
     this.onTap,
-  }) : super(key: key);
+  });
 
   // Responsive font size getters based on MediaQuery width
   double _getScreenWidth(BuildContext context) => MediaQuery.of(context).size.width;
@@ -131,10 +131,10 @@ class FlightDealCard extends StatelessWidget {
             children: [
               // From city
               _buildCityInfo(context, cityCode: fromCity, date: date),
-              SizedBox(height: _getPadding(context) * 0.8), // Responsive spacing
+              SizedBox(height: _getPadding(context) * 1.3), // Responsive spacing
               // To city
               _buildCityInfo(context, cityCode: toCity, date: null),
-              SizedBox(height: _getPadding(context) * 0.8), // Responsive spacing
+              SizedBox(height: _getPadding(context) * 1.3), // Responsive spacing
               // Price section
               _buildPriceSection(context),
             ],
