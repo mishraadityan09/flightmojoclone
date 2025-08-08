@@ -1,9 +1,9 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:flightmojo/core/common/plane_loader.dart';
-import 'package:flightmojo/feature/flights/presentation/pages/flights_search.dart';
-import 'package:flightmojo/feature/home/presentaion/widgets/coupon_card.dart';
-import 'package:flightmojo/feature/home/presentaion/widgets/flight_deal.dart';
+import 'package:flightmojo/core/common/plane_loader.dart';
+import 'package:flightmojo/features/flights/presentation/pages/flights_search.dart';
+import 'package:flightmojo/features/home/presentaion/widgets/coupon_card.dart';
+import 'package:flightmojo/features/home/presentaion/widgets/flight_deal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';

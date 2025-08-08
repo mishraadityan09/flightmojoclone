@@ -1,9 +1,9 @@
-import 'package:flightmojo/feature/search/presentation/pages/search.dart';
-import 'package:flightmojo/feature/searchResult/presentation/pages/search_result.dart';
+import 'package:flightmojo/features/search/presentation/pages/search.dart';
+import 'package:flightmojo/features/searchResult/presentation/pages/search_result.dart';
 import 'package:flutter/material.dart';
-import 'package:flightmojo/feature/home/presentaion/pages/home_page.dart';
-import 'package:flightmojo/feature/main/presentation/pages/main_page.dart';
-import 'package:flightmojo/feature/splash/splash.dart';
+import 'package:flightmojo/features/home/presentaion/pages/home_page.dart';
+import 'package:flightmojo/features/main/presentation/pages/main_page.dart';
+import 'package:flightmojo/features/splash/splash.dart';
 import 'package:go_router/go_router.dart';
 
 import 'app_routes.dart';

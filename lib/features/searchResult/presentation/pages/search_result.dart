@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flightmojo/feature/searchResult/presentation/widgets/flightdetail_bottomsheet.dart';
+import 'package:flightmojo/features/searchResult/presentation/widgets/flightdetail_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

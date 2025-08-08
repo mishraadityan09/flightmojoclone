@@ -1,5 +1,5 @@
 import 'package:flightmojo/core/common/datepicker_bottomsheet.dart';
-import 'package:flightmojo/feature/home/presentaion/widgets/passengers_bottom_sheet.dart';
+import 'package:flightmojo/features/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
