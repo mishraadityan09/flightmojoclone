@@ -78,14 +78,14 @@ class _MainPageState extends State<MainPage> {
               return InkWell(
                 onTap: () => _onItemTapped(item['index'] as int),
                 borderRadius: BorderRadius.circular(30), // capsule shape
-                splashColor: primaryColor.withOpacity(0.2),
+                splashColor: primaryColor.withValues(alpha:0.2),
                 highlightColor: Colors.transparent,
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: selected
                       ? BoxDecoration(
-                          color: primaryColor.withOpacity(0.15),
+                          color: primaryColor.withValues(alpha:0.15),
                           borderRadius: BorderRadius.circular(30),
                         )
                       : null,

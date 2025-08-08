@@ -156,7 +156,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.15),
+                              color: Colors.grey.withValues(alpha:0.15),
                               spreadRadius: 1,
                               blurRadius: 6,
                               offset: Offset(0, 3),
@@ -201,7 +201,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.15),
+                              color: Colors.grey.withValues(alpha:0.15),
                               spreadRadius: 1,
                               blurRadius: 6,
                               offset: Offset(0, 3),
@@ -256,7 +256,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.15),
+                                color: Colors.grey.withValues(alpha:0.15),
                                 spreadRadius: 1,
                                 blurRadius: 6,
                                 offset: Offset(0, 3),
@@ -306,7 +306,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.15),
+                              color: Colors.grey.withValues(alpha:0.15),
                               spreadRadius: 1,
                               blurRadius: 6,
                               offset: Offset(0, 3),
@@ -406,7 +406,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+          color: isSelected ? Colors.blue.withValues(alpha:0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: isSelected ? Border.all(color: Colors.blue, width: 2) : null,
         ),
@@ -470,7 +470,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
       child: Container(
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.green.withOpacity(0.1)
+              ? Colors.green.withValues(alpha:0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: isSelected ? Border.all(color: Colors.green, width: 2) : null,
@@ -555,7 +555,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha:0.1),
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: Offset(0, 2),
@@ -828,7 +828,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.15),
+              color: Colors.grey.withValues(alpha:0.15),
               spreadRadius: 1,
               blurRadius: 6,
               offset: Offset(0, 3),
@@ -848,7 +848,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
                   margin: EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? data['color'].withOpacity(0.1)
+                        ? data['color'].withValues(alpha:0.1)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                     border: isSelected

@@ -188,7 +188,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: currentMode == DateSelectionMode.departure
-                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            ? Theme.of(context).primaryColor.withValues(alpha:0.1)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
@@ -241,7 +241,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: currentMode == DateSelectionMode.returnDate
-                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            ? Theme.of(context).primaryColor.withValues(alpha:0.1)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
@@ -456,10 +456,10 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
         backgroundColor = Theme.of(context).primaryColor;
         textColor = Colors.white;
       } else if (isInRange) {
-        backgroundColor = Theme.of(context).primaryColor.withOpacity(0.2);
+        backgroundColor = Theme.of(context).primaryColor.withValues(alpha:0.2);
         textColor = Theme.of(context).primaryColor;
       } else if (isToday) {
-        backgroundColor = Theme.of(context).primaryColor.withOpacity(0.1);
+        backgroundColor = Theme.of(context).primaryColor.withValues(alpha:0.1);
         borderColor = Theme.of(context).primaryColor;
         textColor = Theme.of(context).primaryColor;
       }
@@ -500,7 +500,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                           color: isDisabled
                               ? Colors.grey.shade400
                               : (isDeparture || isReturn)
-                                  ? Colors.white.withOpacity(0.9)
+                                  ? Colors.white.withValues(alpha:0.9)
                                   : isInRange || isToday
                                       ? Theme.of(context).primaryColor
                                       : Colors.grey[600],
