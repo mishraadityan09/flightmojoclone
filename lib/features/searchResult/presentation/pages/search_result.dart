@@ -386,6 +386,8 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                       flight['flightNumber'] as String,
                     );
                   },
+                  departureAirport: 'DEL', // TODO: update with real data
+                  arrivalAirport: 'BOM', // TODO: update with real data
                 ),
               );
             }, childCount: 15),
@@ -542,6 +544,8 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
     required String price,
     required Color airlineLogo,
     required VoidCallback onTap,
+    String departureAirport = '',
+    String arrivalAirport = '',
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -555,7 +559,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withValues(alpha:0.1),
+                  color: Colors.grey.withOpacity(0.1),
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: Offset(0, 2),
@@ -585,7 +589,6 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
-                      SizedBox(height: 2),
                       Text(
                         flightNumber,
                         style: TextStyle(fontSize: 10, color: Colors.grey[500]),
@@ -602,26 +605,38 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // Duration above flight path
                       Text(
                         duration,
                         style: TextStyle(fontSize: 10, color: Colors.grey[600]),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: 2),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          // Departure time and code
                           Flexible(
-                            child: Text(
-                              departureTime,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800],
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                            child: Column(
+                              children: [
+                                Text(
+                                  departureTime,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[800],
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  departureAirport,
+                                  style: TextStyle(fontSize: 9, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(width: 4),
+                          // Flight path icon
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -650,20 +665,31 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                             ),
                           ),
                           SizedBox(width: 4),
+                          // Arrival time and code
                           Flexible(
-                            child: Text(
-                              arrivalTime,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800],
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                            child: Column(
+                              children: [
+                                Text(
+                                  arrivalTime,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[800],
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  arrivalAirport,
+                                  style: TextStyle(fontSize: 9, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: 2),
+                      // Non Stop below flight path
                       Text(
                         'Non Stop',
                         style: TextStyle(fontSize: 10, color: Colors.grey[600]),
@@ -687,6 +713,11 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
+                        textAlign: TextAlign.end,
+                      ),
+                      Text(
+                        'per adult',
+                        style: TextStyle(fontSize: 9, color: Colors.grey[500]),
                         textAlign: TextAlign.end,
                       ),
                     ],
