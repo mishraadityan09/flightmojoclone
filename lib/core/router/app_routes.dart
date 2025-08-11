@@ -13,6 +13,7 @@ class AppRoutes {
   // Feature routes
   static const String flightSearch = '/flight-search';
   static const String flightResults = '/flight-results';
+  static const String flightResultsReturn = '/flight-results-return';
   static const String flightDetails = '/flight-details';
   static const String passengerDetails = '/passenger-details';
   static const String bookingConfirmation = '/booking-confirmation';

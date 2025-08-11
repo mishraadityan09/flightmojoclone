@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 
 import '../../../search/data/datasources/search_remote_resources.dart';
 import '../../../search/data/models/city_airport_model.dart';
-import '../../../../core/error/exceptions.dart';
 
 class SearchProvider extends ChangeNotifier {
   final SearchRemoteDataSource remoteDataSource;

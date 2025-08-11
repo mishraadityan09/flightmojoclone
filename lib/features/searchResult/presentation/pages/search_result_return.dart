@@ -1,0 +1,863 @@
+import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+class SearchResultReturn extends StatefulWidget {
+  const SearchResultReturn({super.key});
+
+  @override
+  _SearchResultReturnState createState() => _SearchResultReturnState();
+}
+
+class _SearchResultReturnState extends State<SearchResultReturn>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  int _selectedDepartureFlight = 0;
+  int _selectedReturnFlight = 0;
+  int selectedDateIndex = 0;
+  int selectedFareIndex = 0;
+
+  // Mock data for flights
+  final List<Map<String, dynamic>> departureFlights = [
+    {
+      'airline': 'Air India Limited',
+      'flightNumber': 'AI-2422',
+      'departureTime': '1:50 AM',
+      'arrivalTime': '4:10 AM',
+      'duration': '2h:20m',
+      'price': '₹5,371',
+      'stops': 'Non-Stop',
+      'departureAirport': 'BOM',
+      'arrivalAirport': 'DEL',
+      'departureDate': '2025-08-23',
+      'arrivalDate': '2025-08-23',
+      'discount': 'Extra ₹ 250 off on total amount',
+      'color': Colors.red[800]!,
+    },
+    {
+      'airline': 'Air India Limited',
+      'flightNumber': 'AI-2954',
+      'departureTime': '2:35 AM',
+      'arrivalTime': '5:00 AM',
+      'duration': '2h:25m',
+      'price': '₹5,478',
+      'stops': 'Non-Stop',
+      'departureAirport': 'BOM',
+      'arrivalAirport': 'DEL',
+      'departureDate': '2025-08-23',
+      'arrivalDate': '2025-08-23',
+      'discount': 'Extra ₹ 250 off on total amount',
+      'color': Colors.red[800]!,
+    },
+  ];
+
+  final List<Map<String, dynamic>> returnFlights = [
+    {
+      'airline': 'IndiGo',
+      'flightNumber': '6E-5678',
+      'departureTime': '18:30',
+      'arrivalTime': '20:45',
+      'duration': '2h 15m',
+      'price': '₹4,200',
+      'stops': 'Non-stop',
+      'departureAirport': 'DEL',
+      'arrivalAirport': 'BOM',
+      'color': Colors.blue[800]!,
+    },
+    {
+      'airline': 'Air India',
+      'flightNumber': 'AI-1234',
+      'departureTime': '21:15',
+      'arrivalTime': '23:30',
+      'duration': '2h 15m',
+      'price': '₹4,900',
+      'stops': 'Non-stop',
+      'departureAirport': 'DEL',
+      'arrivalAirport': 'BOM',
+      'color': Colors.red[800]!,
+    },
+  ];
+
+  final List<Map<String, dynamic>> priceGraphData = [
+    {'date': '07 Aug', 'price': '₹ 4,799'},
+    {'date': '08 Aug', 'price': '₹ 4,870'},
+    {'date': '09 Aug', 'price': '₹ 4,986'},
+    {'date': '10 Aug', 'price': '₹ 5,267'},
+    {'date': '11 Aug', 'price': '₹ 5,100'},
+    {'date': '12 Aug', 'price': '₹ 4,950'},
+    {'date': '13 Aug', 'price': '₹ 5,350'},
+  ];
+
+  final List<Map<String, dynamic>> fareData = [
+    {'airline': 'Indigo', 'price': '₹ 4,799'},
+    {'airline': 'Air India', 'price': '₹ 4,870'},
+    {'airline': 'SpiceJet', 'price': '₹ 4,986'},
+    {'airline': 'Akasha Air', 'price': '₹ 5,267'},
+    {'airline': 'Vistara', 'price': '₹ 5,100'},
+    {'airline': 'GoAir', 'price': '₹ 4,950'},
+    {'airline': 'Alliance', 'price': '₹ 5,350'},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      body: Column(
+        children: [
+          // Top Header
+          Container(
+            color: Colors.grey[800],
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: Column(
+              children: [
+                // Main header
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'DEL - BOM • 1 Traveler',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              '13 Aug - 23 Aug • Economy',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                                  icon: Icon(LucideIcons.funnel, color: Colors.white),
+                                  onPressed: () {
+                                    // Add filter functionality
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.edit, color: Colors.white),
+                                  onPressed: () {
+                                    // Add edit search functionality
+                                  },
+                                ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),  
+
+                // Flight Type Tabs
+                Container(
+                  color: Colors.white,
+                  child: TabBar(
+                    controller: _tabController,
+                    indicator: UnderlineTabIndicator(
+                      borderSide: BorderSide(color: Colors.orange, width: 2),
+                    ),
+                    labelColor: Colors.grey[800],
+                    unselectedLabelColor: Colors.grey[600],
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                    tabs: const [
+                      Tab(text: 'DEPARTURE'),
+                      Tab(text: 'RETURN'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Flight cards section
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [_buildDepartureTab(), _buildReturnTab()],
+            ),
+          ),
+
+          // Bottom Summary Bar
+          _buildBottomSummaryBar(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDepartureTab() {
+    return ListView.builder(
+      padding: EdgeInsets.all(16),
+      itemCount: departureFlights.length,
+      itemBuilder: (context, index) {
+        final flight = departureFlights[index];
+        final isSelected = _selectedDepartureFlight == index;
+
+        return Container(
+          margin: EdgeInsets.only(bottom: 12),
+          child: _buildFlightCard(
+            airline: flight['airline'] as String,
+            flightNumber: flight['flightNumber'] as String,
+            departureTime: flight['departureTime'] as String,
+            arrivalTime: flight['arrivalTime'] as String,
+            duration: flight['duration'] as String,
+            price: flight['price'] as String,
+            airlineLogo: flight['color'] as Color,
+            isSelected: isSelected,
+            departureAirport: flight['departureAirport'] as String,
+            arrivalAirport: flight['arrivalAirport'] as String,
+            departureDate: flight['departureDate'] as String,
+            arrivalDate: flight['arrivalDate'] as String,
+            discount: flight['discount'] as String,
+            onTap: () {
+              setState(() {
+                _selectedDepartureFlight = index;
+              });
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildReturnTab() {
+    return ListView.builder(
+      padding: EdgeInsets.all(16),
+      itemCount: returnFlights.length,
+      itemBuilder: (context, index) {
+        final flight = returnFlights[index];
+        final isSelected = _selectedReturnFlight == index;
+
+        return Container(
+          margin: EdgeInsets.only(bottom: 12),
+          child: _buildFlightCard(
+            airline: flight['airline'] as String,
+            flightNumber: flight['flightNumber'] as String,
+            departureTime: flight['departureTime'] as String,
+            arrivalTime: flight['arrivalTime'] as String,
+            duration: flight['duration'] as String,
+            price: flight['price'] as String,
+            airlineLogo: flight['color'] as Color,
+            isSelected: isSelected,
+            departureAirport: flight['departureAirport'] as String,
+            arrivalAirport: flight['arrivalAirport'] as String,
+            departureDate: '',
+            arrivalDate: '',
+            discount: '',
+            onTap: () {
+              setState(() {
+                _selectedReturnFlight = index;
+              });
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPriceGraphOptions(
+    String date,
+    String price, {
+    bool showSeparator = true,
+    bool isSelected = false,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.blue.withValues(alpha: 0.1)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: isSelected ? Border.all(color: Colors.blue, width: 2) : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(height: 40, width: 1, color: Colors.grey[300]),
+            Expanded(
+              child: Container(
+                height: 40,
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        date,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isSelected ? Colors.blue : Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    SizedBox(height: 1),
+                    Flexible(
+                      child: Text(
+                        price,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isSelected ? Colors.blue : Colors.black54,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (showSeparator)
+              Container(height: 40, width: 1, color: Colors.grey[300]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFareOptions(
+    String flightName,
+    String price, {
+    bool showSeparator = true,
+    bool isSelected = false,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.green.withValues(alpha: 0.1)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          border: isSelected ? Border.all(color: Colors.green, width: 2) : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(width: 2),
+            SizedBox(
+              height: 12,
+              width: 12,
+              child: SvgPicture.network(
+                'https://www.flightsmojo.in/images/airlinesSvg/6E.svg',
+              ),
+            ),
+            SizedBox(width: 6),
+            Flexible(
+              child: Container(
+                height: 40,
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        flightName,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? Colors.green : Colors.black87,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Flexible(
+                      child: Text(
+                        price,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isSelected ? Colors.green : Colors.black54,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 6),
+            if (showSeparator)
+              Container(height: 40, width: 1, color: Colors.grey[300]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFlightCard({
+    required String airline,
+    required String flightNumber,
+    required String departureTime,
+    required String arrivalTime,
+    required String duration,
+    required String price,
+    required Color airlineLogo,
+    required bool isSelected,
+    required String departureAirport,
+    required String arrivalAirport,
+    required String departureDate,
+    required String arrivalDate,
+    required String discount,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.blue : Colors.grey[300]!,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.1),
+              spreadRadius: 1,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Airline Info Row
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: airlineLogo,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(Icons.flight, color: Colors.white, size: 20),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        airline,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      Text(
+                        flightNumber,
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected ? Colors.orange : Colors.transparent,
+                    border: Border.all(
+                      color: isSelected ? Colors.orange : Colors.grey[400]!,
+                      width: 2,
+                    ),
+                  ),
+                  child: isSelected
+                      ? Icon(Icons.check, color: Colors.white, size: 16)
+                      : null,
+                ),
+              ],
+            ),
+
+            SizedBox(height: 16),
+
+            // Flight Route
+            Row(
+              children: [
+                // Departure
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        departureAirport,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      Text(
+                        departureTime,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      if (departureDate.isNotEmpty)
+                        Text(
+                          departureDate,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                // Flight Path
+                Expanded(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(
+                                    color: Colors.grey[400]!,
+                                    width: 1,
+                                    style: BorderStyle.solid,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.flight_takeoff,
+                              color: Colors.grey[600],
+                              size: 16,
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(
+                                    color: Colors.grey[400]!,
+                                    width: 1,
+                                    style: BorderStyle.solid,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        duration,
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                      Text(
+                        'Non-Stop',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Arrival
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        arrivalAirport,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      Text(
+                        arrivalTime,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      if (arrivalDate.isNotEmpty)
+                        Text(
+                          arrivalDate,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 12),
+
+            // Discount
+            if (discount.isNotEmpty)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  discount,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.green[700],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+            SizedBox(height: 12),
+
+            // Price and Actions
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        price,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      Text(
+                        'Price per adult',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Flight Details',
+                        style: TextStyle(color: Colors.blue, fontSize: 14),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.keyboard_arrow_up,
+                        color: Colors.blue,
+                        size: 16,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: onTap,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Select',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSummaryBar() {
+    final departureFlight = departureFlights[_selectedDepartureFlight];
+    final returnFlight = returnFlights[_selectedReturnFlight];
+    final departurePrice = int.parse(
+      departureFlight['price'].replaceAll('₹', '').replaceAll(',', ''),
+    );
+    final returnPrice = int.parse(
+      returnFlight['price'].replaceAll('₹', '').replaceAll(',', ''),
+    );
+    final totalPrice = departurePrice + returnPrice;
+
+    return Container(
+      color: Colors.grey[800],
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: SafeArea(
+        child: Row(
+          children: [
+            // Departure Price
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.flight_takeoff, color: Colors.white, size: 16),
+                      SizedBox(width: 4),
+                      Text(
+                        'Departure',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    'From ${departureFlight['price']}',
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Return Price
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.flight_land, color: Colors.white, size: 16),
+                      SizedBox(width: 4),
+                      Text(
+                        'Return',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    'From ${returnFlight['price']}',
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Total and Book Button
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Total',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      '₹${totalPrice.toStringAsFixed(0)}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to booking
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Proceeding to booking...'),
+                        backgroundColor: Colors.orange,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  ),
+                  child: Text(
+                    'BOOK NOW',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

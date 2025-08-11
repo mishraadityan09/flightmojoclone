@@ -1,6 +1,5 @@
 // import 'package:flightmojo/core/theme/app_theme.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flightmojo/core/common/plane_loader.dart';
 import 'package:flightmojo/features/flights/presentation/pages/flights_search.dart';
 import 'package:flightmojo/features/home/presentaion/widgets/coupon_card.dart';
 import 'package:flightmojo/features/home/presentaion/widgets/flight_deal.dart';
