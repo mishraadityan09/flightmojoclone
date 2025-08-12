@@ -898,7 +898,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
 
     showFilterBottomSheet(
       context,
-      filterlist:''
+      
       // flightSegments: segments,
       // layovers: layovers,
       // totalDuration: "11h 00m",
