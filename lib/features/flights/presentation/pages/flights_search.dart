@@ -742,17 +742,17 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       operation: () async {
         await Future.delayed(const Duration(seconds: 3));
       },
-      // onSuccess: (context, _) {
-      //   context.push(
-      //     AppRoutes.flightResults,
-      //     extra: {'searchParams': searchParams},
-      //   );
-      // },
       onSuccess: (context, _) {
         context.push(
-         AppRoutes.flightResultsReturn
+          AppRoutes.flightResults,
+          extra: {'searchParams': searchParams},
         );
       },
+      // onSuccess: (context, _) {
+      //   context.push(
+      //    AppRoutes.flightResultsReturn
+      //   );
+      // },
 
       onError: (context, error) {
         ScaffoldMessenger.of(

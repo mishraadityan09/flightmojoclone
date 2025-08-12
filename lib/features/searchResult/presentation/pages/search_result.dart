@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flightmojo/features/searchResult/presentation/widgets/filter_bottom_sheet.dart';
 import 'package:flightmojo/features/searchResult/presentation/widgets/flightdetail_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -125,6 +126,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
             icon: Icon(LucideIcons.funnel, color: Colors.white),
             onPressed: () {
               // Add filter functionality
+              _handleFilter();
             },
           ),
           IconButton(
@@ -156,7 +158,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withValues(alpha:0.15),
+                              color: Colors.grey.withValues(alpha: 0.15),
                               spreadRadius: 1,
                               blurRadius: 6,
                               offset: Offset(0, 3),
@@ -201,7 +203,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withValues(alpha:0.15),
+                              color: Colors.grey.withValues(alpha: 0.15),
                               spreadRadius: 1,
                               blurRadius: 6,
                               offset: Offset(0, 3),
@@ -256,7 +258,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withValues(alpha:0.15),
+                                color: Colors.grey.withValues(alpha: 0.15),
                                 spreadRadius: 1,
                                 blurRadius: 6,
                                 offset: Offset(0, 3),
@@ -306,7 +308,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withValues(alpha:0.15),
+                              color: Colors.grey.withValues(alpha: 0.15),
                               spreadRadius: 1,
                               blurRadius: 6,
                               offset: Offset(0, 3),
@@ -408,7 +410,9 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.withValues(alpha:0.1) : Colors.transparent,
+          color: isSelected
+              ? Colors.blue.withValues(alpha: 0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: isSelected ? Border.all(color: Colors.blue, width: 2) : null,
         ),
@@ -472,7 +476,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
       child: Container(
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.green.withValues(alpha:0.1)
+              ? Colors.green.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: isSelected ? Border.all(color: Colors.green, width: 2) : null,
@@ -630,7 +634,11 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                                 SizedBox(height: 2),
                                 Text(
                                   departureAirport,
-                                  style: TextStyle(fontSize: 9, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),
@@ -681,7 +689,11 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                                 SizedBox(height: 2),
                                 Text(
                                   arrivalAirport,
-                                  style: TextStyle(fontSize: 9, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),
@@ -822,6 +834,79 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
       checkedBaggage: "23kg",
     );
   }
+
+  void _handleFilter() {
+    final filterlist='';
+    // final segments = [
+    //   FlightSegment(
+    //     airline: "Emirates",
+    //     flightNumber: "EK545",
+    //     departureTime: "14:30",
+    //     arrivalTime: "18:45",
+    //     departureDate: "Dec 15",
+    //     arrivalDate: "Dec 15",
+    //     departureCity: "New York",
+    //     arrivalCity: "Dubai",
+    //     departureAirport: "JFK",
+    //     arrivalAirport: "DXB",
+    //     departureTerminal: "4",
+    //     arrivalTerminal: "3",
+    //     duration: "4h 15m",
+    //     airlineLogo: Colors.red,
+    //     classType: "Economy",
+    //   ),
+    //   FlightSegment(
+    //     airline: "Emirates",
+    //     flightNumber: "EK364",
+    //     departureTime: "22:15",
+    //     arrivalTime: "09:30+1",
+    //     departureDate: "Dec 15",
+    //     arrivalDate: "Dec 16",
+    //     departureCity: "Dubai",
+    //     arrivalCity: "Mumbai",
+    //     departureAirport: "DXB",
+    //     arrivalAirport: "BOM",
+    //     departureTerminal: "3",
+    //     arrivalTerminal: "2",
+    //     duration: "3h 15m",
+    //     airlineLogo: Colors.red,
+    //     classType: "Economy",
+    //   ),
+    //   FlightSegment(
+    //     airline: "Emirates",
+    //     flightNumber: "EK364",
+    //     departureTime: "22:15",
+    //     arrivalTime: "09:30+1",
+    //     departureDate: "Dec 15",
+    //     arrivalDate: "Dec 16",
+    //     departureCity: "Dubai",
+    //     arrivalCity: "Mumbai",
+    //     departureAirport: "DXB",
+    //     arrivalAirport: "BOM",
+    //     departureTerminal: "3",
+    //     arrivalTerminal: "2",
+    //     duration: "3h 15m",
+    //     airlineLogo: Colors.red,
+    //     classType: "Economy",
+    //   ),
+    // ];
+
+    // final layovers = [
+    //   LayoverInfo(duration: "3h 30m", city: "Dubai", airport: "DXB"),
+    //   LayoverInfo(duration: "3h 30m", city: "Dubai", airport: "DXB"),
+    // ];
+
+    showFilterBottomSheet(
+      context,
+      filterlist:''
+      // flightSegments: segments,
+      // layovers: layovers,
+      // totalDuration: "11h 00m",
+      // price: "\$1,250",
+      // cabinBaggage: "7kg",
+      // checkedBaggage: "23kg",
+    );
+  }
 }
 
 // Custom delegate for sticky header
@@ -859,7 +944,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withValues(alpha:0.15),
+              color: Colors.grey.withValues(alpha: 0.15),
               spreadRadius: 1,
               blurRadius: 6,
               offset: Offset(0, 3),
@@ -879,7 +964,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
                   margin: EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? data['color'].withValues(alpha:0.1)
+                        ? data['color'].withValues(alpha: 0.1)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                     border: isSelected
