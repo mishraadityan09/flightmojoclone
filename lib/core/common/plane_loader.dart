@@ -182,7 +182,7 @@ class _FlyingSceneState extends State<FlyingScene>
       width: size,
       height: size * 0.3, // Maintain aspect ratio
       colorFilter: ColorFilter.mode(
-        const Color.fromARGB(255, 165, 165, 165).withOpacity(0.6),
+        const Color.fromARGB(255, 165, 165, 165).withValues(alpha:0.6),
         BlendMode.srcIn,
       ),
     );

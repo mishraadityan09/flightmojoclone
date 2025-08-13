@@ -242,23 +242,26 @@ class _HomePageState extends State<HomePage> {
             Transform.translate(
               offset: const Offset(0, -100),
               child: Stack(
-                alignment: Alignment.center,
+                alignment: Alignment.bottomCenter,
+
                 children: [
-                  // SVG love-themed background
-                  SvgPicture.asset(
-                    'assets/images/heart.svg', // Use your own SVG path
-                    width: 520,
-                    height: 100,
-                    fit: BoxFit.cover,
+                  // Image love-themed background
+                  Image.asset(
+                    'assets/images/footer_bg.png', // Use your own image path
+                   
+                    height: 150,
+
+                    scale: 1,
+                    fit: BoxFit.fitHeight,
                     color: Theme.of(
                       context,
-                    ).primaryColor.withOpacity(0.1), // Light color
+                    ).primaryColor.withValues(alpha:0.25), // Light color
                   ),
                   // Beautifully styled Text (in straight line)
                   Text(
                     'BUILD WITH LOVE AT FLIGHTSMOJO',
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: const Color.fromARGB(255, 255, 125, 50),
                       letterSpacing: 2,
@@ -267,7 +270,7 @@ class _HomePageState extends State<HomePage> {
                           blurRadius: 4,
                           color: Theme.of(
                             context,
-                          ).primaryColor.withOpacity(0.5),
+                          ).primaryColor.withValues(alpha:0.3),
                           offset: Offset(1, 2),
                         ),
                       ],
@@ -388,7 +391,7 @@ class _HomePageState extends State<HomePage> {
   //         end: Alignment.bottomCenter,
   //         colors: [
   //           Theme.of(context).primaryColor,
-  //           Theme.of(context).primaryColor.withOpacity(0.8),
+  //           Theme.of(context).primaryColor.withValues(alpha:0.8),
   //         ],
   //       ),
   //     ),
@@ -409,7 +412,7 @@ class _HomePageState extends State<HomePage> {
   //           'Book flights, hotels & cabs at best prices',
   //           style: GoogleFonts.poppins(
   //             fontSize: bodyFontSize,
-  //             color: Colors.white.withOpacity(0.9),
+  //             color: Colors.white.withValues(alpha:0.9),
   //           ),
   //         ),
   //       ],
@@ -453,7 +456,7 @@ class _HomePageState extends State<HomePage> {
   //             borderRadius: BorderRadius.circular(25),
   //             gradient: isSelected
   //                 ? LinearGradient(
-  //                     colors: [Colors.orange, Colors.orange.withOpacity(0.8)],
+  //                     colors: [Colors.orange, Colors.orange.withValues(alpha:0.8)],
   //                   )
   //                 : null,
   //             color: isSelected ? null : Colors.grey.shade800,
@@ -463,7 +466,7 @@ class _HomePageState extends State<HomePage> {
   //             boxShadow: isSelected
   //                 ? [
   //                     BoxShadow(
-  //                       color: Colors.orange.withOpacity(0.3),
+  //                       color: Colors.orange.withValues(alpha:0.3),
   //                       blurRadius: 8,
   //                       offset: const Offset(0, 2),
   //                     ),

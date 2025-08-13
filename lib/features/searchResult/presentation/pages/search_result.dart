@@ -614,7 +614,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                         duration,
                         style: TextStyle(fontSize: 10, color: Colors.grey[600]),
                       ),
-                      SizedBox(height: 2),
+                      // SizedBox(height: 2),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -699,8 +699,8 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
                             ),
                           ),
                         ],
-                      ),
-                      SizedBox(height: 2),
+                      ), 
+                      // SizedBox(height: 2),
                       // Non Stop below flight path
                       Text(
                         'Non Stop',

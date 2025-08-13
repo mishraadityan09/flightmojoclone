@@ -125,7 +125,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             borderRadius: BorderRadius.circular(36),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha:0.05),
                 blurRadius: 3,
                 offset: const Offset(0, 1),
               ),
@@ -205,7 +205,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             border: Border.all(color: Colors.grey, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha:0.1),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
