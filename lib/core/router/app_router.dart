@@ -58,13 +58,28 @@ class AppRouter {
         },
       ),
 
-      GoRoute(
-        path: AppRoutes.flightResults,
-        builder: (context, state) {
-          // final extra = state.extra as Map<String, dynamic>?;
-          return FlightSearchResultsScreen();
-        },
-      ),
+    GoRoute(
+  path: AppRoutes.flightResults,
+  builder: (context, state) {
+    // Extract the "extra" data
+    final extra = state.extra as Map<String, dynamic>?;
+
+    // Safely access nested data
+    final searchParams = extra?['searchParams'] as Map<String, dynamic>?;
+
+    // print(extra);
+
+    return FlightSearchResultsScreen(
+      fromCity: searchParams?['from'] ?? '',
+      toCity: searchParams?['to'] ?? '',
+      departureDate: searchParams?['departureDate'] ?? '',
+      returnDate: searchParams?['returnDate'] ?? '',
+      passengers: searchParams?['passengers'].toString() ?? '',
+      
+    );
+  },
+),
+
 
       GoRoute(
         path: AppRoutes.flightResultsReturn,

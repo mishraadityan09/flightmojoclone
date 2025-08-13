@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flightmojo/features/flights/presentation/pages/flights_search.dart';
 import 'package:flightmojo/features/searchResult/presentation/widgets/filter_bottom_sheet.dart';
 import 'package:flightmojo/features/searchResult/presentation/widgets/flightdetail_bottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +15,11 @@ class FlightSearchResultsScreen extends StatefulWidget {
 
   const FlightSearchResultsScreen({
     super.key,
-    this.fromCity = "New Delhi",
-    this.toCity = "Mumbai",
-    this.departureDate = "15 Jul",
-    this.returnDate = "16 Jul",
-    this.passengers = "1 Adult",
+    required this.fromCity,
+    required this.toCity ,
+    required this.departureDate,
+    required this.returnDate,
+    required this.passengers,
   });
 
   @override
@@ -31,6 +32,32 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
   int selectedDateIndex = 0;
   int selectedFareIndex = 0;
   int selectedRecommendedIndex = 0;
+  late Map<String, dynamic> currentSearchParams;
+  @override
+  void initState() {
+    super.initState();
+    // Initialise from widget parameters
+    currentSearchParams = {
+      'from': widget.fromCity,
+      'to': widget.toCity,
+      'departureDate': widget.departureDate,
+      'returnDate': widget.returnDate,
+      'passengers': widget.passengers,
+      'travelClass': 'Economy', // or get real data
+      'isRoundTrip': widget.returnDate.isNotEmpty,
+    };
+
+    print(currentSearchParams);
+  }
+
+  void _fetchResults(Map<String, dynamic> params) {
+    // Call your API or reload dummy data based on params
+    print("Fetching flights for: $params");
+    // You can also update widget.fromCity, toCity etc. if needed:
+    setState(() {
+      // Example: also update displayed trip info
+    });
+  }
 
   // Sample data that changes based on selections
   final List<Map<String, dynamic>> priceGraphData = [
@@ -115,7 +142,8 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
             Text(
-              '${widget.departureDate} - ${widget.returnDate} | ${widget.passengers}',
+              '${widget.departureDate} | ${widget.passengers} Traveler${int.parse(widget.passengers) > 1 ? "s" : ""}',
+
               style: TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ],
@@ -131,8 +159,53 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
           ),
           IconButton(
             icon: Icon(Icons.edit, color: Colors.white),
+
+            // Add edit search functionality
             onPressed: () {
-              // Add edit search functionality
+              showModalBottomSheet(
+                backgroundColor: Colors.grey[300],
+                useSafeArea: true,
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => FractionallySizedBox(
+                  heightFactor: 1,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.red,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(20),
+                      
+                        child: FlightSearchWidget(
+                          isBottomSheetMode: true,
+                          initialData: currentSearchParams,
+                          onSearchComplete: (updatedParams) {
+                            setState(() {
+                              currentSearchParams = updatedParams;
+                            });
+                            // Trigger your API call or refresh based on updatedParams
+                            _fetchResults(updatedParams);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             },
           ),
         ],
@@ -836,76 +909,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
   }
 
   void _handleFilter() {
-    final filterlist='';
-    // final segments = [
-    //   FlightSegment(
-    //     airline: "Emirates",
-    //     flightNumber: "EK545",
-    //     departureTime: "14:30",
-    //     arrivalTime: "18:45",
-    //     departureDate: "Dec 15",
-    //     arrivalDate: "Dec 15",
-    //     departureCity: "New York",
-    //     arrivalCity: "Dubai",
-    //     departureAirport: "JFK",
-    //     arrivalAirport: "DXB",
-    //     departureTerminal: "4",
-    //     arrivalTerminal: "3",
-    //     duration: "4h 15m",
-    //     airlineLogo: Colors.red,
-    //     classType: "Economy",
-    //   ),
-    //   FlightSegment(
-    //     airline: "Emirates",
-    //     flightNumber: "EK364",
-    //     departureTime: "22:15",
-    //     arrivalTime: "09:30+1",
-    //     departureDate: "Dec 15",
-    //     arrivalDate: "Dec 16",
-    //     departureCity: "Dubai",
-    //     arrivalCity: "Mumbai",
-    //     departureAirport: "DXB",
-    //     arrivalAirport: "BOM",
-    //     departureTerminal: "3",
-    //     arrivalTerminal: "2",
-    //     duration: "3h 15m",
-    //     airlineLogo: Colors.red,
-    //     classType: "Economy",
-    //   ),
-    //   FlightSegment(
-    //     airline: "Emirates",
-    //     flightNumber: "EK364",
-    //     departureTime: "22:15",
-    //     arrivalTime: "09:30+1",
-    //     departureDate: "Dec 15",
-    //     arrivalDate: "Dec 16",
-    //     departureCity: "Dubai",
-    //     arrivalCity: "Mumbai",
-    //     departureAirport: "DXB",
-    //     arrivalAirport: "BOM",
-    //     departureTerminal: "3",
-    //     arrivalTerminal: "2",
-    //     duration: "3h 15m",
-    //     airlineLogo: Colors.red,
-    //     classType: "Economy",
-    //   ),
-    // ];
-
-    // final layovers = [
-    //   LayoverInfo(duration: "3h 30m", city: "Dubai", airport: "DXB"),
-    //   LayoverInfo(duration: "3h 30m", city: "Dubai", airport: "DXB"),
-    // ];
-
-    showFilterBottomSheet(
-      context,
-      
-      // flightSegments: segments,
-      // layovers: layovers,
-      // totalDuration: "11h 00m",
-      // price: "\$1,250",
-      // cabinBaggage: "7kg",
-      // checkedBaggage: "23kg",
-    );
+    showFilterBottomSheet(context);
   }
 }
 

@@ -56,7 +56,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               children: [
                 const Text(
                   'Filter',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
@@ -107,7 +107,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 8),
           ...items.map((item) {
@@ -128,11 +128,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         activeColor: Colors.blue,
                         visualDensity: VisualDensity.compact,
                       ),
-                      Text(item.label, style: const TextStyle(fontSize: 14, color: Colors.black87)),
+                      Text(item.label, style: const TextStyle(fontSize: 12, color: Colors.black87)),
                     ],
                   ),
                   Text(item.minimumPrice.toString(),
-                      style: const TextStyle(fontSize: 14, color: Colors.black)),
+                      style: const TextStyle(fontSize: 12, color: Colors.black)),
                 ],
               ),
             );
@@ -148,13 +148,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Price Range", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const Text("Price Range", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("₹${_currentRangeValues.start.round()}"),
-              Text("₹${_currentRangeValues.end.round()}"),
+              Text("₹${_currentRangeValues.start.round()}",style: TextStyle(fontSize: 12),),
+              Text("₹${_currentRangeValues.end.round()}",style: TextStyle(fontSize: 12),),
             ],
           ),
           RangeSlider(
@@ -192,7 +192,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.fromLTRB(16,0,0,0),
@@ -204,7 +204,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   labelPadding: const EdgeInsets.symmetric(horizontal: 8),
                   avatar: SvgPicture.asset(item['iconUrl']!, width: 18, height: 18,
                       placeholderBuilder: (context) => const Icon(Icons.image, size: 18)),
-                  label: Text(item['label']!, style: const TextStyle(color: Colors.black)),
+                  label: Text(item['label']!, style: const TextStyle(color: Colors.black,fontSize: 12)),
                   selected: false,
                   onSelected: (_) {},
                 );
@@ -239,7 +239,7 @@ class BottomPriceSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: const Text('Apply filter', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          child: const Text('Apply filter', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
         ),
       ),
     );
@@ -250,6 +250,7 @@ void showFilterBottomSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    useSafeArea: true,
     backgroundColor: Colors.transparent,
     builder: (context) => Stack(
       children: [

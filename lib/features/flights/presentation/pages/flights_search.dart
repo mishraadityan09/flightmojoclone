@@ -1,5 +1,5 @@
 import 'package:flightmojo/core/common/datepicker_bottomsheet.dart';
- // import 'package:flightmojo/core/common/generic_loading_screen.dart';
+// import 'package:flightmojo/core/common/generic_loading_screen.dart';
 import 'package:flightmojo/core/common/loading_overlay.dart';
 import 'package:flightmojo/features/home/presentaion/widgets/passengers_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,15 @@ class FlightResult {
 }
 
 class FlightSearchWidget extends StatefulWidget {
-  const FlightSearchWidget({super.key});
+  final void Function(Map<String, dynamic> searchParams)? onSearchComplete;
+  final Map<String, dynamic>? initialData;
+  final bool isBottomSheetMode;
+  const FlightSearchWidget({
+    super.key,
+    this.onSearchComplete,
+    this.initialData,
+    this.isBottomSheetMode = false,
+  });
 
   @override
   State<FlightSearchWidget> createState() => _FlightSearchWidgetState();
@@ -51,8 +59,35 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   @override
   void initState() {
     super.initState();
-    _departureDate = _formatDate(DateTime.now());
-    _returnDate = _formatDate(DateTime.now().add(const Duration(days: 1)));
+
+    if (widget.initialData != null) {
+      print("initialData${widget.initialData}");
+      final data = widget.initialData!;
+      _fromCityName = data['from'] ?? _fromCityName;
+      _toCityName = data['to'] ?? _toCityName;
+      _departureDate = data['departureDate'] ?? _formatDate(DateTime.now());
+      _returnDate =
+          data['returnDate'] ??
+          _formatDate(DateTime.now().add(const Duration(days: 1)));
+
+      var passengersValue = data['passengers'];
+
+      if (passengersValue is String) {
+        // Try to extract the number at the start of the string
+        final match = RegExp(r'\d+').firstMatch(passengersValue);
+        _passengers = match != null ? int.parse(match.group(0)!) : 1;
+      } else if (passengersValue is int) {
+        _passengers = passengersValue;
+      } else {
+        _passengers = 1;
+      }
+
+      _travelClass = data['travelClass'] ?? 'Economy';
+      _isRoundTrip = data['isRoundTrip'] ?? false;
+    } else {
+      _departureDate = _formatDate(DateTime.now());
+      _returnDate = _formatDate(DateTime.now().add(const Duration(days: 1)));
+    }
   }
 
   String _formatDate(DateTime date) {
@@ -162,7 +197,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             borderRadius: BorderRadius.circular(36),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha:0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 3,
                 offset: const Offset(0, 1),
               ),
@@ -247,7 +282,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             border: Border.all(color: Colors.grey, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha:0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -736,6 +771,12 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       'isRoundTrip': _isRoundTrip,
     };
 
+    if (widget.onSearchComplete != null) {
+      widget.onSearchComplete!(searchParams);
+      if (widget.isBottomSheetMode) Navigator.pop(context);
+      return;
+    }
+
     LoadingOverlay.show<void>(
       context: context,
       infoToShow: searchParams,
@@ -748,12 +789,12 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
           extra: {'searchParams': searchParams},
         );
       },
+
       // onSuccess: (context, _) {
       //   context.push(
       //    AppRoutes.flightResultsReturn
       //   );
       // },
-
       onError: (context, error) {
         ScaffoldMessenger.of(
           context,
