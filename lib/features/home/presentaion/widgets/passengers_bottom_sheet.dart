@@ -13,10 +13,40 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
   int _infantCount = 0;
   String _travelClass = 'Economy';
 
+  // Responsive font size getters based on MediaQuery width
+  double _getScreenWidth(BuildContext context) => MediaQuery.of(context).size.width;
+
+  double _getHeaderFontSize(BuildContext context) =>
+      (_getScreenWidth(context) * 0.04).clamp(14.0, 16.0); // Header font size
+
+  double _getTitleFontSize(BuildContext context) =>
+      (_getScreenWidth(context) * 0.03).clamp(14.0, 16.0); // Titles like "Adults", "Children"
+
+  double _getSubtitleFontSize(BuildContext context) =>
+      (_getScreenWidth(context) * 0.03).clamp(10.0, 12.0); // Age descriptions
+
+  double _getCounterFontSize(BuildContext context) =>
+      (_getScreenWidth(context) * 0.03).clamp(14.0, 16.0); // Counter numbers
+
+  double _getTravelClassTitleFontSize(BuildContext context) =>
+      (_getScreenWidth(context) * 0.04).clamp(14.0, 16.0); // Travel class title
+
+  double _getChoiceChipFontSize(BuildContext context) =>
+      (_getScreenWidth(context) * 0.03).clamp(12.0, 16.0); // Choice chip labels
+
+  double _getButtonFontSize(BuildContext context) =>
+      (_getScreenWidth(context) * 0.04).clamp(14.0, 18.0); // Button text
+
+  // Responsive padding
+  double _getPadding(BuildContext context) {
+    final screenWidth = _getScreenWidth(context);
+    return (screenWidth * 0.025).clamp(8.0, 16.0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
+      padding: EdgeInsets.fromLTRB(_getPadding(context), 0, _getPadding(context), 15),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -31,7 +61,16 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: [Text('Traveler(s) & Class')],
+            children: [
+              Text(
+                'Traveler(s) & Class',
+                style: TextStyle(
+                  fontSize: _getHeaderFontSize(context),
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              )
+            ],
           ),
           Column(
             children: [
@@ -40,20 +79,23 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                   'Adults',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: _getTitleFontSize(context),
                     color: Colors.black,
                   ),
                 ),
                 subtitle: Text(
                   'Above 12 years',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: _getSubtitleFontSize(context), 
+                    color: Colors.grey[600]
+                  ),
                 ),
-
                 trailing: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: EdgeInsets.symmetric(horizontal: _getPadding(context) * 0.5),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -75,15 +117,15 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                         },
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 8,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _getPadding(context),
+                          vertical: _getPadding(context),
                         ),
                         child: Text(
                           _adultCount.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: _getCounterFontSize(context),
                             color: Colors.black,
                           ),
                         ),
@@ -108,19 +150,23 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                   'Children',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: _getTitleFontSize(context),
                     color: Colors.black,
                   ),
                 ),
                 subtitle: Text(
                   '2-12 years',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: _getSubtitleFontSize(context), 
+                    color: Colors.grey[600]
+                  ),
                 ),
                 trailing: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: EdgeInsets.symmetric(horizontal: _getPadding(context) * 0.5),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -135,15 +181,15 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                             : null,
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 8,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _getPadding(context),
+                          vertical: _getPadding(context),
                         ),
                         child: Text(
                           _childCount.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: _getCounterFontSize(context),
                             color: Colors.black,
                           ),
                         ),
@@ -169,19 +215,23 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                   'Infants',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: _getTitleFontSize(context),
                     color: Colors.black,
                   ),
                 ),
                 subtitle: Text(
                   '0-2 years',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: _getSubtitleFontSize(context), 
+                    color: Colors.grey[600]
+                  ),
                 ),
                 trailing: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: EdgeInsets.symmetric(horizontal: _getPadding(context) * 0.5),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -196,15 +246,15 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                             : null,
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 8,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _getPadding(context),
+                          vertical: _getPadding(context),
                         ),
                         child: Text(
                           _infantCount.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: _getCounterFontSize(context),
                             color: Colors.black,
                           ),
                         ),
@@ -230,19 +280,14 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                   'Travel Class',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: _getTravelClassTitleFontSize(context),
                     color: Colors.black,
                   ),
                 ),
                 subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: EdgeInsets.only(top: _getPadding(context)),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      // Calculate width for each chip to make them equal
-                      // double chipWidth =
-                      //     (constraints.maxWidth - 24) /
-                      //     2; // 2 chips per row with spacing
-
                       return Column(
                         children: [
                           Row(
@@ -257,7 +302,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                         'Economy',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: _getChoiceChipFontSize(context),
                                           color: _travelClass == 'Economy'
                                               ? Colors.white
                                               : Colors.black,
@@ -286,7 +331,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: _getPadding(context)),
                               Expanded(
                                 child: SizedBox(
                                   height: 48,
@@ -297,7 +342,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                         'Premium Economy',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: _getChoiceChipFontSize(context),
                                           color:
                                               _travelClass == 'Premium Economy'
                                               ? Colors.white
@@ -330,7 +375,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: _getPadding(context)),
                           Row(
                             children: [
                               Expanded(
@@ -343,7 +388,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                         'Business',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: _getChoiceChipFontSize(context),
                                           color: _travelClass == 'Business'
                                               ? Colors.white
                                               : Colors.black,
@@ -372,7 +417,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              SizedBox(width: _getPadding(context)),
                               Expanded(
                                 child: SizedBox(
                                   height: 48,
@@ -383,7 +428,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                                         'First Class',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: _getChoiceChipFontSize(context),
                                           color: _travelClass == 'First Class'
                                               ? Colors.white
                                               : Colors.black,
@@ -421,7 +466,7 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                padding: EdgeInsets.symmetric(vertical: _getPadding(context) * 2),
                 child: ElevatedButton(
                   onPressed: () {
                     // Pass the selected data back as a Map
@@ -438,7 +483,13 @@ class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text('Done'),
+                  child: Text(
+                    'Done',
+                    style: TextStyle(
+                      fontSize: _getButtonFontSize(context),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ],

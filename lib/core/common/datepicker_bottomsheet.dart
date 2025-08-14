@@ -38,11 +38,11 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
   // Responsive font size getters
   late double screenWidth;
 
-  double get headingFontSize => (screenWidth * 0.055).clamp(20, 24);
+  double get headingFontSize => (screenWidth * 0.04).clamp(16, 18);
 
-  double get buttonFontSize => (screenWidth * 0.045).clamp(16, 18);
+  double get buttonFontSize => (screenWidth * 0.03).clamp(14, 16);
 
-  double get labelFontSize => (screenWidth * 0.04).clamp(14, 16);
+  double get labelFontSize => (screenWidth * 0.04).clamp(12, 14);
 
   double get smallFontSize => (screenWidth * 0.03).clamp(12, 14);
 
@@ -345,7 +345,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                     ),
                     // Calendar grid
                     _buildCalendarMonth(months[index]),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                   ],
                 );
               },
@@ -486,7 +486,7 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
                     style: TextStyle(
                       color: textColor,
                       fontWeight: (isDeparture || isReturn || isToday) ? FontWeight.bold : FontWeight.normal,
-                      fontSize: labelFontSize,
+                      fontSize: smallFontSize,
                     ),
                   ),
 

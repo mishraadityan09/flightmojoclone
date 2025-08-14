@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> {
 
             // Insert before Popular Destinations section
             Transform.translate(
-              offset: const Offset(0, -100),
+              offset: const Offset(0, -50),
               child: Stack(
                 alignment: Alignment.bottomCenter,
 
@@ -261,16 +261,16 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     'BUILD WITH LOVE AT FLIGHTSMOJO',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: const Color.fromARGB(255, 255, 125, 50),
-                      letterSpacing: 2,
+                      letterSpacing: 1.5,
                       shadows: [
                         Shadow(
-                          blurRadius: 4,
+                          blurRadius: 6,
                           color: Theme.of(
                             context,
-                          ).primaryColor.withValues(alpha:0.3),
+                          ).primaryColor.withValues(alpha:0.4),
                           offset: Offset(1, 2),
                         ),
                       ],
