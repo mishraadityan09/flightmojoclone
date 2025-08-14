@@ -226,14 +226,13 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(vertical: 10),
-          child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 300),
+          child: Text(
+            text,
             style: TextStyle(
               color: isSelected ? Colors.white : Colors.grey.shade800,
               fontWeight: isSelected ? FontWeight.w400 : FontWeight.normal,
               fontSize: buttonLabelFontSize,
             ),
-            child: Text(text),
           ),
         ),
       ),
@@ -346,7 +345,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                   // City and Code on one line with some spacing
                   RichText(
                     text: TextSpan(
-                      style: GoogleFonts.poppins(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontSize: bodyTextFontSize,
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
@@ -356,11 +355,12 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                         const WidgetSpan(child: SizedBox(width: 8)),
                         TextSpan(
                           text: code,
-                          style: GoogleFonts.poppins(
-                            fontSize: bodyTextFontSize - 2,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey.shade500,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                fontSize: bodyTextFontSize - 2,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey.shade500,
+                              ),
                         ),
                       ],
                     ),
@@ -369,7 +369,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                   // Airport name on a separate line, ellipsis if too long
                   Text(
                     airportName,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: bodyTextFontSize - 4,
                       fontWeight: FontWeight.w400,
                       color: Colors.grey.shade600,
@@ -381,7 +381,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
               )
             : Text(
                 value ?? '',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   fontSize: bodyTextFontSize,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
@@ -411,7 +411,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
                 Expanded(
                   child: Text(
                     value,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: bodyTextFontSize,
                       fontWeight: FontWeight.w500,
                     ),
@@ -465,7 +465,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
               fontWeight: FontWeight.w500,
             ),
             hintText: ' + Add Return Date',
-            hintStyle: GoogleFonts.poppins(
+            hintStyle: TextStyle(
               fontSize: (smallFontSize - 2 < 11) ? 11 : smallFontSize - 2,
               fontWeight: FontWeight.w400,
               color: Colors.grey,
@@ -489,7 +489,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
               horizontal: 12,
             ),
           ),
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontSize: bodyTextFontSize,
             fontWeight: FontWeight.w500,
             color: Colors.grey,
@@ -542,7 +542,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
           children: [
             Text(
               passengerText,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: bodyTextFontSize,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
@@ -551,7 +551,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             const SizedBox(height: 2),
             Text(
               _travelClass, // Display selected class here
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: bodyTextFontSize - 4,
                 fontWeight: FontWeight.w400,
                 color: Colors.grey.shade600,
@@ -576,7 +576,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
         ),
         child: Text(
           'Search',
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontSize: buttonLabelFontSize,
             fontWeight: FontWeight.w400,
           ),
@@ -589,7 +589,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   Widget _buildFieldLabel(String label) {
     return Text(
       label,
-      style: GoogleFonts.poppins(
+      style: TextStyle(
         fontSize: secondaryLabelFontSize,
         fontWeight: FontWeight.w500,
         color: Colors.grey[600],
@@ -783,18 +783,18 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       operation: () async {
         await Future.delayed(const Duration(seconds: 3));
       },
-      onSuccess: (context, _) {
-        context.push(
-          AppRoutes.flightResults,
-          extra: {'searchParams': searchParams},
-        );
-      },
-
       // onSuccess: (context, _) {
       //   context.push(
-      //    AppRoutes.flightResultsReturn
+      //     AppRoutes.flightResults,
+      //     extra: {'searchParams': searchParams},
       //   );
       // },
+
+      onSuccess: (context, _) {
+        context.push(
+         AppRoutes.flightResultsReturn
+        );
+      },
       onError: (context, error) {
         ScaffoldMessenger.of(
           context,

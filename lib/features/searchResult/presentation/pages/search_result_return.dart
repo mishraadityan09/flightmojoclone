@@ -284,74 +284,70 @@ class _SearchResultReturnState extends State<SearchResultReturn>
   }
 
   Widget _buildDepartureTab() {
-    return Expanded(
-      child: ListView.builder(
-        padding: EdgeInsets.all(16),
-        itemCount: departureFlights.length,
-        itemBuilder: (context, index) {
-          final flight = departureFlights[index];
-          final isSelected = _selectedDepartureFlight == index;
-          return Container(
-            margin: EdgeInsets.only(bottom: 12),
-            child: _buildFlightCard(
-              airline: flight['airline'] as String,
-              flightNumber: flight['flightNumber'] as String,
-              departureTime: flight['departureTime'] as String,
-              arrivalTime: flight['arrivalTime'] as String,
-              duration: flight['duration'] as String,
-              price: flight['price'] as String,
-              airlineLogo: flight['color'] as Color,
-              isSelected: isSelected,
-              departureAirport: flight['departureAirport'] as String,
-              arrivalAirport: flight['arrivalAirport'] as String,
-              departureDate: (flight['departureDate'] as String?) ?? '',
-              arrivalDate: (flight['arrivalDate'] as String?) ?? '',
-              discount: (flight['discount'] as String?) ?? '',
-              onTap: () {
-                setState(() {
-                  _selectedDepartureFlight = index;
-                });
-              },
-            ),
-          );
-        },
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.all(16),
+      itemCount: departureFlights.length,
+      itemBuilder: (context, index) {
+        final flight = departureFlights[index];
+        final isSelected = _selectedDepartureFlight == index;
+        return Container(
+          margin: EdgeInsets.only(bottom: 12),
+          child: _buildFlightCard(
+            airline: flight['airline'] as String,
+            flightNumber: flight['flightNumber'] as String,
+            departureTime: flight['departureTime'] as String,
+            arrivalTime: flight['arrivalTime'] as String,
+            duration: flight['duration'] as String,
+            price: flight['price'] as String,
+            airlineLogo: flight['color'] as Color,
+            isSelected: isSelected,
+            departureAirport: flight['departureAirport'] as String,
+            arrivalAirport: flight['arrivalAirport'] as String,
+            departureDate: (flight['departureDate'] as String?) ?? '',
+            arrivalDate: (flight['arrivalDate'] as String?) ?? '',
+            discount: (flight['discount'] as String?) ?? '',
+            onTap: () {
+              setState(() {
+                _selectedDepartureFlight = index;
+              });
+            },
+          ),
+        );
+      },
     );
   }
 
   Widget _buildReturnTab() {
-    return Expanded(
-      child: ListView.builder(
-        padding: EdgeInsets.all(16),
-        itemCount: returnFlights.length,
-        itemBuilder: (context, index) {
-          final flight = returnFlights[index];
-          final isSelected = _selectedReturnFlight == index;
-          return Container(
-            margin: EdgeInsets.only(bottom: 12),
-            child: _buildFlightCard(
-              airline: flight['airline'] as String,
-              flightNumber: flight['flightNumber'] as String,
-              departureTime: flight['departureTime'] as String,
-              arrivalTime: flight['arrivalTime'] as String,
-              duration: flight['duration'] as String,
-              price: flight['price'] as String,
-              airlineLogo: flight['color'] as Color,
-              isSelected: isSelected,
-              departureAirport: (flight['departureAirport'] as String?) ?? '',
-              arrivalAirport: (flight['arrivalAirport'] as String?) ?? '',
-              departureDate: (flight['departureDate'] as String?) ?? '',
-              arrivalDate: (flight['arrivalDate'] as String?) ?? '',
-              discount: (flight['discount'] as String?) ?? '',
-              onTap: () {
-                setState(() {
-                  _selectedReturnFlight = index;
-                });
-              },
-            ),
-          );
-        },
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.all(16),
+      itemCount: returnFlights.length,
+      itemBuilder: (context, index) {
+        final flight = returnFlights[index];
+        final isSelected = _selectedReturnFlight == index;
+        return Container(
+          margin: EdgeInsets.only(bottom: 12),
+          child: _buildFlightCard(
+            airline: flight['airline'] as String,
+            flightNumber: flight['flightNumber'] as String,
+            departureTime: flight['departureTime'] as String,
+            arrivalTime: flight['arrivalTime'] as String,
+            duration: flight['duration'] as String,
+            price: flight['price'] as String,
+            airlineLogo: flight['color'] as Color,
+            isSelected: isSelected,
+            departureAirport: (flight['departureAirport'] as String?) ?? '',
+            arrivalAirport: (flight['arrivalAirport'] as String?) ?? '',
+            departureDate: (flight['departureDate'] as String?) ?? '',
+            arrivalDate: (flight['arrivalDate'] as String?) ?? '',
+            discount: (flight['discount'] as String?) ?? '',
+            onTap: () {
+              setState(() {
+                _selectedReturnFlight = index;
+              });
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -872,8 +868,31 @@ class _SearchResultReturnState extends State<SearchResultReturn>
   }
 
   Widget _buildBottomSummaryBar() {
-    final departureFlight = departureFlights[_selectedDepartureFlight];
-    final returnFlight = returnFlights[_selectedReturnFlight];
+    // Add null safety checks
+    if (departureFlights.isEmpty || returnFlights.isEmpty) {
+      return Container(
+        color: Colors.grey[800],
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Center(
+          child: Text(
+            'No flights available',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+        ),
+      );
+    }
+
+    // Ensure indices are within bounds
+    final departureIndex = _selectedDepartureFlight < departureFlights.length 
+        ? _selectedDepartureFlight 
+        : 0;
+    final returnIndex = _selectedReturnFlight < returnFlights.length 
+        ? _selectedReturnFlight 
+        : 0;
+
+    final departureFlight = departureFlights[departureIndex];
+    final returnFlight = returnFlights[returnIndex];
+    
     final departurePrice = int.parse(
       departureFlight['price'].replaceAll('₹', '').replaceAll(',', ''),
     );
@@ -896,7 +915,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                 Builder(
                   builder: (_) {
                     final dep = departureFlights.isNotEmpty
-                        ? departureFlights[_selectedDepartureFlight]
+                        ? departureFlights[departureIndex]
                         : null;
                     final depPath = dep != null
                         ? '${dep['departureAirport'] ?? ''} - ${dep['arrivalAirport'] ?? ''}'
@@ -948,7 +967,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                 Builder(
                   builder: (_) {
                     final ret = returnFlights.isNotEmpty
-                        ? returnFlights[_selectedReturnFlight]
+                        ? returnFlights[returnIndex]
                         : null;
                     final retPath = ret != null
                         ? '${ret['departureAirport'] ?? ''} - ${ret['arrivalAirport'] ?? ''}'
@@ -991,51 +1010,54 @@ class _SearchResultReturnState extends State<SearchResultReturn>
           ),
 
           // Total and Book Button
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    'Total',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    '₹${totalPrice.toStringAsFixed(0)}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Total',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 4),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to booking
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Proceeding to booking...'),
-                      backgroundColor: Colors.orange,
+                    SizedBox(width: 8),
+                    Text(
+                      '₹${totalPrice.toStringAsFixed(0)}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                  ],
+                ),
+                SizedBox(height: 4),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to booking
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Proceeding to booking...'),
+                        backgroundColor: Colors.orange,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    'BOOK NOW',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
                 ),
-                child: Text(
-                  'BOOK NOW',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

@@ -77,7 +77,7 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                       ),
-                      style: GoogleFonts.poppins(fontSize: 14),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                 ],
@@ -113,16 +113,16 @@ class _SearchPageState extends State<SearchPage> {
                         child: ListTile(
                           leading: const Icon(Icons.location_city, color: Colors.grey),
                           title: Text(item.cityName,
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                   fontSize: 16, color: Colors.grey)),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(item.cityCode,
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                       fontSize: 14, color: Colors.grey.shade600)),
                               Text(item.airportName,
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                       fontSize: 12, color: Colors.grey.shade500)),
                             ],
                           ),

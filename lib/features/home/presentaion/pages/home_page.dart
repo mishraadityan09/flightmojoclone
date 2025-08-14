@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'Hey Traveler 👋',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             fontSize: bodyFontSize,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       'ONLY FLIGHTS',
                                       overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         fontSize: subheadingFontSize,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Text(
                                     '.',
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
                                       fontSize: subheadingFontSize,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red,
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       'ONLY EXPERTS',
                                       overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         fontSize: subheadingFontSize,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Text(
                                     '.',
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
                                       fontSize: subheadingFontSize,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red,
@@ -260,8 +260,8 @@ class _HomePageState extends State<HomePage> {
                   // Beautifully styled Text (in straight line)
                   Text(
                     'BUILD WITH LOVE AT FLIGHTSMOJO',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
+                    style: TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: const Color.fromARGB(255, 255, 125, 50),
                       letterSpacing: 1.5,
@@ -401,7 +401,7 @@ class _HomePageState extends State<HomePage> {
   //       children: [
   //         Text(
   //           'Your Travel Companion',
-  //           style: GoogleFonts.poppins(
+  //           style: TextStyle(
   //             fontSize: (screenWidth * 0.07).clamp(24.0, 28.0),
   //             fontWeight: FontWeight.bold,
   //             color: Colors.white,
@@ -410,7 +410,7 @@ class _HomePageState extends State<HomePage> {
   //         const SizedBox(height: 8),
   //         Text(
   //           'Book flights, hotels & cabs at best prices',
-  //           style: GoogleFonts.poppins(
+  //           style: TextStyle(
   //             fontSize: bodyFontSize,
   //             color: Colors.white.withValues(alpha:0.9),
   //           ),
@@ -498,7 +498,7 @@ class _HomePageState extends State<HomePage> {
   //                     const SizedBox(width: 8),
   //                     Text(
   //                       label,
-  //                       style: GoogleFonts.poppins(
+  //                       style: TextStyle(
   //                         color: isSelected
   //                             ? Colors.white
   //                             : Colors.grey.shade300,
@@ -526,13 +526,13 @@ class _HomePageState extends State<HomePage> {
       // case ServiceType.hotel:
       //   child = Text(
       //     'Hotel search functionality will be implemented here.',
-      //     style: GoogleFonts.poppins(fontSize: bodyFontSize, fontWeight: FontWeight.w500),
+      //     style: TextStyle(fontSize: bodyFontSize, fontWeight: FontWeight.w500),
       //   );
       //   break;
       // case ServiceType.cab:
       //   child = Text(
       //     'Cab search functionality will be implemented here.',
-      //     style: GoogleFonts.poppins(fontSize: bodyFontSize, fontWeight: FontWeight.w500),
+      //     style: TextStyle(fontSize: bodyFontSize, fontWeight: FontWeight.w500),
       //   );
       //   break;
     }
@@ -587,7 +587,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(
                 'Available Coupons',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   fontSize: subheadingFontSize,
                   fontWeight: FontWeight.bold,
                 ),
@@ -622,7 +622,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Text(
           title,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontSize: subheadingFontSize,
             fontWeight: FontWeight.bold,
           ),
