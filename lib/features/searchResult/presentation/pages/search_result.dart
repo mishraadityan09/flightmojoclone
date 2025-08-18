@@ -12,6 +12,7 @@ class FlightSearchResultsScreen extends StatefulWidget {
   final String departureDate;
   final String returnDate;
   final String passengers;
+  final String travelClass;
 
   const FlightSearchResultsScreen({
     super.key,
@@ -20,6 +21,7 @@ class FlightSearchResultsScreen extends StatefulWidget {
     required this.departureDate,
     required this.returnDate,
     required this.passengers,
+    required this.travelClass,
   });
 
   @override
@@ -43,7 +45,7 @@ class _FlightSearchResultsScreenState extends State<FlightSearchResultsScreen> {
       'departureDate': widget.departureDate,
       'returnDate': widget.returnDate,
       'passengers': widget.passengers,
-      'travelClass': 'Economy', // or get real data
+      'travelClass': widget.travelClass,
       'isRoundTrip': widget.returnDate.isNotEmpty,
     };
 

@@ -32,7 +32,9 @@ class FlightsMojoApp extends StatelessWidget {
         themeMode: ThemeMode.light,
         routerConfig: AppRouter.router,
         debugShowCheckedModeBanner: false,
+        
       ),
     );
   }
 }
+   

@@ -51,6 +51,9 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
   late String _returnDate;
 
   int _passengers = 1;
+  int _adults = 1;
+  int _children = 0;
+  int _infants = 0;
   String _travelClass = 'Economy';
 
   bool _isRoundTrip = false;
@@ -98,16 +101,24 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
 
   DateTime? _parseDate(String dateString) {
     try {
-      final parts = dateString.split('/');
-      if (parts.length == 3) {
-        return DateTime(
-          int.parse(parts[2]), // year
-          int.parse(parts[1]), // month
-          int.parse(parts[0]), // day
-        );
-      }
+      // First try parsing with DateFormat
+      final formatter = DateFormat('dd MMM yy');
+      return formatter.parse(dateString);
     } catch (e) {
-      debugPrint('Error parsing date: $e');
+      debugPrint('Error parsing date with formatter: $e');
+      // Fallback to manual parsing if needed
+      try {
+        final parts = dateString.split('/');
+        if (parts.length == 3) {
+          return DateTime(
+            int.parse(parts[2]), // year
+            int.parse(parts[1]), // month
+            int.parse(parts[0]), // day
+          );
+        }
+      } catch (e) {
+        debugPrint('Error parsing date with fallback: $e');
+      }
     }
     return null;
   }
@@ -694,7 +705,12 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       showDragHandle: true,
       useRootNavigator: true,
       isScrollControlled: true,
-      builder: (context) => const PassengersBottomSheet(),
+      builder: (context) => PassengersBottomSheet(
+        initialAdultCount: _adults,
+        initialChildCount: _children,
+        initialInfantCount: _infants,
+        initialTravelClass: _travelClass,
+      ),
     );
 
     if (result != null) {
@@ -710,12 +726,11 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
         _passengers = adults + children + infants;
 
         // Store or use them separately if desired:
-        // _adultCount = adults;
-        // _childCount = children;
-        // _infantCount = infants;
+        _adults = adults;
+        _children = children;
+        _infants = infants;
         _travelClass = travelClass;
 
-        // (Make sure these variables are declared in your State class)
       });
     }
   }

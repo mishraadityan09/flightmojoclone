@@ -76,6 +76,7 @@ class AppRouter {
       departureDate: searchParams?['departureDate'] ?? '',
       returnDate: searchParams?['returnDate'] ?? '',
       passengers: searchParams?['passengers'].toString() ?? '',
+      travelClass: searchParams?['travelClass'] ?? '',
       
     );
   },

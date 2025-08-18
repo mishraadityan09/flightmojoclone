@@ -1,17 +1,45 @@
 import 'package:flutter/material.dart';
 
 class PassengersBottomSheet extends StatefulWidget {
-  const PassengersBottomSheet({super.key});
+  final int? initialAdultCount;
+  final int? initialChildCount;
+  final int? initialInfantCount;
+  final String? initialTravelClass;
+
+  const PassengersBottomSheet({
+    super.key,
+    this.initialAdultCount,
+    this.initialChildCount,
+    this.initialInfantCount,
+    this.initialTravelClass,
+  });
 
   @override
   _PassengersBottomSheetState createState() => _PassengersBottomSheetState();
 }
 
 class _PassengersBottomSheetState extends State<PassengersBottomSheet> {
-  int _adultCount = 0;
-  int _childCount = 0;
-  int _infantCount = 0;
-  String _travelClass = 'Economy';
+  late int _adultCount;
+  late int _childCount;
+  late int _infantCount;
+  late String _travelClass;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with provided values or defaults
+    _adultCount = widget.initialAdultCount ?? 0;
+    _childCount = widget.initialChildCount ?? 0;
+    _infantCount = widget.initialInfantCount ?? 0;
+    _travelClass = widget.initialTravelClass ?? 'Economy';
+    
+    // Print the initial values
+    print('Initial Passengers Data:');
+    print('Adults: $_adultCount');
+    print('Children: $_childCount');
+    print('Infants: $_infantCount');
+    print('Travel Class: $_travelClass');
+  }
 
   // Responsive font size getters based on MediaQuery width
   double _getScreenWidth(BuildContext context) => MediaQuery.of(context).size.width;

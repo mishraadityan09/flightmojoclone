@@ -442,7 +442,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                     child: Icon(
                                       Icons.flight_takeoff,
                                       color: Colors.white,
-                                      size: 24,
+                                      size: 20,
                                     ),
                                   ),
                                   SizedBox(width: 12),
@@ -522,7 +522,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                     child: Icon(
                                       Icons.flight_land,
                                       color: Colors.white,
-                                      size: 24,
+                                      size: 20,
                                     ),
                                   ),
                                   SizedBox(width: 12),
@@ -1261,7 +1261,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   child: Text(
                     'BOOK NOW',

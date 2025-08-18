@@ -53,6 +53,13 @@ class _DatePickerBottomSheetState extends State<DatePickerBottomSheet> {
     super.initState();
     final now = DateTime.now();
 
+    // Print incoming data for debugging
+    print('DatePicker Received Data:');
+    print('Initial Departure Date: ${widget.initialDepartureDate}');
+    print('Initial Return Date: ${widget.initialReturnDate}');
+    print('Is Adding Return Date: ${widget.isAddingReturnDate}');
+    print('Prices: ${widget.prices}');
+
     if (widget.isAddingReturnDate) {
       currentMode = DateSelectionMode.returnDate;
     } else {
