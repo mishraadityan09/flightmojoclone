@@ -104,6 +104,29 @@ class _FlightBookingFormState extends State<FlightBookingForm>
     {'airline': 'Alliance', 'price': '₹ 5,350'},
   ];
 
+  // Responsive font size getters based on MediaQuery width
+  double get screenWidth => MediaQuery.of(context).size.width;
+
+  double get headingFontSize =>
+      (screenWidth * 0.055).clamp(20.0, 24.0); // 5.5% width, clamp 20-24
+
+  double get buttonLabelFontSize =>
+      (screenWidth * 0.035).clamp(15.0, 18.0); // 3.5% width, clamp 16-18
+
+  double get bodyTextFontSize =>
+      (screenWidth * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
+
+  double get secondaryLabelFontSize =>
+      (screenWidth * 0.030).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+
+  double get secondaryFontSize =>
+      (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+
+  double get smallFontSize =>
+      (screenWidth * 0.025).clamp(10.0, 12.0); // ~2.5% width, clamp 10-12
+
+  double get iconSize => 20.0; // Fixed icon size for consistency
+
   @override
   void initState() {
     super.initState();

@@ -100,6 +100,29 @@ class _SearchResultReturnState extends State<SearchResultReturn>
     {'airline': 'Alliance', 'price': '₹ 5,350'},
   ];
 
+  // Responsive font size getters based on MediaQuery width
+  double get screenWidth => MediaQuery.of(context).size.width;
+
+  double get headingFontSize =>
+      (screenWidth * 0.055).clamp(14.0, 16.0); // 5.5% width, clamp 20-24
+
+  double get buttonLabelFontSize =>
+      (screenWidth * 0.035).clamp(14.0, 16.0); // 3.5% width, clamp 16-18
+
+  double get bodyTextFontSize =>
+      (screenWidth * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
+
+  double get secondaryLabelFontSize =>
+      (screenWidth * 0.030).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+
+  double get secondaryFontSize =>
+      (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+
+  double get smallFontSize =>
+      (screenWidth * 0.025).clamp(10.0, 12.0); // ~2.5% width, clamp 10-12
+
+  double get iconSize => 20.0; // Fixed icon size for consistency
+
   @override
   void initState() {
     super.initState();
@@ -145,7 +168,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                               'DEL - BOM • 1 Traveler',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: headingFontSize,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -153,7 +176,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                               '13 Aug - 23 Aug • Economy',
                               style: TextStyle(
                                 color: Colors.white70,
-                                fontSize: 14,
+                                fontSize: secondaryLabelFontSize,
                               ),
                             ),
                           ],
@@ -199,7 +222,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('DEPARTURE'),
+                            Text('DEPARTURE',style: TextStyle(fontSize: secondaryLabelFontSize),),
                             SizedBox(height: 2),
                             Builder(
                               builder: (_) {
@@ -219,7 +242,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                                       ? '$depPath  •  $depDate'
                                       : '',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: smallFontSize,
                                     color: Colors.grey[600],
                                   ),
                                   overflow: TextOverflow.ellipsis,
@@ -233,7 +256,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('RETURN'),
+                            Text('RETURN',style: TextStyle(fontSize: secondaryLabelFontSize),),
                             SizedBox(height: 2),
                             Builder(
                               builder: (_) {
@@ -253,7 +276,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                                       ? '$retPath  •  $retDate'
                                       : '',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: smallFontSize,
                                     color: Colors.grey[600],
                                   ),
                                   overflow: TextOverflow.ellipsis,
@@ -389,145 +412,6 @@ class _SearchResultReturnState extends State<SearchResultReturn>
     }
   }
 
-  Widget _buildPriceGraphOptions(
-    String date,
-    String price, {
-    bool showSeparator = true,
-    bool isSelected = false,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.blue.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
-          border: isSelected ? Border.all(color: Colors.blue, width: 2) : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(height: 40, width: 1, color: Colors.grey[300]),
-            Expanded(
-              child: Container(
-                height: 40,
-                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        date,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isSelected ? Colors.blue : Colors.black87,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                    SizedBox(height: 1),
-                    Flexible(
-                      child: Text(
-                        price,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isSelected ? Colors.blue : Colors.black54,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            if (showSeparator)
-              Container(height: 40, width: 1, color: Colors.grey[300]),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFareOptions(
-    String flightName,
-    String price, {
-    bool showSeparator = true,
-    bool isSelected = false,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.green.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
-          border: isSelected ? Border.all(color: Colors.green, width: 2) : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(width: 2),
-            SizedBox(
-              height: 12,
-              width: 12,
-              child: SvgPicture.network(
-                'https://www.flightsmojo.in/images/airlinesSvg/6E.svg',
-              ),
-            ),
-            SizedBox(width: 6),
-            Flexible(
-              child: Container(
-                height: 40,
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        flightName,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: isSelected ? Colors.green : Colors.black87,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Flexible(
-                      child: Text(
-                        price,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: isSelected ? Colors.green : Colors.black54,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(width: 6),
-            if (showSeparator)
-              Container(height: 40, width: 1, color: Colors.grey[300]),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildFlightCard({
     required String airline,
@@ -586,7 +470,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                     children: [
                       Text(
                         airline,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: bodyTextFontSize, color: Colors.grey[600]),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -599,7 +483,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       SizedBox(width: 4),
                       Text(
                         flightNumber,
-                        style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+                        style: TextStyle(fontSize: smallFontSize, color: Colors.grey[500]),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -613,7 +497,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       Text(
                         price,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: bodyTextFontSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.grey[800],
                         ),
@@ -623,7 +507,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       ),
                       Text(
                         'per adult',
-                        style: TextStyle(fontSize: 9, color: Colors.grey[500]),
+                        style: TextStyle(fontSize: smallFontSize, color: Colors.grey[500]),
                         textAlign: TextAlign.end,
                       ),
                     ],
@@ -660,7 +544,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       Text(
                         departureAirport,
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: smallFontSize,
                           color: Colors.grey[600],
                           fontWeight: FontWeight.w500,
                         ),
@@ -668,7 +552,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       Text(
                         departureTime,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: bodyTextFontSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.grey[800],
                         ),
@@ -692,7 +576,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                     children: [
                       Text(
                         duration,
-                        style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: smallFontSize, color: Colors.grey[600]),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -743,7 +627,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       // SizedBox(height: 4),
                       Text(
                         'Non-Stop',
-                        style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: smallFontSize, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -757,7 +641,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       Text(
                         arrivalAirport,
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: smallFontSize,
                           color: Colors.grey[600],
                           fontWeight: FontWeight.w500,
                         ),
@@ -765,7 +649,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       Text(
                         arrivalTime,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: bodyTextFontSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.grey[800],
                         ),
@@ -878,7 +762,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
         child: Center(
           child: Text(
             'No flights available',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: Colors.white, fontSize: headingFontSize),
           ),
         ),
       );
@@ -931,7 +815,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       depPath.isNotEmpty || depDate.isNotEmpty
                           ? depPath
                           : '',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
+                      style: TextStyle(fontSize: bodyTextFontSize, color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                     );
@@ -944,7 +828,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                     SizedBox(width: 4),
                     Text(
                       'Departure',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: bodyTextFontSize),
                     ),
                   ],
                 ),
@@ -953,7 +837,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                   'From ${departureFlight['price']}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 14,
+                    fontSize: buttonLabelFontSize,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -983,7 +867,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       retPath.isNotEmpty || retDate.isNotEmpty
                           ? retPath
                           : '',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
+                      style: TextStyle(fontSize: bodyTextFontSize, color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                     );
                   },
@@ -995,7 +879,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                     SizedBox(width: 4),
                     Text(
                       'Return',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: bodyTextFontSize),
                     ),
                   ],
                 ),
@@ -1003,7 +887,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                   'From ${returnFlight['price']}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 14,
+                    fontSize: buttonLabelFontSize,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1021,14 +905,14 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                   children: [
                     Text(
                       'Total',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: bodyTextFontSize),
                     ),
                     SizedBox(width: 8),
                     Text(
                       '₹${totalPrice.toStringAsFixed(0)}',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: headingFontSize,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1056,7 +940,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                   ),
                   child: Text(
                     'BOOK NOW',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: buttonLabelFontSize, fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
