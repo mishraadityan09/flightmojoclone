@@ -107,13 +107,13 @@ class _SearchResultReturnState extends State<SearchResultReturn>
       (screenWidth * 0.055).clamp(14.0, 16.0); // 5.5% width, clamp 20-24
 
   double get buttonLabelFontSize =>
-      (screenWidth * 0.035).clamp(14.0, 16.0); // 3.5% width, clamp 16-18
+      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.5% width, clamp 16-18
 
   double get bodyTextFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
+      (screenWidth * 0.03).clamp(12.0, 14.0); // 4% width, clamp 12-16
 
   double get secondaryLabelFontSize =>
-      (screenWidth * 0.030).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
 
   double get secondaryFontSize =>
       (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
@@ -912,7 +912,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                       '₹${totalPrice.toStringAsFixed(0)}',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: headingFontSize,
+                        fontSize: buttonLabelFontSize,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

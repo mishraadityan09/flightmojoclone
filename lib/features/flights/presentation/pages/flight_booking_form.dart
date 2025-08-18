@@ -28,8 +28,8 @@ class _FlightBookingFormState extends State<FlightBookingForm>
     {
       'airline': 'Air India Limited',
       'flightNumber': 'AI-2422',
-      'departureTime': '1:50 AM',
-      'arrivalTime': '4:10 AM',
+      'departureTime': '1:50',
+      'arrivalTime': '4:10',
       'duration': '2h:20m',
       'price': '₹5,371',
       'stops': 'Non-Stop',
@@ -43,8 +43,8 @@ class _FlightBookingFormState extends State<FlightBookingForm>
     {
       'airline': 'Air India Limited',
       'flightNumber': 'AI-2954',
-      'departureTime': '2:35 AM',
-      'arrivalTime': '5:00 AM',
+      'departureTime': '2:35',
+      'arrivalTime': '5:00',
       'duration': '2h:25m',
       'price': '₹5,478',
       'stops': 'Non-Stop',
@@ -108,16 +108,16 @@ class _FlightBookingFormState extends State<FlightBookingForm>
   double get screenWidth => MediaQuery.of(context).size.width;
 
   double get headingFontSize =>
-      (screenWidth * 0.055).clamp(20.0, 24.0); // 5.5% width, clamp 20-24
+      (screenWidth * 0.055).clamp(14.0, 16.0); // 5.5% width, clamp 20-24
 
   double get buttonLabelFontSize =>
-      (screenWidth * 0.035).clamp(15.0, 18.0); // 3.5% width, clamp 16-18
+      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.5% width, clamp 16-18
 
   double get bodyTextFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
+      (screenWidth * 0.03).clamp(12.0, 14.0); // 4% width, clamp 12-16
 
   double get secondaryLabelFontSize =>
-      (screenWidth * 0.030).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
 
   double get secondaryFontSize =>
       (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
@@ -126,7 +126,6 @@ class _FlightBookingFormState extends State<FlightBookingForm>
       (screenWidth * 0.025).clamp(10.0, 12.0); // ~2.5% width, clamp 10-12
 
   double get iconSize => 20.0; // Fixed icon size for consistency
-
   @override
   void initState() {
     super.initState();
@@ -198,138 +197,141 @@ class _FlightBookingFormState extends State<FlightBookingForm>
   }
 
   void _showFlightDetails() {
-  showModalBottomSheet(
-    context: context,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-    isScrollControlled: true,
-    builder: (BuildContext context) {
-      return Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 16,
-          right: 16,
-          top: 24,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[350],
-                    borderRadius: BorderRadius.circular(2),
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16,
+            right: 16,
+            top: 24,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[350],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              // Departure Flights (if array)
-              if (departureFlights.isNotEmpty)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Departure Flights',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue[800],
+                // Departure Flights (if array)
+                if (departureFlights.isNotEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Departure Flights',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue[800],
+                        ),
                       ),
-                    ),
-                    ...departureFlights.map((flight) => Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(top: 8, bottom: 8),
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.blue!),
+                      ...departureFlights.map(
+                        (flight) => Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(top: 8, bottom: 8),
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[50],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blue!),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${flight['departureAirport']} → ${flight['arrivalAirport']}',
+                              ),
+                              Text(
+                                '${flight['date'] ?? 'Date'} | ${flight['departureTime']} - ${flight['arrivalTime']}',
+                              ),
+                              Text(
+                                '${flight['stops']} | ${flight['duration']}',
+                              ),
+                              Text(
+                                '${flight['airline']} | ${flight['flightNumber']}',
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${flight['departureAirport']} → ${flight['arrivalAirport']}',
-                          ),
-                          Text(
-                            '${flight['date'] ?? 'Date'} | ${flight['departureTime']} - ${flight['arrivalTime']}',
-                          ),
-                          Text(
-                            '${flight['stops']} | ${flight['duration']}',
-                          ),
-                          Text(
-                            '${flight['airline']} | ${flight['flightNumber']}',
-                          ),
-                        ],
+                    ],
+                  ),
+                SizedBox(height: 16),
+                // Return Flights (if array)
+                if (returnFlights.isNotEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Return Flights',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange[800],
+                        ),
                       ),
-                    ))
-                  ],
+                      ...returnFlights.map(
+                        (flight) => Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(top: 8, bottom: 8),
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.orange[50],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.orange!),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${flight['departureAirport']} → ${flight['arrivalAirport']}',
+                              ),
+                              Text(
+                                '${flight['date'] ?? 'Date'} | ${flight['departureTime']} - ${flight['arrivalTime']}',
+                              ),
+                              Text(
+                                '${flight['stops']} | ${flight['duration']}',
+                              ),
+                              Text(
+                                '${flight['airline']} | ${flight['flightNumber']}',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 24),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Close'),
+                  ),
                 ),
-              SizedBox(height: 16),
-              // Return Flights (if array)
-              if (returnFlights.isNotEmpty)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Return Flights',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange[800],
-                      ),
-                    ),
-                    ...returnFlights.map((flight) => Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(top: 8, bottom: 8),
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.orange[50],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.orange!),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${flight['departureAirport']} → ${flight['arrivalAirport']}',
-                          ),
-                          Text(
-                            '${flight['date'] ?? 'Date'} | ${flight['departureTime']} - ${flight['arrivalTime']}',
-                          ),
-                          Text(
-                            '${flight['stops']} | ${flight['duration']}',
-                          ),
-                          Text(
-                            '${flight['airline']} | ${flight['flightNumber']}',
-                          ),
-                        ],
-                      ),
-                    ))
-                  ],
-                ),
-              SizedBox(height: 24),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Close'),
-                ),
-              ),
-              SizedBox(height: 12),
-            ],
+                SizedBox(height: 12),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -395,7 +397,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                 'DEL - BOM - DEL • 1 Traveler',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: headingFontSize,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -403,7 +405,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                 '15 Aug - 22 Aug • Economy',
                                 style: TextStyle(
                                   color: Colors.white70,
-                                  fontSize: 14,
+                                  fontSize: bodyTextFontSize,
                                 ),
                               ),
                             ],
@@ -447,6 +449,15 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Departure Flight Section
+                              Text(
+                                'Departure',
+                                style: TextStyle(
+                                  fontSize: bodyTextFontSize,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              SizedBox(height: 4),
                               Row(
                                 children: [
                                   Container(
@@ -475,30 +486,21 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Departure',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white70,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
                                           '${departureFlights.isNotEmpty ? departureFlights[0]['departureAirport'] : 'DEL'}-${departureFlights.isNotEmpty ? departureFlights[0]['arrivalAirport'] : 'BOM'} | Economy',
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: bodyTextFontSize,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                        SizedBox(height: 4),
+                                        // SizedBox(height: 4),
                                         Text(
                                           'Fri, 15 Aug | ${departureFlights.isNotEmpty ? departureFlights[0]['departureTime'] : '19:45'} - ${departureFlights.isNotEmpty ? departureFlights[0]['arrivalTime'] : '21:55'} | ${departureFlights.isNotEmpty ? departureFlights[0]['stops'] : 'Non-Stop'} | ${departureFlights.isNotEmpty ? departureFlights[0]['duration'] : '2hr 10m'}',
                                           style: TextStyle(
                                             color: Colors.white.withOpacity(
                                               0.9,
                                             ),
-                                            fontSize: 12,
+                                            fontSize: bodyTextFontSize,
                                           ),
                                         ),
                                       ],
@@ -506,7 +508,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                   ),
                                 ],
                               ),
-                  
+
                               // Dashed line separator
                               Container(
                                 margin: EdgeInsets.symmetric(vertical: 16),
@@ -525,8 +527,17 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                   ),
                                 ),
                               ),
-                  
+
                               // Return Flight Section
+                              Text(
+                                'Return',
+                                style: TextStyle(
+                                  fontSize: bodyTextFontSize,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              SizedBox(height: 4),
                               Row(
                                 children: [
                                   Container(
@@ -555,19 +566,10 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Return',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white70,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
                                           '${returnFlights.isNotEmpty ? returnFlights[0]['departureAirport'] : 'BOM'}-${returnFlights.isNotEmpty ? returnFlights[0]['arrivalAirport'] : 'DEL'} | Economy',
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 16,
+                                            fontSize: bodyTextFontSize,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
@@ -578,7 +580,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                             color: Colors.white.withOpacity(
                                               0.9,
                                             ),
-                                            fontSize: 12,
+                                            fontSize: bodyTextFontSize,
                                           ),
                                         ),
                                       ],
@@ -586,14 +588,14 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                   ),
                                 ],
                               ),
-                              
+
                               // Add bottom padding to prevent text overlap with button
                               SizedBox(height: 20),
                             ],
                           ),
                         ),
                       ),
-                  
+
                       // View Flight Details Button - positioned on the border
                       Positioned(
                         bottom: -5,
@@ -622,7 +624,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                               child: Text(
                                 'View Flight Details',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: buttonLabelFontSize,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
