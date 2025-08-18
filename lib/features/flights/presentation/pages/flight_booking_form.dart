@@ -108,16 +108,16 @@ class _FlightBookingFormState extends State<FlightBookingForm>
   double get screenWidth => MediaQuery.of(context).size.width;
 
   double get headingFontSize =>
-      (screenWidth * 0.055).clamp(14.0, 16.0); // 5.5% width, clamp 20-24
+      (screenWidth * 0.04).clamp(12.0, 16.0); // 4% width, clamp 12-16
 
   double get buttonLabelFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.5% width, clamp 16-18
+      (screenWidth * 0.03).clamp(10.0, 14.0); // 3.5% width, clamp 10-14
 
   double get bodyTextFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 14.0); // 4% width, clamp 12-16
+      (screenWidth * 0.03).clamp(10.0, 14.0); // 4% width, clamp 10-14
 
   double get secondaryLabelFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+      (screenWidth * 0.03).clamp(10.0, 14.0); // 3.2% width, clamp 10-14
 
   double get secondaryFontSize =>
       (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
@@ -659,7 +659,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                         Text(
                           'Baggage',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize:bodyTextFontSize,
                             fontWeight: FontWeight.w600,
                             color: Colors.grey[800],
                           ),
@@ -676,7 +676,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                             Text(
                               'Cabin bag 7 Kgs',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: bodyTextFontSize,
                                 color: Colors.grey[700],
                               ),
                             ),
@@ -690,7 +690,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                             Text(
                               'Check-in-bag 15 Kgs',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: bodyTextFontSize,
                                 color: Colors.grey[700],
                               ),
                             ),
@@ -722,7 +722,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                         Text(
                           'Contact Information',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: bodyTextFontSize,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[800],
                           ),
@@ -730,66 +730,78 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                         SizedBox(height: 16),
 
                         // Mobile Number Input
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
+                        IntrinsicHeight(
+                          child: Row(
+                             crossAxisAlignment: CrossAxisAlignment.stretch, 
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey[300]!),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text('🇮🇳', style: TextStyle(fontSize: bodyTextFontSize)),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      '+91',
+                                      style: TextStyle(
+                                        fontSize: bodyTextFontSize,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey[300]!),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('🇮🇳', style: TextStyle(fontSize: 16)),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    '+91',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[700],
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    hintText: 'Enter your mobile number*',
+                                    hintStyle: TextStyle(
+                                      fontSize: bodyTextFontSize,
+                                      color: Colors.grey[500],
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                        color: const Color.fromARGB(255, 99, 98, 98)!,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey[300]!,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 12,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: 'Enter your mobile number*',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey[300]!,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey[300]!,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                    ),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 12,
+                                  style: TextStyle(
+                                    fontSize: bodyTextFontSize,
+                                    color: Colors.grey[800],
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         SizedBox(height: 16),
 
@@ -800,6 +812,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                               value: true,
                               onChanged: (value) {},
                               activeColor: Colors.green,
+                              
                             ),
                             SizedBox(width: 8),
                             Icon(Icons.message, color: Colors.green, size: 20),
@@ -808,7 +821,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                               child: Text(
                                 'Get booking details & updates on WhatsApp',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: bodyTextFontSize,
                                   color: Colors.grey[700],
                                 ),
                               ),
@@ -831,7 +844,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                               child: Text(
                                 'I have a GST number (optional)',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: bodyTextFontSize,
                                   color: Colors.grey[700],
                                 ),
                               ),
@@ -864,7 +877,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                         Text(
                           'Traveler(s) Details',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: bodyTextFontSize,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[800],
                           ),
@@ -873,7 +886,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                         Text(
                           'Enter name as mentioned on your passport or government approved ID\'s',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: bodyTextFontSize,
                             color: Colors.grey[600],
                           ),
                         ),
@@ -885,7 +898,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                             Text(
                               'Adults',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: bodyTextFontSize,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.grey[700],
                               ),
@@ -900,7 +913,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                               label: Text(
                                 'Fill Details',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: bodyTextFontSize,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -923,143 +936,143 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                   ),
 
                   // Emergency Benefits Section
-                  Container(
-                    margin: EdgeInsets.all(16),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 1,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Emergency Benefits',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
-                          ),
-                        ),
-                        SizedBox(height: 16),
+                  // Container(
+                  //   margin: EdgeInsets.all(16),
+                  //   padding: EdgeInsets.all(16),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white,
+                  //     borderRadius: BorderRadius.circular(12),
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.grey.withOpacity(0.1),
+                  //         spreadRadius: 1,
+                  //         blurRadius: 4,
+                  //         offset: Offset(0, 2),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Text(
+                  //         'Emergency Benefits',
+                  //         style: TextStyle(
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Colors.grey[800],
+                  //         ),
+                  //       ),
+                  //       SizedBox(height: 16),
 
-                        // Benefits Cards
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue[50],
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.blue[200]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.access_time,
-                                      color: Colors.blue[600],
-                                      size: 24,
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Last-minute\nEmergency',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.blue[700],
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.amber[50],
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.amber[200]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.person,
-                                      color: Colors.amber[600],
-                                      size: 24,
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Personal\nEmergency',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.amber[700],
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue[50],
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.blue[200]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.home,
-                                      color: Colors.blue[600],
-                                      size: 24,
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Home\nEmergency',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.blue[700],
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12),
+                  //       // Benefits Cards
+                  //       Row(
+                  //         children: [
+                  //           Expanded(
+                  //             child: Container(
+                  //               padding: EdgeInsets.all(12),
+                  //               decoration: BoxDecoration(
+                  //                 color: Colors.blue[50],
+                  //                 borderRadius: BorderRadius.circular(8),
+                  //                 border: Border.all(color: Colors.blue[200]!),
+                  //               ),
+                  //               child: Column(
+                  //                 children: [
+                  //                   Icon(
+                  //                     Icons.access_time,
+                  //                     color: Colors.blue[600],
+                  //                     size: 24,
+                  //                   ),
+                  //                   SizedBox(height: 8),
+                  //                   Text(
+                  //                     'Last-minute\nEmergency',
+                  //                     textAlign: TextAlign.center,
+                  //                     style: TextStyle(
+                  //                       fontSize: 10,
+                  //                       color: Colors.blue[700],
+                  //                       fontWeight: FontWeight.w500,
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           SizedBox(width: 8),
+                  //           Expanded(
+                  //             child: Container(
+                  //               padding: EdgeInsets.all(12),
+                  //               decoration: BoxDecoration(
+                  //                 color: Colors.amber[50],
+                  //                 borderRadius: BorderRadius.circular(8),
+                  //                 border: Border.all(color: Colors.amber[200]!),
+                  //               ),
+                  //               child: Column(
+                  //                 children: [
+                  //                   Icon(
+                  //                     Icons.person,
+                  //                     color: Colors.amber[600],
+                  //                     size: 24,
+                  //                   ),
+                  //                   SizedBox(height: 8),
+                  //                   Text(
+                  //                     'Personal\nEmergency',
+                  //                     textAlign: TextAlign.center,
+                  //                     style: TextStyle(
+                  //                       fontSize: 10,
+                  //                       color: Colors.amber[700],
+                  //                       fontWeight: FontWeight.w500,
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           SizedBox(width: 8),
+                  //           Expanded(
+                  //             child: Container(
+                  //               padding: EdgeInsets.all(12),
+                  //               decoration: BoxDecoration(
+                  //                 color: Colors.blue[50],
+                  //                 borderRadius: BorderRadius.circular(8),
+                  //                 border: Border.all(color: Colors.blue[200]!),
+                  //               ),
+                  //               child: Column(
+                  //                 children: [
+                  //                   Icon(
+                  //                     Icons.home,
+                  //                     color: Colors.blue[600],
+                  //                     size: 24,
+                  //                   ),
+                  //                   SizedBox(height: 8),
+                  //                   Text(
+                  //                     'Home\nEmergency',
+                  //                     textAlign: TextAlign.center,
+                  //                     style: TextStyle(
+                  //                       fontSize: 10,
+                  //                       color: Colors.blue[700],
+                  //                       fontWeight: FontWeight.w500,
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       SizedBox(height: 12),
 
-                        Center(
-                          child: Text(
-                            'View All Benefits',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.blue[600],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  //       Center(
+                  //         child: Text(
+                  //           'View All Benefits',
+                  //           style: TextStyle(
+                  //             fontSize: 14,
+                  //             color: Colors.blue[600],
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -1168,7 +1181,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                     );
                     return Text(
                       depPath.isNotEmpty || depDate.isNotEmpty ? depPath : '',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
+                      style: TextStyle(fontSize: bodyTextFontSize, color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                     );
@@ -1181,7 +1194,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                     SizedBox(width: 4),
                     Text(
                       'Departure',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: bodyTextFontSize),
                     ),
                   ],
                 ),
@@ -1190,7 +1203,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                   'From ${departureFlight['price']}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 14,
+                    fontSize: bodyTextFontSize,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1218,7 +1231,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                     );
                     return Text(
                       retPath.isNotEmpty || retDate.isNotEmpty ? retPath : '',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
+                      style: TextStyle(fontSize: bodyTextFontSize, color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                     );
                   },
@@ -1230,7 +1243,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                     SizedBox(width: 4),
                     Text(
                       'Return',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: bodyTextFontSize),
                     ),
                   ],
                 ),
@@ -1238,7 +1251,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                   'From ${returnFlight['price']}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 14,
+                    fontSize: bodyTextFontSize,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1256,14 +1269,14 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                   children: [
                     Text(
                       'Total',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: bodyTextFontSize),
                     ),
                     SizedBox(width: 8),
                     Text(
                       '₹${totalPrice.toStringAsFixed(0)}',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: bodyTextFontSize,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1290,7 +1303,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                   ),
                   child: Text(
                     'BOOK NOW',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: bodyTextFontSize, fontWeight: FontWeight.w600),
                   ),
                 ),
               ],

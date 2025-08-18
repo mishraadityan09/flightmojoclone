@@ -104,19 +104,19 @@ class _SearchResultReturnState extends State<SearchResultReturn>
   double get screenWidth => MediaQuery.of(context).size.width;
 
   double get headingFontSize =>
-      (screenWidth * 0.055).clamp(14.0, 16.0); // 5.5% width, clamp 20-24
+      (screenWidth * 0.04).clamp(12.0, 16.0); // 4% width, clamp 12-16
 
   double get buttonLabelFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.5% width, clamp 16-18
+      (screenWidth * 0.03).clamp(10.0, 14.0); // 3.5% width, clamp 12-14
 
   double get bodyTextFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 14.0); // 4% width, clamp 12-16
+      (screenWidth * 0.03).clamp(10.0, 14.0); // 4% width, clamp 12-16
 
   double get secondaryLabelFontSize =>
-      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+      (screenWidth * 0.03).clamp(10.0, 14.0); // 3.2% width, clamp 12-14
 
   double get secondaryFontSize =>
-      (screenWidth * 0.032).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
+      (screenWidth * 0.03).clamp(12.0, 14.0); // 3.2% width, clamp 12-14
 
   double get smallFontSize =>
       (screenWidth * 0.025).clamp(10.0, 12.0); // ~2.5% width, clamp 10-12
@@ -156,7 +156,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        icon: Icon(Icons.arrow_back, color: Colors.white, size: iconSize),
                         onPressed: () => Navigator.pop(context),
                       ),
                       SizedBox(width: 8),
@@ -186,13 +186,13 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(LucideIcons.funnel, color: Colors.white),
+                            icon: Icon(LucideIcons.funnel, color: Colors.white, size: iconSize),
                             onPressed: () {
                               // Add filter functionality
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.edit, color: Colors.white),
+                            icon: Icon(Icons.edit, color: Colors.white, size: iconSize),
                             onPressed: () {
                               // Add edit search functionality
                             },
@@ -936,7 +936,8 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16,  
+                     vertical: 8),
                   ),
                   child: Text(
                     'BOOK NOW',
