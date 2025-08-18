@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flightmojo/features/search/presentation/provider/search_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 

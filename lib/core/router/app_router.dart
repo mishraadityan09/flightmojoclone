@@ -1,3 +1,4 @@
+import 'package:flightmojo/features/flights/presentation/pages/flight_booking_form.dart';
 import 'package:flightmojo/features/search/presentation/pages/search.dart';
 import 'package:flightmojo/features/searchResult/presentation/pages/search_result.dart';
 import 'package:flightmojo/features/searchResult/presentation/pages/search_result_return.dart';
@@ -108,8 +109,8 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.bookingConfirmation,
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>?;
-          return BookingConfirmationPage(booking: extra?['booking']);
+          // final extra = state.extra as Map<String, dynamic>?;
+          return FlightBookingForm();
         },
       ),
 
@@ -206,19 +207,7 @@ class PassengerDetailsPage extends StatelessWidget {
   }
 }
 
-class BookingConfirmationPage extends StatelessWidget {
-  final dynamic booking;
 
-  const BookingConfirmationPage({super.key, this.booking});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Booking Confirmation')),
-      body: const Center(child: Text('Booking Confirmation - Coming Soon')),
-    );
-  }
-}
 
 class BookingDetailsPage extends StatelessWidget {
   final String bookingId;

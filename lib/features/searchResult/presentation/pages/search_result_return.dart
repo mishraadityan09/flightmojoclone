@@ -1,5 +1,7 @@
+import 'package:flightmojo/core/router/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SearchResultReturn extends StatefulWidget {
@@ -184,7 +186,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                   child: TabBar(
                     controller: _tabController,
                     indicator: UnderlineTabIndicator(
-                      borderSide: BorderSide(color: Colors.orange, width: 2),
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
                     ),
                     labelColor: Colors.grey[800],
                     unselectedLabelColor: Colors.grey[600],
@@ -632,9 +634,9 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                 //   height: 24,
                 //   decoration: BoxDecoration(
                 //     shape: BoxShape.circle,
-                //     color: isSelected ? Colors.orange : Colors.transparent,
+                //     color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
                 //     border: Border.all(
-                //       color: isSelected ? Colors.orange : Colors.grey[400]!,
+                //       color: isSelected ? Theme.of(context).colorScheme.primary  : Colors.grey[400]!,
                 //       width: 2,
                 //     ),
                 //   ),
@@ -848,7 +850,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
             //     // ElevatedButton(
             //     //   onPressed: onTap,
             //     //   style: ElevatedButton.styleFrom(
-            //     //     backgroundColor: Colors.orange,
+            //     //     backgroundColor: Theme,
             //     //     foregroundColor: Colors.white,
             //     //     shape: RoundedRectangleBorder(
             //     //       borderRadius: BorderRadius.circular(8),
@@ -950,7 +952,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                 Text(
                   'From ${departureFlight['price']}',
                   style: TextStyle(
-                    color: Colors.orange,
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -1000,7 +1002,7 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                 Text(
                   'From ${returnFlight['price']}',
                   style: TextStyle(
-                    color: Colors.orange,
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -1036,15 +1038,16 @@ class _SearchResultReturnState extends State<SearchResultReturn>
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to booking
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Proceeding to booking...'),
-                        backgroundColor: Colors.orange,
-                      ),
-                    );
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   SnackBar(
+                    //     content: Text('Proceeding to booking...'),
+                    //     backgroundColor: Theme,
+                    //   ),
+                    // );
+                    context.go(AppRoutes.bookingConfirmation);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

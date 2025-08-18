@@ -5,8 +5,6 @@ import 'package:flightmojo/features/home/presentaion/widgets/coupon_card.dart';
 import 'package:flightmojo/features/home/presentaion/widgets/flight_deal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 enum ServiceType { flight }
 // enum ServiceType { flight, hotel, cab }
