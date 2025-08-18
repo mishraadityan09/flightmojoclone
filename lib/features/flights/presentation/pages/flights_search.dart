@@ -130,7 +130,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
       (screenWidth * 0.055).clamp(20.0, 24.0); // 5.5% width, clamp 20-24
 
   double get buttonLabelFontSize =>
-      (screenWidth * 0.035).clamp(15.0, 18.0); // 3.5% width, clamp 16-18
+      (screenWidth * 0.030).clamp(12.0, 16.0); // 3.5% width, clamp 16-18
 
   double get bodyTextFontSize =>
       (screenWidth * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
@@ -240,7 +240,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
             text,
             style: TextStyle(
               color: isSelected ? Colors.white : Colors.grey.shade800,
-              fontWeight: isSelected ? FontWeight.w400 : FontWeight.normal,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               fontSize: buttonLabelFontSize,
             ),
           ),
@@ -588,7 +588,7 @@ class _FlightSearchWidgetState extends State<FlightSearchWidget> {
           'Search',
           style: TextStyle(
             fontSize: buttonLabelFontSize,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

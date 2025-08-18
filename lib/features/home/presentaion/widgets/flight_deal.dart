@@ -20,13 +20,13 @@ class FlightDealCard extends StatelessWidget {
   double _getScreenWidth(BuildContext context) => MediaQuery.of(context).size.width;
 
   double _getCityFontSize(BuildContext context) =>
-      (_getScreenWidth(context) * 0.03).clamp(14.0, 16.0); // 4% width, clamp 14-16
+      (_getScreenWidth(context) * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
 
   double _getDateFontSize(BuildContext context) =>
       (_getScreenWidth(context) * 0.030).clamp(11.0, 14.0); // 3% width, clamp 11-14
 
   double _getPriceFontSize(BuildContext context) =>
-      (_getScreenWidth(context) * 0.03).clamp(14.0, 16.0); // 4% width, clamp 14-16
+      (_getScreenWidth(context) * 0.03).clamp(12.0, 16.0); // 4% width, clamp 12-16
 
   double _getPriceLabelFontSize(BuildContext context) =>
       (_getScreenWidth(context) * 0.030).clamp(11.0, 14.0); // 3% width, clamp 11-14
@@ -188,7 +188,7 @@ class FlightDealCard extends StatelessWidget {
         ),
         SizedBox(height: _getPadding(context) * 0.125), // Responsive tiny spacing
         Text(
-          price,
+          '\u{20B9}$price',
           style: TextStyle(
             fontSize: _getPriceFontSize(context),
             fontWeight: FontWeight.w600,

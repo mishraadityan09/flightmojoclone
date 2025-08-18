@@ -1,3 +1,4 @@
+import 'package:flightmojo/features/flights/presentation/widgets/passenger_detail_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -904,7 +905,9 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                               ),
                             ),
                             ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                _handleDetails();
+                              },
                               icon: Icon(
                                 Icons.add,
                                 color: Colors.white,
@@ -1119,6 +1122,11 @@ class _FlightBookingFormState extends State<FlightBookingForm>
     } catch (_) {
       return isoDate;
     }
+  }
+
+
+  void _handleDetails() {
+   showPassengersBottomSheet(context);
   }
 
   Widget _buildBottomSummaryBar() {
