@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+
 
 class PassengerDetailForm extends StatefulWidget {
   final int passengerIndex;
@@ -25,7 +25,7 @@ class _PassengerDetailFormState extends State<PassengerDetailForm> {
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController phoneController;
-  PhoneNumber? phoneNumber;
+
   String selectedCountryCode = '+91'; // Default to India
   String selectedCountryFlag = '🇮🇳'; // Default to India flag
 
@@ -35,7 +35,6 @@ class _PassengerDetailFormState extends State<PassengerDetailForm> {
     nameController = TextEditingController();
     emailController = TextEditingController();
     phoneController = TextEditingController();
-    phoneNumber = PhoneNumber(isoCode: 'IN', phoneNumber: '');
 
     //Listen to the changes and notify the parent
     nameController.addListener(_handleDataChanged);
