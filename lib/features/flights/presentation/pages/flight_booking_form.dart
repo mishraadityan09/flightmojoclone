@@ -249,7 +249,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                           decoration: BoxDecoration(
                             color: Colors.blue[50],
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.blue!),
+                            border: Border.all(color: Colors.blue),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,7 +294,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                           decoration: BoxDecoration(
                             color: Colors.orange[50],
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.orange!),
+                            border: Border.all(color: Colors.orange),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -773,7 +773,7 @@ class _FlightBookingFormState extends State<FlightBookingForm>
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
-                                        color: const Color.fromARGB(255, 99, 98, 98)!,
+                                        color: const Color.fromARGB(255, 99, 98, 98),
                                       ),
                                     ),
                                     enabledBorder: OutlineInputBorder(
@@ -1126,7 +1126,11 @@ class _FlightBookingFormState extends State<FlightBookingForm>
 
 
   void _handleDetails() {
-   showPassengersBottomSheet(context);
+   int numberOfPassengers=4;
+   String passengerType='Adult';
+    if (numberOfPassengers > 0) {
+      showPassengersBottomSheet(context, numberOfPassengers, passengerType);
+    }
   }
 
   Widget _buildBottomSummaryBar() {
